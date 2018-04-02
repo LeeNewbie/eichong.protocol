@@ -1,0 +1,37 @@
+package com.cooperate;
+
+public abstract class Push implements IPush{
+	
+	protected int orgNo;
+	protected int mode=0;//1:只发充电时实时数据，2:充电和空闲时都发实时数据
+	protected long period;
+	
+	public Push()
+	{
+		this.mode = 1;
+	}
+	
+	public int getOrgNo() {
+		return orgNo;
+	}
+
+	
+
+	public int getMode() {
+		return mode;
+	}
+
+	
+	
+	
+	public long getPeriod() {
+		return period;
+	}
+
+	public void setSendParams(int orgNo,int mode,long period)
+	{
+		this.orgNo= orgNo;
+		this.mode = mode;
+		this.period = period;
+	}
+}

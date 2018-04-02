@@ -1,0 +1,235 @@
+package com.third.service;
+
+import io.netty.channel.Channel;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.core.pool.TaskPoolFactory;
+import com.third.net.client.EpCommClient;
+import com.third.net.constant.Third2EpGate;
+import com.third.task.CheckEpGateCommClientTask;
+import com.third.utils.DateUtil;
+import com.third.utils.NetUtils;
+
+public class EpGateService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EpGateService.class);
+	
+	
+	public static boolean isValidCmd(int cmd)
+	{
+		if( 
+		cmd == Third2EpGate.EP_LOGIN||
+		cmd == Third2EpGate.EP_ACK||
+		cmd == Third2EpGate.EP_HEART||
+		cmd == Third2EpGate.EP_REAL_DATA||
+		cmd == Third2EpGate.EP_CONSUME_RECORD)
+			return true;
+		return false;
+		
+	}
+	
+	public static Map<Channel,EpCommClient> mapChannel2Client = new ConcurrentHashMap<Channel, EpCommClient>();
+
+	static Map<String ,EpCommClient> mapClient = new ConcurrentHashMap<String, EpCommClient>();
+
+	
+	public static boolean enableComm(String identity)
+	{
+		EpCommClient commClient = mapClient.get(identity);
+		if(commClient == null)
+			return false;
+		return commClient.isComm();
+	}
+	public static boolean enableComm(int stationId,String epCode)
+	{
+		String identity="";
+		if(stationId !=0)
+		{
+			identity = ""+ stationId;
+		}
+		else
+		{
+			identity = epCode;
+		}
+		return enableComm(identity);
+	}
+	
+	public static EpCommClient getCommClientByChannel(Channel ch)
+	{
+		return mapChannel2Client.get(ch);
+	}
+	/**
+	 * 该函数只能用来在判断连接是否重复上
+	 * @param key
+	 * @return
+	 */
+		
+	public static EpCommClient getCommClient(String key)
+	{
+		return mapClient.get(key);
+	}
+	
+	
+	 public static void removeChannel(Channel ch)
+	 {
+			
+		EpCommClient commClient = mapChannel2Client.get(ch);
+		if(commClient != null)
+		{
+			logger.debug("mapChannel2Client,size:{}",mapChannel2Client.size());
+			mapChannel2Client.remove(ch);
+			logger.debug("mapChannel2Client,size:{}",mapChannel2Client.size());
+		}
+	}
+	 
+	public static String getDebugInfo()
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("EpCommClientService:\n");
+		
+		/*Iterator iter = mapChannel2Client.entrySet().iterator();
+		
+		while (iter.hasNext()) {
+			
+			Map.Entry entry = (Map.Entry) iter.next();
+			
+			Channel ch=(Channel) entry.getKey();
+			sb.append("ch:").append(ch).append("\n");
+		}*/
+        sb.append("mapChannel2Client count:").append(mapChannel2Client.size()).append("\n");
+        sb.append("mapClient count:").append( mapClient.size()).append("\n");
+        
+        String str = sb.toString();
+        
+        return sb.toString();
+		
+	}
+	 
+	 public static void removeChannel(String  key)
+	 {
+			
+		EpCommClient commClient = mapClient.get(key);
+		if(commClient != null)
+		{
+			logger.debug("mapChannel2Client,size:{}",mapClient.size());
+			mapClient.remove(key);
+			logger.debug("mapChannel2Client,size:{}",mapClient.size());
+		}
+	}
+	 public static void addCommClient(EpCommClient commClient)
+	 {
+		 logger.debug("addCommClient:{}",commClient);
+		 if(commClient==null)
+				return;
+		Channel ch = commClient.getChannel();
+		if( ch ==null)
+			return ;
+		logger.debug("addCommClient ch:{}",ch);
+		mapChannel2Client.put(ch, commClient);
+		 
+	 }
+	public static void addCommClient(String key,EpCommClient commClient)
+	{
+		logger.debug("addCommClient,key:{},commClient:{}",key,commClient);
+		if(commClient==null)
+			return;
+		Channel ch = commClient.getChannel();
+		if( ch ==null)
+			return ;
+		logger.debug("addCommClient,ch:{}",ch);
+		mapChannel2Client.put(ch, commClient);
+		mapClient.put(key, commClient);	
+	}
+		
+	   
+    
+		
+	/**
+	 * 电桩下线
+	 * @author 
+	 * 2014-12-1
+	 * @param channel
+	 */
+	public static void offLine(Channel channel)
+	{
+		//获得电桩信息
+		EpCommClient commClient =  getCommClientByChannel(channel);
+		
+		if (commClient != null) {
+			
+			//handleNetTimeOut(channel,commClient.getIdentity());
+			commClient.setStatus(0);
+		}
+			
+	}
+	
+	public static void startCommTimeout(long initDelay) {
+		
+		CheckEpGateCommClientTask checkTask =  new CheckEpGateCommClientTask();
+				
+		TaskPoolFactory.scheduleAtFixedRate("CHECK_COMMCLIENT_TIMEOUT_TASK", checkTask, initDelay, 5, TimeUnit.SECONDS);
+	}
+	public static void checkCommTimeout(long initDelay)
+	{
+		logger.debug("PhoneService checkTimeOut,mapCh2PhoneClient.size():{}",mapChannel2Client.size());
+		Iterator iter = mapChannel2Client.entrySet().iterator();
+		int count=0;
+		int sum=0;
+		while (iter.hasNext()) {
+			sum++;
+			if(sum>10)
+			{
+				NetUtils.sleep(10);
+				sum=0;
+			}
+			Map.Entry entry = (Map.Entry) iter.next();
+			EpCommClient phoneClient=(EpCommClient) entry.getValue();	
+			if(null == phoneClient)
+			{
+				continue;
+			}
+			
+			//long timeout = GameConfig.phoneConnectTimeout;
+			long timeout =4;
+		
+			long now = DateUtil.getCurrentSeconds();			
+			long diff = now-phoneClient.getLastUseTime();	
+			
+			if(diff>timeout)
+			{ 
+				count++;
+				logger.debug("PhoneService:checkTimeOut[diff:{},lastUseTime{}], remove phoneClient:{}",
+						new Object[]{diff,phoneClient.getLastUseTime(),phoneClient});
+				
+				phoneClient.setStatus(0);
+				Channel ch = phoneClient.getChannel();
+				
+				if(ch!=null )
+				{
+					ch.close();
+				}	
+				mapClient.remove(phoneClient.getIdentity());
+				iter.remove();
+				ch=null;
+				
+			}
+		
+		}
+		if(count>0)
+		{
+			logger.info("Phone Client communication had {} time out !",count);
+		}
+		
+		
+	}
+	
+	
+
+}

@@ -1,0 +1,12 @@
+package com.third.task;
+
+
+
+
+public class testTask  implements Runnable {
+
+	@Override
+	public void run() {
+		
+	}
+}

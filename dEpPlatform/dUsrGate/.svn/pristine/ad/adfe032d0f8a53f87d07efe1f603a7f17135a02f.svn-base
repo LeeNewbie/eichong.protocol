@@ -1,0 +1,48 @@
+package com.usrgate.utils;
+
+import io.netty.channel.Channel;
+
+import java.net.SocketAddress;
+import java.util.Calendar;
+
+public class NetUtils {
+	 public static String getClientIp(Channel channel){
+		 SocketAddress address = channel.remoteAddress();
+		 String ip = "";
+		 if (address != null) {
+			 ip = address.toString().trim();
+			 int index = ip.lastIndexOf(':');
+			 if (index < 1) {
+				 index = ip.length();
+			 }
+			 ip = ip.substring(1, index);
+		 }
+		 if (ip.length() > 15) {
+			 ip = ip.substring(Math.max(ip.indexOf("/") + 1, ip.length() - 15));
+		 }
+		 return ip;
+	 };
+	 
+		/**
+		 * 获取当前时间时分秒,返回数组
+		 * @return 数组
+		 */
+		public static byte[] timeToByte(){
+
+			byte time[] = new byte[3];
+			
+			Calendar cal = Calendar.getInstance();
+			
+			
+			int hourOfDay = cal.get(Calendar.HOUR_OF_DAY); 
+			int Minute = cal.get(Calendar.MINUTE); 
+			
+			int Second = cal.get(Calendar.SECOND);
+
+			time[0] = (byte) hourOfDay;
+			time[1] = (byte) Minute;
+			time[2] = (byte) Second;
+
+			return time;
+		}
+}

@@ -1,0 +1,42 @@
+[2016-07-06 14:33:28 INFO][InitConfigLog]¿ªÊ¼³õÊ¼»¯È«¾ÖÅäÖÃ...
+[2016-07-06 14:33:28 INFO][InitConfigLog]¶ÁÈ¡xmlÎÄ¼ş£º¡¾D:\eichong\protocol\EpGateTest\conf\global-config.xml¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯È«¾ÖÅäÖÃ½áÊø...ÅäÖÃĞÅÏ¢:¡¾com.netCore.model.conf.GlobalConfig@4fb64261[mask1=89,mask2=122,mask3=122,mask4=89]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]¿ªÊ¼³õÊ¼»¯Ó¦ÓÃ·şÅäÖÃ...
+[2016-07-06 14:33:28 INFO][InitConfigLog]¶ÁÈ¡xmlÎÄ¼ş£º¡¾D:\eichong\protocol\EpGateTest\conf\game-config.xml¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯Ó¦ÓÃ·şÅäÖÃ½áÊø£¬ÅäÖÃĞÅÏ¢:¡¾com.netCore.model.conf.GameConfig@401e7803[id=100011,name=GateServer1,description=Íø¹Ø·ş1,pfId=10,zoneId=1,shutdownPort=50011]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]¿ªÊ¼³õÊ¼»¯·şÎñÆ÷ÅäÖÃ...
+[2016-07-06 14:33:28 INFO][InitConfigLog]¶ÁÈ¡xmlÎÄ¼ş£º¡¾D:\eichong\protocol\EpGateTest\conf\server-config.xml¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@47db50c5[name=ep gate server,description=µç×®·şÎñ,port=2406]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@5c072e3f[name=monitor server,description=ÄÚ²¿·şÎñ,port=7777]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@4d1b0d2a[name=AppGateServer,description=appÄÚÍøÍø¹Ø·ş,port=30012]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@954b04f[name=monitor server,description=ÄÚ²¿·şÎñ,port=9001]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@149494d8[name=monitor server,description=ÄÚ²¿·şÎñ,port=9001]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@710726a3[name=phone server,description=ÄÚ²¿·şÎñ,port=8001]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@646007f4[name=httpServer,description=httpServer,port=2410]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ:¡¾com.netCore.model.conf.ServerConfig@481a15ff[name=dataAnalyzeserver,description=Êı¾İ·ÖÎöÖĞĞÄ·şÎñ¶Ë,port=8002]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯·şÎñÆ÷ÅäÖÃ½áÊø...ÅäÖÃĞÅÏ¢:¡¾com.netCore.model.conf.ServerConfigs@78186a70[epGateServer=com.netCore.model.conf.ServerConfig@47db50c5[name=ep gate server,description=µç×®·şÎñ,port=2406],epGateMonitorServer=com.netCore.model.conf.ServerConfig@5c072e3f[name=monitor server,description=ÄÚ²¿·şÎñ,port=7777],manageServer=com.netCore.model.conf.ServerConfig@4d1b0d2a[name=AppGateServer,description=appÄÚÍøÍø¹Ø·ş,port=30012],dataCentreServer=com.netCore.model.conf.ServerConfig@954b04f[name=monitor server,description=ÄÚ²¿·şÎñ,port=9001],dataCentreMontiorServer=com.netCore.model.conf.ServerConfig@149494d8[name=monitor server,description=ÄÚ²¿·şÎñ,port=9001],phoneServer=com.netCore.model.conf.ServerConfig@710726a3[name=phone server,description=ÄÚ²¿·şÎñ,port=8001],httpServer=com.netCore.model.conf.ServerConfig@646007f4[name=httpServer,description=httpServer,port=2410],dataAnalyzeServer=com.netCore.model.conf.ServerConfig@481a15ff[name=dataAnalyzeserver,description=Êı¾İ·ÖÎöÖĞĞÄ·şÎñ¶Ë,port=8002]]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]¿ªÊ¼³õÊ¼»¯¿Í»§¶ËÅäÖÃ...
+[2016-07-06 14:33:28 INFO][InitConfigLog]¶ÁÈ¡xmlÎÄ¼ş£º¡¾D:\eichong\protocol\EpGateTest\conf\client-config.xml¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯¡¾gateClientConfig¡¿ÅäÖÃ...ÅäÖÃĞÅÏ¢¡¾com.netCore.model.conf.ClientConfig@df27fae[name=AnalyzeServer,description=Êı¾İ·ÖÎöÖĞĞÄ·şÎñ¶Ë,ip=10.9.3.105,port=8002]¡¿
+[2016-07-06 14:33:28 INFO][InitConfigLog]³õÊ¼»¯¿Í»§¶ËÅäÖÃ½áÊø...ÅäÖÃĞÅÏ¢¡¾com.netCore.model.conf.ClientConfigs@24a35978[gateServerConfigs=[com.netCore.model.conf.ClientConfig@df27fae[name=AnalyzeServer,description=Êı¾İ·ÖÎöÖĞĞÄ·şÎñ¶Ë,ip=10.9.3.105,port=8002]],AnalyzeConfig=com.netCore.model.conf.ClientConfig@df27fae[name=AnalyzeServer,description=Êı¾İ·ÖÎöÖĞĞÄ·şÎñ¶Ë,ip=10.9.3.105,port=8002]]¡¿
+[2016-07-06 14:42:14 INFO][InitConfigLog]å¼€å§‹åˆå§‹åŒ–å…¨å±€é…ç½®...
+[2016-07-06 14:42:14 INFO][InitConfigLog]è¯»å–xmlæ–‡ä»¶ï¼šã€D:\eichong\protocol\EpGateTest\conf\global-config.xmlã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–å…¨å±€é…ç½®ç»“æŸ...é…ç½®ä¿¡æ¯:ã€com.netCore.model.conf.GlobalConfig@4fb64261[mask1=89,mask2=122,mask3=122,mask4=89]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]å¼€å§‹åˆå§‹åŒ–åº”ç”¨æœé…ç½®...
+[2016-07-06 14:42:14 INFO][InitConfigLog]è¯»å–xmlæ–‡ä»¶ï¼šã€D:\eichong\protocol\EpGateTest\conf\game-config.xmlã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–åº”ç”¨æœé…ç½®ç»“æŸï¼Œé…ç½®ä¿¡æ¯:ã€com.netCore.model.conf.GameConfig@401e7803[id=100011,name=GateServer1,description=ç½‘å…³æœ1,pfId=10,zoneId=1,shutdownPort=50011]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]å¼€å§‹åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®...
+[2016-07-06 14:42:14 INFO][InitConfigLog]è¯»å–xmlæ–‡ä»¶ï¼šã€D:\eichong\protocol\EpGateTest\conf\server-config.xmlã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@47db50c5[name=ep gate server,description=ç”µæ¡©æœåŠ¡,port=2406]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@5c072e3f[name=monitor server,description=å†…éƒ¨æœåŠ¡,port=7777]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@4d1b0d2a[name=AppGateServer,description=appå†…ç½‘ç½‘å…³æœ,port=30012]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@954b04f[name=monitor server,description=å†…éƒ¨æœåŠ¡,port=9001]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@149494d8[name=monitor server,description=å†…éƒ¨æœåŠ¡,port=9001]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@710726a3[name=phone server,description=å†…éƒ¨æœåŠ¡,port=8001]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@646007f4[name=httpServer,description=httpServer,port=2410]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®:ã€com.netCore.model.conf.ServerConfig@481a15ff[name=dataAnalyzeserver,description=æ•°æ®åˆ†æä¸­å¿ƒæœåŠ¡ç«¯,port=8002]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–æœåŠ¡å™¨é…ç½®ç»“æŸ...é…ç½®ä¿¡æ¯:ã€com.netCore.model.conf.ServerConfigs@78186a70[epGateServer=com.netCore.model.conf.ServerConfig@47db50c5[name=ep gate server,description=ç”µæ¡©æœåŠ¡,port=2406],epGateMonitorServer=com.netCore.model.conf.ServerConfig@5c072e3f[name=monitor server,description=å†…éƒ¨æœåŠ¡,port=7777],manageServer=com.netCore.model.conf.ServerConfig@4d1b0d2a[name=AppGateServer,description=appå†…ç½‘ç½‘å…³æœ,port=30012],dataCentreServer=com.netCore.model.conf.ServerConfig@954b04f[name=monitor server,description=å†…éƒ¨æœåŠ¡,port=9001],dataCentreMontiorServer=com.netCore.model.conf.ServerConfig@149494d8[name=monitor server,description=å†…éƒ¨æœåŠ¡,port=9001],phoneServer=com.netCore.model.conf.ServerConfig@710726a3[name=phone server,description=å†…éƒ¨æœåŠ¡,port=8001],httpServer=com.netCore.model.conf.ServerConfig@646007f4[name=httpServer,description=httpServer,port=2410],dataAnalyzeServer=com.netCore.model.conf.ServerConfig@481a15ff[name=dataAnalyzeserver,description=æ•°æ®åˆ†æä¸­å¿ƒæœåŠ¡ç«¯,port=8002]]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]å¼€å§‹åˆå§‹åŒ–å®¢æˆ·ç«¯é…ç½®...
+[2016-07-06 14:42:14 INFO][InitConfigLog]è¯»å–xmlæ–‡ä»¶ï¼šã€D:\eichong\protocol\EpGateTest\conf\client-config.xmlã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–ã€gateClientConfigã€‘é…ç½®...é…ç½®ä¿¡æ¯ã€com.netCore.model.conf.ClientConfig@df27fae[name=AnalyzeServer,description=æ•°æ®åˆ†æä¸­å¿ƒæœåŠ¡ç«¯,ip=10.9.3.105,port=8002]ã€‘
+[2016-07-06 14:42:14 INFO][InitConfigLog]åˆå§‹åŒ–å®¢æˆ·ç«¯é…ç½®ç»“æŸ...é…ç½®ä¿¡æ¯ã€com.netCore.model.conf.ClientConfigs@24a35978[gateServerConfigs=[com.netCore.model.conf.ClientConfig@df27fae[name=AnalyzeServer,description=æ•°æ®åˆ†æä¸­å¿ƒæœåŠ¡ç«¯,ip=10.9.3.105,port=8002]],AnalyzeConfig=com.netCore.model.conf.ClientConfig@df27fae[name=AnalyzeServer,description=æ•°æ®åˆ†æä¸­å¿ƒæœåŠ¡ç«¯,ip=10.9.3.105,port=8002]]ã€‘

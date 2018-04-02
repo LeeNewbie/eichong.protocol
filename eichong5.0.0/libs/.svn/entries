@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   repos="https://10.9.3.100/svn/eichong"
+   name=""
+   revision="12952"
+   last-author="liuyahui"
+   url="https://10.9.3.100/svn/eichong/trunk/android/branches/eichong_5.0.0/libs"
+   uuid="10cbccd9-2b97-e54f-a826-980271203259"
+   committed-rev="12701"
+   kind="dir"
+   committed-date="2017-10-16T01:41:28.523541Z"/>
+<entry
+   name="AMap_ Location_v1.4.0_20150830.jar"
+   checksum="f2212aad44f2f133cf9a4c844b1293bb"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.016000Z"/>
+<entry
+   name="AMap_ Navi_v1.3.0_20150828.jar"
+   checksum="8df2d5c849bc64c98f90e8394c93999b"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.291000Z"/>
+<entry
+   name="AMap_3DMap_V3.2.1_20160225.jar"
+   checksum="ddbf58cd110997a0e5aee0b47aba1ee0"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:56.594000Z"/>
+<entry
+   name="MapApiServices.jar"
+   checksum="901fc94039665667df79c9f22f648341"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.154000Z"/>
+<entry
+   name="Msc.jar"
+   checksum="e79de5c99ee33ce35324b0e500e3b797"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.175000Z"/>
+<entry
+   name="SocialSDK_Ding.jar"
+   checksum="4c5cf8f19b98b9269793029cdfd42b41"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.272000Z"/>
+<entry
+   name="SocialSDK_QQ_Full.jar"
+   checksum="1ce4cfcb48b494bb0e9c85df995c5e94"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.034000Z"/>
+<entry
+   name="SocialSDK_QQ_Simplify.jar"
+   checksum="7f2798dd483df71afbfc17bdf4d311a7"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.304000Z"/>
+<entry
+   name="SocialSDK_Sina_Simplify.jar"
+   checksum="7a09ceb84f7b4976e674fe12be2bfc2f"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.643000Z"/>
+<entry
+   name="SocialSDK_WeChat_Simplify.jar"
+   checksum="183e97864b28fb2d07bae563bd77cfb3"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.386000Z"/>
+<entry
+   name="SocialSDK_WeiXin_Full.jar"
+   checksum="f4c3047f94093c5f671fd297006d1b93"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.278000Z"/>
+<entry
+   name="SocialSDK_alipay.jar"
+   checksum="6204ba9f7e8e6888bca6c01f06eee361"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.259000Z"/>
+<entry
+   name="SocialSDK_douban.jar"
+   checksum="8947c58aa19a96c4bb06b523bcd6e58d"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.091000Z"/>
+<entry
+   name="SocialSDK_dropbox.jar"
+   checksum="695a5229ab0d47cca69ff77a55667dcd"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.538000Z"/>
+<entry
+   name="SocialSDK_email.jar"
+   checksum="98b12cd3440b18873c68512c35fcee77"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.210000Z"/>
+<entry
+   name="SocialSDK_evernote.jar"
+   checksum="d5c8383f77d67f145b6574f726241cd9"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:54.039000Z"/>
+<entry
+   name="SocialSDK_facebook.jar"
+   checksum="ee9c906619ad4679925f028cfdf2a5a6"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.172000Z"/>
+<entry
+   name="SocialSDK_flickr.jar"
+   checksum="4c285be0bba5ba0c7f7944b0e306c6eb"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.079000Z"/>
+<entry
+   name="SocialSDK_foursquare.jar"
+   checksum="d41e51cdedd5bb3a8ec5682267175d62"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.297000Z"/>
+<entry
+   name="SocialSDK_gplus.jar"
+   checksum="a7a905fa04f29144f36aff980173ae88"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.222000Z"/>
+<entry
+   name="SocialSDK_instagram.jar"
+   checksum="0a3fabf3d28562d35d8e2397813f48fd"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.371000Z"/>
+<entry
+   name="SocialSDK_kakao.jar"
+   checksum="e3fece40b363d35ac2d3d3875a6a6fbf"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.206000Z"/>
+<entry
+   name="SocialSDK_laiwang_1.jar"
+   checksum="0ac76693638b96f64d4d073bf3b229f3"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.314000Z"/>
+<entry
+   name="SocialSDK_laiwang_2.jar"
+   checksum="50730b66ba118bf193314b3ff607fbfa"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.319000Z"/>
+<entry
+   name="SocialSDK_line.jar"
+   checksum="80afabb6e26abacf3b174f5943dc9069"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.288000Z"/>
+<entry
+   name="SocialSDK_linkedin.jar"
+   checksum="ada21ba0be55c9cf5c839be0194bf6eb"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.306000Z"/>
+<entry
+   name="SocialSDK_pinterest.jar"
+   checksum="bc55ca67ea8ac5a175655a795bbe4943"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.546000Z"/>
+<entry
+   name="SocialSDK_pocket.jar"
+   checksum="9e48d8451f5deb16114fb935158307cc"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.376000Z"/>
+<entry
+   name="SocialSDK_renren.jar"
+   checksum="0d86b17cf239b0265daf420ca0758872"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.292000Z"/>
+<entry
+   name="SocialSDK_sms.jar"
+   checksum="c579504726f026c3450092e392580606"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.635000Z"/>
+<entry
+   name="SocialSDK_tencentWB.jar"
+   checksum="67df76c3a81fbd27f0d05d7364b74582"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:54.916000Z"/>
+<entry
+   name="SocialSDK_tumblr.jar"
+   checksum="ea172c98506b497153a2767431aee1fe"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.046000Z"/>
+<entry
+   name="SocialSDK_twitter.jar"
+   checksum="51f31a2a3e0343b6bcba4ad78bc9a139"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.440000Z"/>
+<entry
+   name="SocialSDK_vkontakte.jar"
+   checksum="03fcec10f9322a8d7ea4a93a6834d12e"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.513000Z"/>
+<entry
+   name="SocialSDK_whatsapp.jar"
+   checksum="1bf6ca46cf42930b4fe76f564e5ffc86"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.380000Z"/>
+<entry
+   name="SocialSDK_yixin_1.jar"
+   checksum="1c2859d8d0fd5f260ac9150fa8b49966"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.437000Z"/>
+<entry
+   name="SocialSDK_yixin_2.jar"
+   checksum="90e4bbdf10af13c692e0079a928a0738"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.442000Z"/>
+<entry
+   name="SocialSDK_ynote.jar"
+   checksum="9cacd1d7cb332a12c6f871385ddcc3d3"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.319000Z"/>
+<entry
+   name="alipaysdk.jar"
+   checksum="b753e35e111f4844c45f8794714e0932"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:56.272000Z"/>
+<entry
+   name="alipaysecsdk.jar"
+   checksum="e1b9777bbb6dbf6fc077a5afd8ca6282"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.431000Z"/>
+<entry
+   name="alipayutdid.jar"
+   checksum="8c8e64ecf01a95a4f0819a1f00d83e55"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.394000Z"/>
+<entry
+   name="android-support-v4.jar"
+   checksum="0b72a547a1b0753bc1ff6aefe95a76f4"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.367000Z"/>
+<entry
+   name="android_api_1.1_forsdk.jar"
+   checksum="1432410d2a1895ded3430e41f3e9ec71"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.325000Z"/>
+<entry
+   name="armeabi"
+   kind="dir"/>
+<entry
+   name="armeabi-v7a"
+   kind="dir"/>
+<entry
+   name="badgeview.jar"
+   checksum="929039222283951da3e4796dfed82a7c"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.406000Z"/>
+<entry
+   name="galaxy_mini.jar"
+   checksum="244b268280a6144a40be621200f3e93a"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.346000Z"/>
+<entry
+   name="gson-2.2.4.jar"
+   checksum="232ea9ab7ec43b8b2ef36181ee7d693b"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.204000Z"/>
+<entry
+   name="httpmime-4.2.jar"
+   checksum="b70fa789d4984bdb2fc8c5ba88a55515"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.402000Z"/>
+<entry
+   name="jpush-sdk-release1.7.1.jar"
+   checksum="f365018068acad11fa58a68c963d0b10"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.259000Z"/>
+<entry
+   name="json_simple-1.1.jar"
+   checksum="eb342044fc56be9ba49fbfc9789f1bb5"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.456000Z"/>
+<entry
+   name="libapshare.jar"
+   checksum="878784b9c90875a1d76cab5db1f0212b"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.564000Z"/>
+<entry
+   name="libddshare.jar"
+   checksum="e6eceb60ef703a02727b7ed283ba5992"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.331000Z"/>
+<entry
+   name="mta-sdk-1.6.2.jar"
+   checksum="58a10f81d4cb1141972fcd451e3575a4"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.459000Z"/>
+<entry
+   name="nineoldandroids-2.4.0.jar"
+   checksum="d719629ae7c443ed75566ef241bc835d"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.101000Z"/>
+<entry
+   name="open_sdk_r5788_lite.jar"
+   checksum="6e76c84cfcdeab69c52c7868890e2b6a"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.624000Z"/>
+<entry
+   name="systembartint-1.0.4.jar"
+   checksum="cfb4fc0fed0bd42f75b287a46263e159"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.064000Z"/>
+<entry
+   name="umeng-analytics-v6.1.0.jar"
+   checksum="1d28d59549cab1a0126d0c317d2d883a"
+   last-author="liuyahui"
+   committed-rev="6957"
+   text-time="2017-05-19T05:21:29.356000Z"
+   kind="file"
+   committed-date="2017-05-19T05:21:29.356265Z"
+   prop-time="2017-10-18T09:08:54.967000Z"/>
+<entry
+   name="umeng_shareboard_widget.jar"
+   checksum="3552929b5dc22cb7d423fa3af9675f0d"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.377000Z"/>
+<entry
+   name="umeng_social_api.jar"
+   checksum="6156205904c1e86f1a78886617239f48"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:54.986000Z"/>
+<entry
+   name="umeng_social_net.jar"
+   checksum="9f5bcf8301177cdd020b5d7bf0e1512e"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:53.423000Z"/>
+<entry
+   name="umeng_social_shareboard.jar"
+   checksum="a4edfedebf54b74796ed53dcfbfdd0f1"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.028000Z"/>
+<entry
+   name="umeng_social_shareview.jar"
+   checksum="cdd2ea7b3a6c34be47ce400c8c844929"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:56.283000Z"/>
+<entry
+   name="umeng_social_tool.jar"
+   checksum="3dd577cff6996ede47c0ce7b3915355c"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.078000Z"/>
+<entry
+   name="universal-image-loader-1.9.3.jar"
+   checksum="a5e17599cd5561723c346134e4d1c823"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:53.370000Z"/>
+<entry
+   name="volley.jar"
+   checksum="9d534556bce6ae94b97a3df69b8a9dcd"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.223000Z"/>
+<entry
+   name="wechat-sdk-android-with-mta-1.1.6.jar"
+   checksum="95e3fab6d3fc2d33c44928e01eeda48d"
+   last-author="liuyahui"
+   committed-rev="12701"
+   text-time="2017-10-16T01:41:28.523000Z"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"
+   prop-time="2017-10-18T09:08:55.073000Z"/>
+<entry
+   name="x86"
+   kind="dir"/>
+</wc-entries>

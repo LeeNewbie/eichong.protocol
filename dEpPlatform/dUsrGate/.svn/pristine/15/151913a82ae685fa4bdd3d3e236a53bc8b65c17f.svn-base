@@ -1,0 +1,295 @@
+package com.usrgate.net.codec;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToByteEncoder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * 发消息，编码
+ * 
+ * 消息结构：byte混淆码1 + byte混淆吗2 + int长度  + short协议号  + byte是否压缩  + byte[] 数据内容 + byte混淆码3 + byte混淆码4
+ * 
+ * @author 
+ * Mar 27, 2013 4:11:15 PM
+ */
+public class EpGateEncoder extends MessageToByteEncoder{
+
+
+	private static final Logger logger = LoggerFactory.getLogger(EpGateEncoder.class);
+	
+	
+	/**
+	 * 不管channel.write(arg0)发送的是什么类型，
+	 * 最终都要组装成 ByteBuf 发送,
+	 * 所以encode需要返回 ByteBuf 类型的对象
+	 
+	 * @param chc
+	 * @param bb   (Message)
+	 * @param byteBuf   (Byte)
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	protected void encode(ChannelHandlerContext chc, Object msg, ByteBuf byteBuf)
+			throws Exception {
+		
+		if(msg instanceof ByteBuf){
+			
+			ByteBuf byteBufIn = (ByteBuf)msg;
+			byte[] bb = new byte[byteBufIn.readableBytes()];
+			byteBufIn.getBytes(0, bb);
+			
+			byteBuf.writeBytes(bb);
+			
+		}else if(msg instanceof byte[]){
+			
+			byte[] bb = (byte[])msg;
+			byteBuf.writeBytes(bb);
+			
+		}else{
+			
+			logger.debug("未知的消息类型:{}",chc.channel().toString());
+			
+		}
+	}
+	
+	public static byte[]  Package(int sendINum,int recvINum,int cos,int common_address,byte recordType,byte[] msg
+			,byte []time,int commVersion) {
+		
+		try{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(msg.length+1+3);
+			bout.write(recordType);
+			bout.write(msg);
+			/*if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			{
+				bout.write(time);
+			}*/
+		    
+			return null;
+		   //return PackageI(bout.toByteArray(),Iec104Constant.C_SD_NA,(short)cos,sendINum, recvINum, common_address,commVersion);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static byte[]  Package(byte type,int sendINum,int recvINum,int cos,int common_address,byte[] msg
+			,byte []time,int commVersion) {
+		
+		try{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(msg.length+3);
+			bout.write(msg);
+			/*if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			{
+				bout.write(time);
+			}*/
+		    
+		   return PackageI(bout.toByteArray(),type,(short)cos,sendINum, recvINum, common_address, commVersion);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static  byte[] PackageI(byte[] data,byte type,short cos,int sendINum,int recvINum,int common_address,int commVersion) {
+		/*try{
+			ApciHeader apciHeader = new ApciHeader();
+			if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			   apciHeader.setLength(ApciHeader.getHLen() + AsduHeader.H_LEN + data.length+2- Iec104Constant.INITIAL_BYTES_TO_STRIP);
+			else
+			   apciHeader.setLength(ApciHeader.getHLen() + AsduHeader.H_LEN + data.length- Iec104Constant.INITIAL_BYTES_TO_STRIP);
+			
+			apciHeader.setINr(sendINum, recvINum);
+			
+			AsduHeader asduHeader = new AsduHeader();
+			asduHeader.setType((byte) type);
+			asduHeader.setCon(WmIce104Util.short2Bytes(cos));
+			asduHeader.setConn_address(WmIce104Util.short2Bytes((short)common_address));
+		
+			ByteArrayOutputStream bmsg = new ByteArrayOutputStream( Iec104Constant.WM_104_CD_SENDBUFFER);
+			
+			bmsg.write(apciHeader.toByteArray());
+			bmsg.write(asduHeader.toByteArray());
+			
+			bmsg.write(data);
+			
+			if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			{
+				short crc= WmIce104Util.CRCSum(bmsg.toByteArray(),3,0);
+				bmsg.write(WmIce104Util.short2Bytes(crc));
+			}
+	
+			return bmsg.toByteArray();
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}*/
+		
+		return  null;
+	}
+	
+ 
+
+	
+
+
+
+	
+	
+	
+	
+		
+	
+	
+	
+	
+
+	
+	public static  synchronized byte[] do_start_electricize_v4(String epCode,byte cdq_no,String Account,int Amt,byte ermFlag,int fronzeAmt,int deductFeeMethod,
+			String password,String serialNo,byte showPriceFlag,int jPrice,int fPrice,int pPrice,int gPrice,int serPrice)
+	{
+		
+		
+			return null;
+	}	
+	public static  synchronized byte[] do_start_electricize(String epCode,byte cdq_no,String Account,int Amt,byte ermFlag,int fronzeAmt,int deductFeeMethod,String password,String serialNo)
+	{
+		
+		
+		
+			return null;
+	}
+	public static  synchronized byte[] do_stop_electricize(String epCode,byte epGunNo) {
+		
+		
+			return null;
+	}
+	
+	public static  synchronized byte[] do_cdz_business(byte BusinessFlag,int StartTime,int EndTime) {
+		return null;
+		
+	
+	}
+
+	public static byte[] do_bespoke(byte[] bcdCode,String  bespokeNo,byte cdq_no,byte redo,byte bcdAccount[],byte bcdCardNo[],byte start_time[], short order_time,byte CarCardNo[]) {
+	
+			return null;
+	}
+
+	public static  byte[] do_cancel_bespoke(String epCode,int epGunNo,String bespokeNo) {
+		
+	
+			return null;
+		
+	}
+	public static  byte[] do_bespoke_confirm(String epCode,int epGunNo,String bespokeNo,int redo,int result) {
+	
+			return null;
+		
+	}
+
+
+	public static byte[] do_charge_event_confirm(String epCode, int  epGunNo, String chargeSerialNo,int ret ) {
+    		return null;
+		
+	}
+    public static byte[] do_confirm(String epCode, byte epGunNo,byte cmd,short packIndex,byte offtates,byte timeoutflag,byte[]time ) {
+    	
+			return null;
+		
+	}
+    
+    public static byte[] do_consumerecord_confirm(String epCode,int epGunNo,String serialNo, int ret ) {
+    	
+			return null;
+		
+	}
+    public static byte[] do_card_frozen_amt(String epCode,int epGunNo,String cardInNo, int ret,int errorCode ) {
+    	
+			return null;
+		
+	}
+ 
+ 
+	public static byte[] do_ep_stat(String epCode) {
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+		
+	public static byte[] do_near_call_ep(String epCode, int type,int time) {
+		return null;
+	
+	}
+	
+	
+	
+	
+	public static byte[] do_open_gun_lock(String epCode, int epGunNo,int freezeAmt) {
+		return  null;
+		
+	
+	}
+	
+	public static byte[] do_drop_carplace_lock(String epCode, int epGunNo) {
+	
+		return null;
+	
+	}
+	
+	public static byte[] do_card_auth_resq(String epCode, int epGunNo,String innerNo,String outerNo,int cardStatus,int isFrozenAmt,
+			int remainAmt,int ret,int errorCode) {
+	return null;
+	}
+	
+	public static byte[] do_card_auth_resp(byte[] bcdCode,String  bespokeNo,byte cdq_no,byte redo,byte bcdAccount[],byte bcdCardNo[],byte start_time[], short order_time,byte CarCardNo[]) {
+		try
+		{
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(bcdCode);
+			// 枪口编号 BIN码 1Byte
+			bout.write(cdq_no);
+			bout.write(redo);
+			// 3 预约开始时间 CP56Time2a 7Byte
+			//byte P56Time2a[] = getP56Time2a();
+			bout.write(start_time);
+			// 4 预约等待时间 BIN码 2Byte 单位为分钟
+			
+			// 8 车牌号 ASCII码 16Byte
+			bout.write(CarCardNo);
+			
+			return bout.toByteArray();
+			//Iec104Constant.C_ORDER_CD);
+		}
+		catch (IOException e) 
+		{
+			return null;
+		}
+	}
+	
+	
+	
+	
+	
+
+
+
+
+}

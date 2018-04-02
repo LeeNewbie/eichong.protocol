@@ -1,0 +1,244 @@
+package com.usrgate.service;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ormcore.dao.DB;
+import com.ormcore.model.TblElectricPile;
+import com.usrgate.cache.BespCache;
+import com.usrgate.cache.ElectricPileCache;
+import com.usrgate.cache.EpGunCache;
+import com.usrgate.config.GameConfig;
+import com.usrgate.constant.BaseConstant;
+import com.usrgate.constant.EpConstant;
+import com.usrgate.constant.EpConstantErrorCode;
+import com.usrgate.net.client.EpGateNetConnect;
+
+public class EpService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class + BaseConstant.SPLIT + GameConfig.serverName);
+	
+	public static ElectricPileCache getElectricPileCache(TblElectricPile dbEp)
+	{
+		ElectricPileCache epCache = new ElectricPileCache();
+		epCache = getElectricPileCache(epCache, dbEp);
+		CacheService.addEpCache(epCache);
+
+		return epCache;
+	}
+
+	private static ElectricPileCache getElectricPileCache(ElectricPileCache epCache,TblElectricPile dbEp)
+	{
+		if (epCache == null) epCache = getElectricPileCache(dbEp);
+		epCache.setPkEpId(dbEp.getPkEpId());
+		epCache.setCode(dbEp.getEpCode());
+		epCache.setName(dbEp.getEpName());
+		epCache.setCurrentType(dbEp.getCurrentType());
+		epCache.setGunNum(dbEp.getEpGunNum());
+		epCache.setConcentratorId(dbEp.getStationId());
+		epCache.setStationIndex(dbEp.getStationIndex());
+		epCache.setRateid(dbEp.getRateid());
+		epCache.setGateid(dbEp.getGateid());
+		epCache.setAddress(dbEp.getAddress());
+		epCache.setCompany_number(dbEp.getCompany_number());
+		epCache.setState(dbEp.getElpiState());
+		epCache.setDeleteFlag(dbEp.getDeleteFlag());
+		
+        epCache.setOwnCityCode(dbEp.getElPiOwnCityCode());
+		epCache.setOwnProvinceCode(dbEp.getElPiOwnProvinceCode());
+		
+		return epCache;
+	}
+   
+	public static TblElectricPile getDbElectricPile(String epCode)
+	{
+		TblElectricPile epInfo=null;
+		List<TblElectricPile> epList = DB.epClientDao.findResultObject(epCode);
+		if(epList ==null || epList.size() !=1)
+		{
+			//都没有的话断定为无效桩,强制断掉该客户连接
+			if(epList ==null || epList.size() ==0)
+			{
+				logger.info("getDbElectricPile have not ElectricPile:"+epCode);
+			}
+			else
+			{
+				logger.info("getDbElectricPile have "+epList.size()+" ElectricPile:"+epCode);
+			}
+		}
+		else
+		{
+			epInfo = epList.get(0);
+		}
+		return epInfo;
+	}
+	
+	
+	
+	
+	
+	public static int getCurrentType(String epCode)
+	{
+		ElectricPileCache epClient= CacheService.getEpCache(epCode);
+		if(	epClient ==null )
+		{
+			return -1;
+		}
+		return epClient.getCurrentType();
+	}
+
+	
+    public static int doNearCallEpAction(String epCode,int type,int time,int  accountId,float lng,float lag)
+	
+    {
+    	 ElectricPileCache epCache= getEpCache(epCode);
+         if(epCache==null)
+         {
+        	 logger.info("not find ElectricPileCache,epCode:{}",epCode);
+         	return EpConstantErrorCode.EP_UNCONNECTED;
+         	
+         }
+       //检查电桩
+ 		int error = checkEpCache(epCache);
+ 		if (error > 0) return error;
+
+    	int hadBesp=0;
+        for(int i=0;i<epCache.getGunNum();i++)
+        {
+        	EpGunCache epGunCache=CacheService.getEpGunCache(epCode, i+1);
+        	if(epGunCache==null)
+        		continue;
+        	BespCache bespCacheObj =epGunCache.getBespCache();
+        	if(bespCacheObj!=null && bespCacheObj.getAccountId()== accountId)
+        	{
+        		hadBesp=1;
+        		break;
+        	}
+        }
+		
+    	if(hadBesp == 0)
+    	{
+    		logger.info("not find BespCache:{},can not call ep",epCode);
+    		return EpConstantErrorCode.CANNOT_REPEAT_SOUNDING_WITHOUT_BESP;
+    	}
+    	
+    	return epCache.callEpAction(type, time,(float)0.0,(float)0.0);
+    }
+    
+    public static int OpenGunLid(String epCode,int epGunNo)
+    {
+    	int errorCode = 0;
+    	ElectricPileCache epCache = CacheService.getEpCache(epCode);//1.判断缓存里时候有
+		if(epCache == null )
+		{
+			logger.info("OpenGunLid did not find ep:" + epCode
+					+ "\r\n");
+			return EpConstantErrorCode.INVALID_EP_CODE;
+		}
+		EpGunCache epGunCache = CacheService.getEpGunCache(epCode, epGunNo);
+		if(epGunCache == null)
+		{
+			return EpConstantErrorCode.INVALID_EP_CODE;
+		}
+		
+		/*TODO:if(!epGunCache.getEpNetObject().isComm())
+		{
+			return EpConstantErrorCode.EP_UNCONNECTED;
+			
+		}*/
+		
+		
+		//EpGunService.testChangeGunSignalStatus(epCode,epGunNo,1);
+		
+    	return 0;
+    }
+    //////////////////////////////////////////////
+    
+    public static int DropGroupLock(String epCode,int epGunNo)
+    {
+    	ElectricPileCache epCache = CacheService.getEpCache(epCode);
+		if(epCache == null )
+		{
+			logger.info("DropGroupLock did not find ep:" + epCode
+					+ "\r\n");
+			return EpConstantErrorCode.INVALID_EP_CODE;
+		}
+		
+		
+    	return 0;
+    }
+    
+  
+    public static int getGunNo(int address,int type)
+    {
+    	switch(type)
+    	{
+    	case 1:
+    		return (address/128)+1;
+    		
+    	case 3:
+    		return (address/128)+1;
+    	case 11:
+    		return (address/2500)+1;
+    	case 132:
+    		return (address/128)+1;
+    	default:
+    		return 0;
+    	}
+    }
+
+    public static ElectricPileCache getEpCache(String epCode)
+	{
+		ElectricPileCache epCache = null;
+
+		List<TblElectricPile> epList = DB.epClientDao.findResultObject(epCode);
+		if(epList ==null || epList.size() !=1)
+		{
+			return null;
+		}
+		else
+		{
+			 epCache = CacheService.getEpCache(epCode);
+			 epCache = getElectricPileCache(epCache, epList.get(0));
+			 
+			 if(!epCache.initGuns())
+			 {
+			    logger.error("initGuns fail");
+			   
+		     }
+		}
+
+		return epCache;
+	}
+	
+	public static int checkEpCache(ElectricPileCache epCache)
+	{
+		if (epCache == null) return EpConstantErrorCode.EP_UNCONNECTED;
+
+		if (epCache.getState() == EpConstant.EP_STATUS_OFFLINE) {
+			return EpConstantErrorCode.EP_PRIVATE;
+		} else if (epCache.getState() < EpConstant.EP_STATUS_OFFLINE) {
+			return EpConstantErrorCode.EP_NOT_ONLINE;
+		}
+		if (epCache.getDeleteFlag() != 0) {
+			return EpConstantErrorCode.EP_NOT_ONLINE;
+		}
+
+		return 0;
+	}
+	
+	public static int checkEpGate(EpGateNetConnect commClient)
+	{
+		if (commClient == null) {
+			return EpConstantErrorCode.EP_UNCONNECTED;
+		}
+		if (!commClient.isComm()) {
+			return EpConstantErrorCode.EP_UNCONNECTED;
+
+		}
+
+		return 0;
+	}
+}

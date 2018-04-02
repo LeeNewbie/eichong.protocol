@@ -1,0 +1,36 @@
+package com.cooperate;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.cooperate.cczc.CCZCPush;
+import com.cooperate.elease.EleasePush;
+import com.ec.constants.UserConstants;
+
+public class CooperateFactory {
+	
+	private static ConcurrentHashMap<Integer,Push>  cooperateMaps=new ConcurrentHashMap<Integer,Push>();
+
+	public static void init()
+	{
+		EleasePush eleasePush = new EleasePush();
+		if (eleasePush.init()) {
+			cooperateMaps.put(UserConstants.ORG_EC, eleasePush);
+		}
+		CCZCPush cczcPush = new CCZCPush();
+		if (cczcPush.init()) {
+			cooperateMaps.put(UserConstants.ORG_CCZC, eleasePush);
+		}
+	}
+	public static boolean isCooperate(int orgNo)
+	{
+		if(orgNo== UserConstants.ORG_EC ||orgNo==UserConstants.ORG_CCZC)
+			return true;
+		
+		return false;
+	}
+	public static IPush getPush(int orgNo)
+	{
+		return cooperateMaps.get(orgNo);
+	}
+
+}

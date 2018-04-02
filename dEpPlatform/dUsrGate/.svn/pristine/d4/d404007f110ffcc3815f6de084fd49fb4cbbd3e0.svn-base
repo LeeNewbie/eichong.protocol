@@ -1,0 +1,11 @@
+package com.usrgate.task;
+
+import com.usrgate.service.CacheService;
+
+public class CheckStatisticsTimeOutTask implements Runnable {
+
+	@Override
+	public void run() {
+		CacheService.checkStatisticsTimeOut();
+	}
+}

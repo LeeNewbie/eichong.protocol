@@ -1,0 +1,14 @@
+package com.third.net.constant;
+
+public class Third2EpGate {
+	
+	public static final int EP_LOGIN = 101;
+	public static final int EP_HEART = 102;
+	
+	public static final int EP_UNIT_REMOTE = 1001;
+	public static final int EP_TWO_REMOTE = 1002;
+	public static final int EP_TELEMETRY = 1003;
+	public static final int EP_LONGER_TELEMETRY = 1004;
+	public static final int EP_CONSUME_RECORD = 1005;
+
+}

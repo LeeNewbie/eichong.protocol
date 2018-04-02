@@ -1,0 +1,18 @@
+package com.usrgate.dao;
+
+import java.util.List;
+
+import com.usrgate.model.TblBespoke;
+
+public interface BespokeDao {
+	
+	
+	 public List<TblBespoke> getBesp(long id);
+	 public void update(TblBespoke besp);
+	 public void updateRedo(TblBespoke besp);
+	 public List<TblBespoke> getUnStopBesp(TblBespoke info);
+	 public void updateAppClient(TblBespoke besp);
+	 
+	 public long insert(TblBespoke info);
+	 
+}

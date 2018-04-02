@@ -1,0 +1,43 @@
+package com.cooperate;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cooperate.cczc.CCZCPush;
+import com.cooperate.elease.EleasePush;
+import com.ec.constants.UserConstants;
+
+public class CooperateFactory {
+	private static final Logger logger =  LoggerFactory.getLogger(CooperateFactory.class);
+	
+	private static ConcurrentHashMap<Integer,Push>  cooperateMaps=new ConcurrentHashMap<Integer,Push>();
+
+	public static void init()
+	{
+		logger.debug("init:{},orgNo:{}",UserConstants.ORG_EC,UserConstants.ORG_CCZC);
+		EleasePush eleasePush = new EleasePush();
+		if (eleasePush.init()) {
+			logger.debug("eleasePush:{},orgNo:{}",eleasePush,UserConstants.ORG_EC);
+			cooperateMaps.put(UserConstants.ORG_EC, eleasePush);
+		}
+		CCZCPush cczcPush = new CCZCPush();
+		if (cczcPush.init()) {
+			logger.debug("cczcPush:{},orgNo:{}",cczcPush,UserConstants.ORG_CCZC);
+			cooperateMaps.put(UserConstants.ORG_CCZC, cczcPush);
+		}
+	}
+	public static boolean isCooperate(int orgNo)
+	{
+		if(orgNo== UserConstants.ORG_EC ||orgNo==UserConstants.ORG_CCZC)
+			return true;
+		
+		return false;
+	}
+	public static IPush getPush(int orgNo)
+	{
+		return cooperateMaps.get(orgNo);
+	}
+
+}

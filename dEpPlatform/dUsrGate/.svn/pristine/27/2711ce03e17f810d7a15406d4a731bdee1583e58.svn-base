@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<config>
+
+	<flow-cycle>
+		<cycle>300</cycle>
+		<cycle>60</cycle>
+	</flow-cycle>
+
+	<instruct-cycle>
+		<cycle>300</cycle>
+		<cycle>60</cycle>
+	</instruct-cycle>
+
+</config>

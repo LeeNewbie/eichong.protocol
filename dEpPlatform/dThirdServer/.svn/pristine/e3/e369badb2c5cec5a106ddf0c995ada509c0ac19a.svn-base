@@ -1,0 +1,35 @@
+package com.third.config;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.netCore.model.GameObject;
+public class ThirdConfigs extends GameObject
+{
+	private static final long serialVersionUID = 8196712018915136998L;
+
+	private ConcurrentHashMap<String, Map<String, EpGateConfig>> epgatecfgs;
+	private ConcurrentHashMap<String, Map<String, ThirdConfig>> thirdcfgs;
+
+    public ThirdConfigs()
+    {
+    	epgatecfgs = new ConcurrentHashMap<String, Map<String, EpGateConfig>>();
+    	thirdcfgs = new ConcurrentHashMap<String, Map<String, ThirdConfig>>();
+    }
+    public void putEpGate(String key, Map<String, EpGateConfig> cfg)
+    {
+    	epgatecfgs.put(key, cfg);
+    }
+    public Map<String, EpGateConfig> getEpGate(String key)
+    {
+    	return (Map<String, EpGateConfig>)epgatecfgs.get(key);
+    }
+    public void putThird(String key, Map<String, ThirdConfig> cfg)
+    {
+    	thirdcfgs.put(key, cfg);
+    }
+    public Map<String, ThirdConfig> getThird(String key)
+    {
+    	return (Map<String, ThirdConfig>)thirdcfgs.get(key);
+    }
+}

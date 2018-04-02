@@ -1,0 +1,174 @@
+package com.third.service;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.conf.CoreConfig;
+import com.third.cache.StopCarOrganConfig;
+import com.third.config.EpGateConfig;
+import com.third.config.GameConfig;
+import com.third.config.ThirdConfig;
+import com.third.config.ThirdConfigs;
+import com.third.constant.BaseConstant;
+
+public class ThirdConfigService
+{
+    private static final Logger initConfigLog = LoggerFactory.getLogger("InitConfigLog");
+
+    public ThirdConfigService()
+    {
+    }
+    public static ThirdConfigs initThirdConfigs()
+    {
+        initConfigLog.info("开始初始化第三方服务配置...");
+
+        ThirdConfigs thirdConfigs = new ThirdConfigs();
+        Element root = CoreConfig.getRootElement("third-config.xml");
+
+        List<?> elementList = root.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element e = (Element)i$.next();
+            if(e != null)
+            {
+            	Map<String, EpGateConfig> mapEpGate = new ConcurrentHashMap<String, EpGateConfig>();
+            	Map<String, ThirdConfig> mapThird = initThirdConfig(e, mapEpGate);
+
+                String key = e.getName();
+                if(key != null && key.equals(GameConfig.thirdStation) && mapThird != null)
+                {
+                	thirdConfigs.putThird(key, mapThird);
+                	thirdConfigs.putEpGate(key, mapEpGate);
+                }
+            }
+        } while(true);
+
+        initConfigLog.info("初始化第三方服务配置结束...配置信息:【{}】", new Object[] {thirdConfigs.toString()});
+        return thirdConfigs;
+	}
+
+    private static Map<String, ThirdConfig> initThirdConfig(Element e, Map<String, EpGateConfig> map)
+    {
+    	Map<String, ThirdConfig> mapthird = new ConcurrentHashMap<String, ThirdConfig>();
+        List<?> elementList = e.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element child = (Element)i$.next();
+            if(child != null)
+            {
+            	String id = child.getName();
+                if(id != null && id.equals("scoConfig")) {
+                	initscoConfig(child);
+                } else if(id != null && id.length() > 0)  {
+                	initEpGateConfig(child, map);
+
+		            ThirdConfig thirdConfig = new ThirdConfig();
+		            String dataformat = child.getChild("dataformat").getValue();
+		            String value = child.getChild("value").getValue();
+	
+		            thirdConfig.setDataformat(dataformat);
+		            thirdConfig.setValue(value);
+
+                	mapthird.put(id, thirdConfig);
+                }
+            }
+        } while(true);
+
+    	StopCarOrganConfig scoCfg = GameConfig.scoCfg;
+    	if (scoCfg.getServerIp() == null) initscoConfig(null);
+
+    	initConfigLog.info((new StringBuilder()).append("初始化第三方服务配置:【").append(map.toString()).append("】").toString());
+
+        return mapthird;
+	}
+
+    private static void initEpGateConfig(Element e, Map<String, EpGateConfig> map)
+    {
+        List<?> elementList = e.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element child = (Element)i$.next();
+            if(child != null)
+            {
+	            String id = child.getName();
+	            if (id != null && id.length() > 0 && (id == "dataformat" || id == "value")) break;
+
+	            EpGateConfig epgateConfig = new EpGateConfig();
+	            String type = child.getChild("type").getValue();
+	            String addr = child.getChild("addr").getValue();
+
+	            epgateConfig.setType(type);
+	            epgateConfig.setAddr(addr);
+
+            	map.put(id, epgateConfig);
+            	map.put(type + BaseConstant.SPLIT + addr, epgateConfig);
+            }
+        } while(true);
+
+        initConfigLog.info((new StringBuilder()).append("初始化第三方服务配置:【").append(map.toString()).append("】").toString());
+	}
+
+    private static void initscoConfig(Element e)
+    {
+    	StopCarOrganConfig scoCfg = GameConfig.scoCfg;
+
+    	if(e != null) {
+	    	List<?> elementList = e.getChildren();
+	        Iterator<?> i$ = elementList.iterator();
+	        do
+	        {
+	            if(!i$.hasNext())
+	                break;
+	            Element child = (Element)i$.next();
+	            if(child != null)
+	            {
+		            String id = child.getName();
+		            if (id == null || id.length() == 0) break;
+	
+		            if (id.equals("stopCarOrganIp")) {
+		            	scoCfg.setServerIp(child.getValue().trim());
+		            } else if (id.equals("stopCarOrganPort")) {
+		            	scoCfg.setServerPort(Integer.valueOf(child.getValue().trim()));
+		            } else if (id.equals("stopCarOrganPartnerId")) {
+		            	scoCfg.setPartnerId(child.getValue().trim());
+		            } else if (id.equals("stopCarOrganKey")) {
+		            	scoCfg.setPartnerKey(child.getValue().trim());
+		            } else if (id.equals("stopCarOrganValid")) {
+		            	scoCfg.setValid(Integer.valueOf(child.getValue().trim()));
+		            } else if (id.equals("stopCarOrganSendCycle")) {
+		            	scoCfg.setSendRealDataCyc(Long.valueOf(child.getValue().trim()));
+		            } else if (id.equals("statusMethod")) {
+		            	scoCfg.setStatusMethod(child.getValue().trim());
+		            } else if (id.equals("chargeMethod")) {
+		            	scoCfg.setChargeMethod(child.getValue().trim());
+		            }
+	            }
+	        } while(true);
+    	}
+
+        if (scoCfg.getServerIp() == null) scoCfg.setServerIp("121.40.18.116");
+        if (scoCfg.getServerPort() == 0) scoCfg.setServerPort(8888);
+		scoCfg.setBaseUrl();
+		if (scoCfg.getPartnerId() == null) scoCfg.setPartnerId("310000002");
+		if (scoCfg.getPartnerKey() == null) scoCfg.setPartnerKey("tlDYWr1WtNvIyDFI");
+		if (scoCfg.getValid() == 0) scoCfg.setValid(1);
+		if (scoCfg.getSendRealDataCyc() == 0) scoCfg.setSendRealDataCyc(60);
+		if (scoCfg.getStatusMethod() == null) scoCfg.setStatusMethod("/api/pipe/v1.1/status");
+		if (scoCfg.getChargeMethod() == null) scoCfg.setChargeMethod("/api/pipe/v1.1/charge-records");
+    }
+}

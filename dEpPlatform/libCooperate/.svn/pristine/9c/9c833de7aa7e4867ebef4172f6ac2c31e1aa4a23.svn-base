@@ -1,0 +1,12 @@
+package com.cooperate.utils;
+
+public class Strings {
+
+	 public static boolean isNullOrEmpty(String value) {
+	        return (value == null || value.length() == 0);
+	    }
+
+	 public static boolean isNullOrEmpty(Object value) {
+	        return (value == null || value.toString().length() == 0);
+	    }
+}

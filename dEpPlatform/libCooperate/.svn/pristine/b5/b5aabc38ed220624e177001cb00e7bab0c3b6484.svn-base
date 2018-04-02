@@ -1,0 +1,26 @@
+package com.cooperate;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+public class CooperateFactory {
+	
+	private static ConcurrentHashMap<Integer,Push>  cooperateMaps=new ConcurrentHashMap<Integer,Push>();
+
+	
+	public static void init()
+	{
+		
+	}
+	public static boolean isCooperate(int orgNo)
+	{
+		if(orgNo== 1009 ||orgNo==1010)
+			return true;
+		
+		return false;
+	}
+	public static IPush getPush(int orgNo)
+	{
+		return cooperateMaps.get(orgNo);
+	}
+
+}

@@ -1,0 +1,13 @@
+package com.third.task;
+
+
+
+public class CheckEpGateCommClientTask  implements Runnable {
+
+	@Override
+	public void run() {
+		
+		
+		
+	}
+}

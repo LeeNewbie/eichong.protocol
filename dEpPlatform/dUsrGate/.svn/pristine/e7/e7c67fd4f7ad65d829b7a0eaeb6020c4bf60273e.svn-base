@@ -1,0 +1,61 @@
+package com.usrgate.cache;
+
+
+
+public class FlowStat {
+	
+	private FlowStatistics flowMax;
+	private FlowStatistics flowTotal;
+
+	public FlowStat(){
+		this.flowMax = new FlowStatistics();
+		this.flowTotal = new FlowStatistics();
+	}
+
+	public FlowStatistics getFlowMax() {
+		return flowMax;
+	}
+
+
+	public void setFlowMax(FlowStatistics flowMax) {
+		if (flowMax.getTotalFlow() > this.flowMax.getTotalFlow()) {
+			this.flowMax.setSendFlow(flowMax.getSendFlow());
+			this.flowMax.setReceiveFlow(flowMax.getReceiveFlow());
+			this.flowMax.setTotalFlow(flowMax.getTotalFlow());
+			this.flowMax.setCycle(flowMax.getCycle());
+			this.flowMax.setUserMarker(flowMax.getUserMarker());
+			this.flowMax.setStatisticsTime(flowMax.getStatisticsTime());
+		}
+	}
+
+
+	public FlowStatistics getFlowTotal() {
+		return flowTotal;
+	}
+
+
+	public void setFlowTotal(FlowStatistics flowTotal) {
+		if (flowTotal.getTotalFlow() > this.flowTotal.getTotalFlow()) {
+			this.flowTotal.setSendFlow(flowTotal.getSendFlow());
+			this.flowTotal.setReceiveFlow(flowTotal.getReceiveFlow());
+			this.flowTotal.setTotalFlow(flowTotal.getTotalFlow());
+			this.flowTotal.setCycle(flowTotal.getCycle());
+			this.flowTotal.setStatisticsTime(flowTotal.getStatisticsTime());
+		}
+	}
+
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+		
+        sb.append("单个通道的新高流量数:").append("\n");
+		sb.append(flowMax).append("\n");	
+		
+        sb.append("所有通道的新高流量数:").append("\n");
+		sb.append(flowTotal).append("\n");	
+        
+   		return sb.toString();
+	} 
+
+}

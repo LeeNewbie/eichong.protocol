@@ -1,0 +1,71 @@
+package com.conqueue.service;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import com.conqueue.cache.RepeatMessage;
+import com.conqueue.server.ConOffer;
+import com.conqueue.server.ConPoll;
+
+public class RepeatConQueue {
+    private ConcurrentLinkedQueue<RepeatMessage> queue = new ConcurrentLinkedQueue<RepeatMessage>();
+    private ConcurrentHashMap<String,RepeatMessage> quesend = new ConcurrentHashMap<String,RepeatMessage>();
+
+    /**
+     * 生产
+     */
+    public void offer() {
+    	RepeatMessage mes;
+        ExecutorService exeService = Executors.newFixedThreadPool(4);
+        for (int i = 0; i < 100; i++) {
+        	mes = new RepeatMessage(String.valueOf(i), null);
+        	exeService.submit(new ConOffer(queue, mes));
+        }
+
+        exeService.shutdown();
+    }
+
+    /**
+     * 消费
+     * @throws InterruptedException 
+     * @throws ExecutionException 
+     */
+    public void poll(ExecutorService es) throws InterruptedException, ExecutionException {
+    	while (!queue.isEmpty()) {
+    		consume(es);
+    	}
+    }
+
+    public void consume(ExecutorService es) throws InterruptedException, ExecutionException {
+    	ConPoll cPoll;
+    	RepeatMessage mes;
+
+    	cPoll = new ConPoll(queue);
+    	Future<RepeatMessage> f = es.submit(cPoll);
+        mes = f.get();
+		//if (mes == null) return;
+        mes.send();
+        quesend.put(mes.getKey(),mes);
+		
+		while (!check(mes));
+	}
+
+    public boolean check(RepeatMessage mes) {
+		int ret = mes.check();
+
+		if (ret == 0) {
+			return false;
+		} else if (ret == 1) {
+			mes.rePackage();
+			mes.send();
+			return false;
+		} else if (ret == 2) {
+			quesend.remove(mes.getKey());
+		}
+
+		return true;
+	}
+}

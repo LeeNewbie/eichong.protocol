@@ -1,0 +1,16 @@
+package com.usrgate.task;
+
+import com.usrgate.service.EpGunService;
+import com.usrgate.service.NetMessageService;
+
+public class EpMessageTask  implements Runnable {
+	
+	@Override
+	public void run() {
+		
+		
+		NetMessageService.checkEpReSendMessage();
+	}
+
+}
+

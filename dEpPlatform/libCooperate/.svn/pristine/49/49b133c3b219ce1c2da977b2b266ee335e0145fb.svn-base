@@ -1,0 +1,67 @@
+package com.cooperate;
+
+import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cooperate.cczc.CCZCPush;
+import com.cooperate.constant.KeyConsts;
+import com.cooperate.elease.EleasePush;
+import com.ec.constants.UserConstants;
+
+public class CooperateFactory {
+	private static final Logger logger =  LoggerFactory.getLogger(CooperateFactory.class);
+	
+	private static ConcurrentHashMap<Integer,Push>  cooperateMaps=new ConcurrentHashMap<Integer,Push>();
+
+	public static void init()
+	{
+		try {
+			String path = System.getProperty("file.separator")
+					+System.getProperty("user.dir")
+					+System.getProperty("file.separator") + "conf"
+					+System.getProperty("file.separator") + "cooperate"
+					+System.getProperty("file.separator");
+			String filename = path + KeyConsts.FILE_SETTING;
+			logger.debug("init filename:{}",filename);
+			File file = new File(filename);
+			if (file.exists()) {
+				EleasePush eleasePush = new EleasePush();
+				if (eleasePush.init(filename)) {
+					logger.debug("init orgNo:{}",UserConstants.ORG_EC);
+					cooperateMaps.put(UserConstants.ORG_EC, eleasePush);
+				}
+			}
+	
+			filename = path + KeyConsts.CCZC_SETTING;
+			logger.debug("init filename:{}",filename);
+			file = new File(filename);
+			if (file.exists()) {
+				CCZCPush cczcPush = new CCZCPush();
+				if (cczcPush.init(filename)) {
+					logger.debug("init orgNo:{}",UserConstants.ORG_CCZC);
+					cooperateMaps.put(UserConstants.ORG_CCZC, cczcPush);
+				}
+			}
+		} catch (Exception e) {
+            logger.error("init error cause:{}",e.getMessage());
+		}
+	}
+	public static boolean isCooperate(int orgNo)
+	{
+		if(orgNo== UserConstants.ORG_EC ||orgNo==UserConstants.ORG_CCZC)
+			return true;
+		
+		return false;
+	}
+	public static IPush getPush(int orgNo)
+	{
+		return cooperateMaps.get(orgNo);
+	}
+	public static Push getCoPush(int orgNo)
+	{
+		return cooperateMaps.get(orgNo);
+	}
+}

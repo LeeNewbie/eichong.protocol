@@ -1,0 +1,79 @@
+package com.usrgate.net.client;
+
+
+import com.netCore.model.conf.ClientConfig;
+import com.netCore.netty.client.AbstractNettyClient;
+import com.usrgate.net.NetObject;
+import com.usrgate.utils.DateUtil;
+
+public class TcpClient  extends NetObject {
+	
+	public int connetTimes;//连接次数
+	public long lastConnectTime=0;//最后连接动作的时间
+	protected long lastSendTime;
+	
+	public int revDataNum;
+	
+	public ClientConfig clrCfg = null;
+	
+	public TcpClient(ClientConfig clrCfg)
+	{
+		this.clrCfg = clrCfg;
+		
+		connetTimes=0;
+		lastConnectTime =0;
+		lastUseTime = 0;	
+		
+		
+		lastSendTime=0;
+		revDataNum = 0;
+	}
+	public int getRevDataNum() {
+		return revDataNum;
+	}
+
+
+	public void setRevDataNum(int revDataNum) {
+		this.revDataNum = revDataNum;
+	}
+
+
+	public long getLastConnectTime() {
+		return lastConnectTime;
+	}
+
+
+	public void setLastConnectTime(long lastConnectTime) {
+		this.lastConnectTime = lastConnectTime;
+	}
+
+
+	public int getConnetTimes() {
+		return connetTimes;
+	}
+	public void clearConnecTtimes()
+	{
+		connetTimes=0;
+	}
+
+	
+	public long getLastSendTime() {
+		return lastSendTime;
+	}
+
+
+	public void setLastSendTime(long lastSendTime) {
+		this.lastSendTime = lastSendTime;
+	}
+	
+	public AbstractNettyClient connect()
+	{
+		//连接的时候增加
+		connetTimes++;
+		lastConnectTime = DateUtil.getCurrentSeconds();
+		
+		return null;
+	}
+	
+
+}

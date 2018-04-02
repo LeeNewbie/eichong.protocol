@@ -1,0 +1,16 @@
+package com.usrgate.task;
+
+import com.usrgate.service.EpCommClientService;
+import com.usrgate.service.EpConcentratorService;
+
+
+public class CheckEpCommClientTask  implements Runnable {
+
+	@Override
+	public void run() {
+		
+		EpCommClientService.checkTimeOut();
+		EpConcentratorService.checkTimeOut();
+		
+	}
+}

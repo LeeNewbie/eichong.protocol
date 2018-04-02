@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   repos="https://10.9.3.100/svn/eichong"
+   name=""
+   revision="12952"
+   last-author="liuyahui"
+   url="https://10.9.3.100/svn/eichong/trunk/android/branches/eichong_5.0.0/libs/x86"
+   uuid="10cbccd9-2b97-e54f-a826-980271203259"
+   committed-rev="3652"
+   kind="dir"
+   committed-date="2016-11-07T09:10:43.469269Z"/>
+<entry
+   name="libgdinamapv4sdk752.so"
+   checksum="fba5d51333569ede13a3ef6848cdd152"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.907000Z"/>
+<entry
+   name="libgdinamapv4sdk752ex.so"
+   checksum="c596f6185e93bde12ca3fca42bb6b35d"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:56.169000Z"/>
+<entry
+   name="libjpush171.so"
+   checksum="072d9ee2db2000b649d8522767d8234a"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:56.010000Z"/>
+<entry
+   name="libmsc.so"
+   checksum="1a2f0c1b8317fd56043b3f33e31cc8b9"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:56.138000Z"/>
+<entry
+   name="libtbt.so"
+   checksum="d39c8e93498ec3a70467cf32a12afe8b"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.706000Z"/>
+<entry
+   name="libweibosdkcore.so"
+   checksum="f3bdbf72c8b5e0b7bc74ef1938945ee5"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.932000Z"/>
+<entry
+   name="libwtbt.so"
+   checksum="990e7eac46d7a8cd5c1c677a5161dbd0"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.989000Z"/>
+<entry
+   name="libzbar.so"
+   checksum="2d6b298e58cd83820bccacfdc7db403f"
+   last-author="liuyahui"
+   committed-rev="3652"
+   text-time="2016-11-07T09:10:43.469000Z"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"
+   prop-time="2017-10-18T09:08:55.918000Z"/>
+</wc-entries>

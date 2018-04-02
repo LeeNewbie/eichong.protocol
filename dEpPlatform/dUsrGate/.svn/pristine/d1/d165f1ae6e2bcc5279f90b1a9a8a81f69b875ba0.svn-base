@@ -1,0 +1,48 @@
+package com.usrgate.sender;
+
+import io.netty.channel.ChannelFuture;
+
+import com.netCore.queue.RepeatMessage;
+import com.usrgate.cache.EpCommClient;
+import com.usrgate.cache.INetObject;
+import com.usrgate.protocol.EpEncodeProtocol;
+import com.usrgate.server.InnerApiMessageSender;
+import com.usrgate.service.EpCommClientService;
+
+public class EpMessageSender {
+	 
+	
+	public static ChannelFuture  sendMessage(INetObject commClient,int cos,int common_address,int recordType,byte[] msg
+			,byte []time,int commVersion) {
+		
+		EpCommClient  epCommClient= (EpCommClient)commClient;
+		int sendINum = epCommClient.getSendINum2();
+		int recvINum = epCommClient.getRevINum();
+		
+		
+		byte[] sendData= EpEncodeProtocol.Package(sendINum,recvINum,
+				cos,common_address,(byte)recordType,msg,time,commVersion);
+		
+		
+		return InnerApiMessageSender.sendMessage(commClient.getChannel(), sendData);
+		
+	}
+	public static ChannelFuture  sendRepeatMessage(INetObject commClient,String repeatMsgKey,int cos,int common_address,int recordType,byte[] msg
+			,byte []time,int commVersion) {
+		
+		EpCommClient  epCommClient= (EpCommClient)commClient;
+		int sendINum = epCommClient.getSendINum2();
+		int recvINum = epCommClient.getRevINum();
+		
+		
+		byte[] sendData= EpEncodeProtocol.Package(sendINum,recvINum,
+				cos,common_address,(byte)recordType,msg,time,commVersion);
+			
+		RepeatMessage chargeMsg= new RepeatMessage(epCommClient.getChannel(),3,10,repeatMsgKey,sendData);
+		EpCommClientService.putRepeatMsg(chargeMsg);
+		return null;
+		
+	}
+
+
+}

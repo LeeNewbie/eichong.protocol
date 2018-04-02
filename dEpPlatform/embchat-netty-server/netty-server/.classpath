@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/eichong/protocol/dEpPlatform/embchat-netty-server/netty-server/lib/fastjson-1.2.7.jar"/>
+	<classpathentry kind="lib" path="D:/eichong/protocol/dEpPlatform/embchat-netty-server/netty-server/lib/protobuf-java-2.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/eichong/protocol/dEpPlatform/embchat-netty-server/netty-server/lib/netty-all-5.0.0.Alpha2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

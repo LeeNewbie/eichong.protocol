@@ -1,0 +1,77 @@
+package com.conqueue.service;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import com.conqueue.cache.RepeatMessage;
+import com.conqueue.server.ConOffer;
+import com.conqueue.server.ConPoll;
+
+public class ConQueueService {
+    private static ConcurrentLinkedQueue<RepeatMessage> queue = new ConcurrentLinkedQueue<RepeatMessage>();
+    private static ConcurrentLinkedQueue<RepeatMessage> quesend = new ConcurrentLinkedQueue<RepeatMessage>();
+
+    private static int count = 2; // 线程个数
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        long timeStart = System.currentTimeMillis();
+        ExecutorService es = Executors.newFixedThreadPool(4);
+        offer();
+        poll(es);
+        System.out.println("cost time " + (System.currentTimeMillis() - timeStart) + "ms");
+        es.shutdown();
+    }
+    
+    /**
+     * 生产
+     */
+    public static void offer() {
+    	RepeatMessage mes;
+        ExecutorService exeService = Executors.newFixedThreadPool(4);
+        for (int i = 0; i < 1000000; i++) {
+        	mes = new RepeatMessage(String.valueOf(i), null);
+        	exeService.submit(new ConOffer(queue, mes));
+        }
+
+        exeService.shutdown();
+    }
+
+    /**
+     * 消费
+     * @throws InterruptedException 
+     * @throws ExecutionException 
+     */
+    public static void poll(ExecutorService es) throws InterruptedException, ExecutionException {
+    	ConPoll cPoll;
+    	RepeatMessage mes;
+        for (int i = 0; i < count; i++) {
+        	while (!queue.isEmpty()) {
+	        	cPoll = new ConPoll(queue);
+	        	Future<RepeatMessage> f = es.submit(cPoll);
+	            mes = f.get();
+	            while (!check(mes));
+        	}
+        }
+    }
+
+	private static boolean check(RepeatMessage mes) {
+		if (mes == null) {
+			return true;
+		}
+		int ret = mes.check();
+
+		if (ret == 0) {
+			return false;
+		} else if (ret == 1) {
+			mes.rePackage();
+			mes.send();
+			return false;
+		} else if (ret == 2) {
+			new ConOffer(quesend, mes);
+		}
+
+		return true;
+	}
+}

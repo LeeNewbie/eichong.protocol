@@ -1,0 +1,14 @@
+package com.usrgate.dao;
+
+import java.util.List;
+
+import com.usrgate.model.TblPowerStation;
+
+
+public interface TblPowerStationDao {
+
+	
+	public List<?> getPowerstationForMap(TblPowerStation tblPowerstation);
+	
+
+}

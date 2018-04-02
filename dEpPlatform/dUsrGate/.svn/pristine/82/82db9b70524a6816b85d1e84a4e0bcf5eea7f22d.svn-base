@@ -1,0 +1,83 @@
+package com.usrgate.service;
+
+import io.netty.channel.Channel;
+
+import java.nio.ByteBuffer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.usrgate.constant.EpGateConstant;
+
+public class EpGateService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EpGateService.class);
+	
+	
+	public static boolean isValidCmd(int cmd)
+	{
+		if( 
+		cmd == EpGateConstant.EP_LOGIN||
+		cmd == EpGateConstant.EP_ACK||
+		cmd == EpGateConstant.EP_HEART||
+		cmd == EpGateConstant.EP_ONLINE||
+		cmd == EpGateConstant.EP_PHONE_ONLINE||
+		cmd == EpGateConstant.EP_PHONE_CONNECT_INIT||
+		cmd == EpGateConstant.EP_CHARGE||
+		cmd == EpGateConstant.EP_CHARGE_EVENT||
+		cmd == EpGateConstant.EP_STOP_CHARGE||
+		cmd == EpGateConstant.EP_CONSUME_RECODE||
+		cmd == EpGateConstant.EP_RE_INSERT_GUN||
+		cmd == EpGateConstant.EP_YXYC)
+			return true;
+		return false;
+	}
+	
+	public static void  login(Channel channel,ByteBuffer byteBuffer){
+		
+		logger.info("login");
+		
+		int usrGateId = byteBuffer.getInt();
+		int dEpGateId = (int)byteBuffer.getShort();
+		int h = (int)byteBuffer.get();
+		int m = (int)byteBuffer.get();
+		int s = (int)byteBuffer.get();
+		int flag = (int)byteBuffer.get();
+		int errorCode = byteBuffer.getShort();
+		//TODO:处理连接逻辑	
+	}
+	public static void  epOnline(Channel channel,ByteBuffer byteBuffer){
+		int h = (int)byteBuffer.get();
+		int m = (int)byteBuffer.get();
+		int s = (int)byteBuffer.get();
+		int dGateId = byteBuffer.getInt();
+		int online = (int)byteBuffer.get();
+		short epNum = byteBuffer.getShort();
+		for(int i=0;i<epNum;i++)
+		{
+			byte[] bEpCode = new byte[16];
+			byteBuffer.get(bEpCode);
+			
+			String epCode= new String(bEpCode);
+			
+			//TODO:处理标识
+		}
+			
+	}
+	public static void  respCharge(Channel channel,ByteBuffer byteBuffer){
+		
+
+		
+	}
+	public static void  respStopCharge(Channel channel,ByteBuffer byteBuffer){
+		
+	}
+	public static void  consumeRecord(Channel channel,ByteBuffer byteBuffer){
+		
+	}
+	public static void  realData(Channel channel,ByteBuffer byteBuffer){
+		
+	}
+	
+	
+}

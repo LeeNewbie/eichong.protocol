@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ormcore.dao.TblCompanyDao">
+	
+	<resultMap id="CompanyResultMap" type="TblCompany">
+	    <id property="pkCompanyId" column="pk_CompanyId" />
+		<id property="cpyCompanyNumber" column="cpy_CompanyNumber" />
+		<result property="cpynum" column="cpy_num" />
+	</resultMap>
+	
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="UserNewcouponResultMap"></resultMap>
+
+
+	<select id="select" parameterType="int" resultMap="UserNewcouponResultMap">
+		select pk_CompanyId,cpy_CompanyNumber,cpy_num
+		from tbl_company 
+	   where
+	    cpy_CompanyNumber=#{cpyCompanyNumber}
+	</select>
+	
+	
+	
+</mapper> 

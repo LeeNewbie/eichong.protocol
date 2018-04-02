@@ -1,0 +1,147 @@
+package com.usrgate.cache;
+
+import com.usrgate.config.GameConfig;
+import com.usrgate.utils.DateUtil;
+
+public class FlowStatistics {
+	
+	private long sendFlow;			// 发送字节数
+	private long receiveFlow;		// 接收字节数
+	private long totalFlow;		// 总字节数
+	private int cycle;				// 采样周期
+	private String userMarker;		// 使用者标记
+	private long statisticsTime;	// 创新高时间
+
+	public FlowStatistics(){
+		this.sendFlow = 0;
+		this.receiveFlow = 0;
+		this.totalFlow = 0;
+		this.cycle = GameConfig.cycle;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public FlowStatistics(String userMarker){
+		this.sendFlow = 0;
+		this.receiveFlow = 0;
+		this.totalFlow = 0;
+		this.cycle = GameConfig.cycle;
+		this.userMarker = userMarker;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public long getSendFlow() {
+		return sendFlow;
+	}
+
+	public void setSendFlow(long sendFlow) {
+		this.sendFlow = sendFlow;
+	}
+
+	public void addSendFlow(long sendFlow) {
+		this.sendFlow += sendFlow;
+		this.totalFlow += sendFlow;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public void addSendFlow(long sendFlow, String userMarker) {
+		this.sendFlow += sendFlow;
+		this.totalFlow += sendFlow;
+		this.userMarker = userMarker;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public long getReceiveFlow() {
+		return receiveFlow;
+	}
+
+	public void setReceiveFlow(long receiveFlow) {
+		this.receiveFlow = receiveFlow;
+	}
+
+	public void addReceiveFlow(long receiveFlow) {
+		this.receiveFlow += receiveFlow;
+		this.totalFlow += receiveFlow;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public void addReceiveFlow(long receiveFlow, String userMarker) {
+		this.receiveFlow += receiveFlow;
+		this.totalFlow += receiveFlow;
+		this.userMarker = userMarker;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public long getTotalFlow() {
+		return totalFlow;
+	}
+
+	public void setTotalFlow(long totalFlow) {
+		this.totalFlow = totalFlow;
+	}
+
+	public void setMaxFlow(FlowStatistics flowMax) {
+		if (flowMax.getTotalFlow() > this.totalFlow) {
+			this.sendFlow = flowMax.getSendFlow();
+			this.receiveFlow = flowMax.getReceiveFlow();
+			this.totalFlow = flowMax.getTotalFlow();
+			this.userMarker = flowMax.getUserMarker();
+			this.statisticsTime = DateUtil.getCurrentSeconds();
+		}
+	}
+
+	public void addTotalFlow(FlowStatistics flowTotal) {
+		this.sendFlow += flowTotal.getSendFlow();
+		this.receiveFlow += flowTotal.getReceiveFlow();
+		this.totalFlow += flowTotal.getTotalFlow();
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public int getCycle() {
+		return cycle;
+	}
+
+	public void setCycle(int cycle) {
+		this.cycle = cycle;
+	}
+
+	public String getUserMarker() {
+		return userMarker;
+	}
+
+	public void setUserMarker(String userMarker) {
+		this.userMarker = userMarker;
+	}
+
+	public long getStatisticsTime() {
+		return statisticsTime;
+	}
+
+	public void setStatisticsTime(long statisticsTime) {
+		this.statisticsTime = statisticsTime;
+	}
+
+	public void clearFlow() {
+		this.sendFlow = 0;
+		this.receiveFlow = 0;
+		this.totalFlow = 0;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+        sb.append("FlowStatistics");
+      
+        sb.append(",{发送字节数 = ").append(sendFlow).append("}\n");
+		sb.append(",{接收字节数 = ").append(receiveFlow).append("}\n");
+		sb.append(",{总字节数 = ").append(totalFlow).append("}\n");
+		sb.append(",{统计周期 = ").append(cycle).append("}\n");
+		if (userMarker != null) sb.append(",{使用者标记 = ").append(userMarker).append("}\n");
+        String sTime= DateUtil.StringYourDate(DateUtil.toDate(statisticsTime*1000));
+        sb.append("创新高时间 = ").append(sTime).append("\n");
+        
+   		return sb.toString();
+	}
+
+}

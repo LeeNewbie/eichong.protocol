@@ -1,0 +1,31 @@
+package com.epcentre.net.http;
+
+import io.netty.channel.Channel;
+
+public class GeelyHttpHander {
+	private HttpServerHandler Hander;
+		
+	private Channel ch;
+	
+	private long lastUseTime;
+		
+	public HttpServerHandler getHander() {
+		return Hander;
+	}
+	public void setHander(HttpServerHandler hander) {
+		Hander = hander;
+	}
+	public Channel getCh() {
+		return ch;
+	}
+	public void setCh(Channel ch) {
+		this.ch = ch;
+	}
+	public long getLastUseTime() {
+		return lastUseTime;
+	}
+	public void setLastUseTime(long lastUseTime) {
+		this.lastUseTime = lastUseTime;
+	}
+}
+

@@ -1,0 +1,108 @@
+package com.third.server;
+
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.conf.CoreConfig;
+import com.netCore.model.conf.ServerConfig;
+import com.netCore.model.conf.ServerConfigs;
+import com.netCore.netty.httpserver.AbstractHttpServer;
+import com.netCore.netty.server.AbstractNettyServer;
+import com.netCore.server.impl.AbstractGameServer;
+import com.third.cache.GameContext;
+import com.third.config.GameConfig;
+import com.third.net.codec.EpGateDecoder;
+import com.third.net.codec.EpGateEncoder;
+import com.third.net.server.EpGateServer;
+
+public class GateServer extends AbstractGameServer{
+	private static final Logger logger = LoggerFactory.getLogger(GateServer.class);
+	
+	private static GateServer gameServer;
+	
+	private static Object lock = new Object();
+	
+	/**鐢垫々杩炴帴鐨刵ettyServer*/
+	public static AbstractNettyServer nettyEpServer;
+	
+	/**涓存椂鐨勬墜鏈洪暱閾炬帴鏈嶅姟*/
+	public static AbstractHttpServer thirdHttpServer=null;
+	
+	public GateServer(){
+		//super();
+	
+		//鍒涘缓netty鏈嶅姟鍣�
+		ServerConfigs serverConfigs = CoreConfig.serverConfigs;
+		if (serverConfigs != null) {
+			
+			ServerConfig gateSvrCfg = serverConfigs.get("third-server");
+			//gate鏈嶅姟鍣�
+			if (gateSvrCfg !=null) {
+				
+				ByteToMessageDecoder decoder = new EpGateDecoder();
+				MessageToByteEncoder encoder = new EpGateEncoder();
+				
+				EpGateServer nettyServer = new EpGateServer(gateSvrCfg, decoder, encoder,0,0);
+				nettyServerList.add(nettyServer);
+				nettyEpServer = nettyServer;
+			}else {
+				String errMsg = "銆怗ate鏈嶅姟鍣ㄣ�戠己灏戙�愬閮ㄣ�戣闂厤缃�...鏈嶅姟鍣ㄥ己琛岄��鍑猴紒";
+				logger.error(errMsg);
+				throw new RuntimeException(errMsg);
+			}
+		}
+	}
+	
+	/**
+	 * 鍒涘缓鏈嶅姟绔湇鍔″櫒
+	 * @author 
+	 * 2014-11-28
+	 * @return
+	 */
+	public static GateServer getInstance(){
+		synchronized(lock){
+			if(gameServer==null){
+				gameServer = new GateServer();
+			}
+		}
+		return gameServer;
+	}
+	
+	public void init(){
+		super.init();
+		new GameConfig();//鍒濆鍖栨湇鍔″櫒鍩虹閰嶇疆
+		new GameContext();//鍒濆鍖杝pring,鍔犺浇鏁版嵁搴撳叏灞�鏁版嵁
+		
+		
+		logger.info("鍒濆鍖栨湇鍔℃垚鍔�...");
+	}
+	
+	@Override
+	public void start() {
+		logger.error("watchHttpServer start");
+	
+		super.start();
+		
+		
+	}
+
+	@Override
+	public void stop() {
+		
+		//1銆佸仠姝� netty鏈嶅姟鍣ㄣ�佸仠姝� netty瀹㈡埛绔�佸叧闂嚎绋嬫睜銆佸叧闂换鍔℃睜
+		super.stop();
+		
+	}
+	
+	@Override
+	public void startTimerServer() {
+        
+		super.startTimerServer();
+		
+		logger.info("鎵�鏈夊畾鏃朵换鍔″惎鍔ㄦ垚鍔�!");
+		
+	}
+}

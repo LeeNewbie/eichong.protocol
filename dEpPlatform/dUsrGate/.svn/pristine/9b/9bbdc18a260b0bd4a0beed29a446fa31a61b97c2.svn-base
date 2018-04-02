@@ -1,0 +1,71 @@
+package com.usrgate.net.client;
+
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.model.conf.ClientConfig;
+import com.usrgate.net.codec.EpGateDecoder;
+import com.usrgate.net.codec.EpGateEncoder;
+
+
+public class EpGateCommClient extends TcpClient{
+	
+	public EpGateCommClient(ClientConfig clrCfg) {
+		super(clrCfg);
+		
+	}
+	private static final Logger logger = LoggerFactory.getLogger(EpGateCommClient.class);
+	
+	EpGateNettyClient nettyClient;
+	
+	public EpGateNettyClient getNettyClient() {
+		return nettyClient;
+	}
+
+	public void setNettyClient(EpGateNettyClient nettyClient) {
+		this.nettyClient = nettyClient;
+	}
+	
+	public EpGateNettyClient connect()
+	{
+		super.connect();
+		logger.debug("EpGateNettyClient connect,connetTime:{},lastConnectTime:{}",connetTimes,lastConnectTime);
+		
+		ByteToMessageDecoder decoder = new EpGateDecoder();
+		MessageToByteEncoder<?> encoder = new EpGateEncoder();
+	
+		EpGateNettyClient nettyClient = new EpGateNettyClient(clrCfg, decoder, encoder);
+		
+		
+		nettyClient.start();
+		this.nettyClient = nettyClient;
+		return nettyClient;
+	}
+
+	
+	
+	public int reconnect(boolean forceReconnect)
+	{
+		logger.debug("EpGateCommClient reconnect,forceReconnect:{}",forceReconnect);
+	
+		close();
+		
+		connect();
+		
+		return 1;
+		
+	}
+	public void close()
+	{
+		if(channel!=null)
+		{
+			channel.close();
+		}
+		status=0;
+	}
+	
+	
+}

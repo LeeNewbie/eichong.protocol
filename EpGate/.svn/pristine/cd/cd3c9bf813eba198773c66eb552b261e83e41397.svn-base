@@ -1,0 +1,27 @@
+package com.epcentre.sender;
+
+import io.netty.channel.ChannelFuture;
+
+import com.epcentre.cache.INetObject;
+import com.epcentre.protocol.EpEncodeProtocol;
+import com.epcentre.server.InnerApiMessageSender;
+
+public class EpMessageSender {
+	 
+	
+	public static ChannelFuture  sendMessage(INetObject commClient,int cos,int common_address,int recordType,byte[] msg
+			,byte []time,int commVersion) {
+		
+		byte[] sendData= EpEncodeProtocol.Package(commClient,
+				cos,common_address,(byte)recordType,msg,time,commVersion);
+		
+//		if(recordType==43||recordType==41)
+//		{
+//			System.out.print("sendData:" + commClient.getChannel()+"data:"+WmIce104Util.ConvertHex(sendData, 0));
+//			
+//		}
+		
+		return InnerApiMessageSender.sendMessage(commClient.getChannel(), sendData);
+	}
+
+}

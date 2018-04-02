@@ -1,0 +1,161 @@
+package com.usrgate.cache;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.usrgate.constant.BaseConstant;
+import com.usrgate.utils.DateUtil;
+
+public class InstructStatistics {
+	
+	// 指令明细
+	private Map<String, InstructDetail> instructMap;
+	private int instructCount;		// 指令数
+	private int cycle;				// 采样周期
+	private String userMarker;		// 使用者标记
+	private long statisticsTime;	// 创新高时间
+
+	public InstructStatistics(int cycle) {
+		this.instructMap = new ConcurrentHashMap<String, InstructDetail>();
+		this.instructCount = 0;
+		this.cycle = cycle;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public InstructStatistics(int cycle, String userMarker) {
+		this.instructMap = new ConcurrentHashMap<String, InstructDetail>();
+		this.instructCount = 0;
+		this.cycle = cycle;
+		this.userMarker = userMarker;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+	
+	public Map<String, InstructDetail> getInstructMap() {
+		return instructMap;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setInstructMap(Map<String, InstructDetail> instructMap) {
+		this.instructMap = new ConcurrentHashMap<String, InstructDetail>();
+		Iterator<Entry<String, InstructDetail>> iter = instructMap.entrySet().iterator();
+
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			
+			String key = (String) entry.getKey();
+			this.instructMap.put(key, (InstructDetail) entry.getValue());
+		}
+	}
+
+	private void add(String key) {
+		InstructDetail instructDetail = this.instructMap.get(key);
+		if (instructDetail == null) instructDetail = new InstructDetail(key);
+		instructDetail.addInstructCount();
+
+		this.instructMap.put(key, instructDetail);
+	}
+
+	public void addInstructCount(int instructCmd, String userMarker) {
+		add(String.valueOf(instructCmd));
+
+		this.instructCount += 1;
+		this.userMarker = userMarker;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public void addInstructCount(int version, int instructCmd, String userMarker) {
+		add(version + BaseConstant.SPLIT + instructCmd);
+
+		this.instructCount += 1;
+		this.userMarker = userMarker;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public int getInstructCount() {
+		return instructCount;
+	}
+
+	public void setInstructCount(int instructCount) {
+		this.instructCount = instructCount;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private void add(Map<String, InstructDetail> instructMap) {
+		Iterator<Entry<String, InstructDetail>> iter = instructMap.entrySet().iterator();
+
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			
+			String key = (String) entry.getKey();
+			InstructDetail instructDetail = this.instructMap.get(key);
+			if (instructDetail == null) instructDetail = new InstructDetail(key);
+			instructDetail.addInstructCount(((InstructDetail) entry.getValue()).getInstructCount());
+
+			this.instructMap.put(key, instructDetail);
+		}
+	}
+
+	public void setMaxInstruct(InstructStatistics instructMax) {
+		if (instructMax.getInstructCount() > this.instructCount) {
+			setInstructMap(instructMax.getInstructMap());
+			this.instructCount = instructMax.getInstructCount();
+			this.userMarker = instructMax.getUserMarker();
+			this.statisticsTime = DateUtil.getCurrentSeconds();
+		}
+	}
+
+	public void addTotalInstruct(InstructStatistics instructTotal) {
+		add(instructTotal.getInstructMap());
+		this.instructCount += instructTotal.getInstructCount();
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	public int getCycle() {
+		return cycle;
+	}
+
+	public void setCycle(int cycle) {
+		this.cycle = cycle;
+	}
+
+	public String getUserMarker() {
+		return userMarker;
+	}
+
+	public void setUserMarker(String userMarker) {
+		this.userMarker = userMarker;
+	}
+
+	public long getStatisticsTime() {
+		return statisticsTime;
+	}
+
+	public void setStatisticsTime(long statisticsTime) {
+		this.statisticsTime = statisticsTime;
+	}
+
+	public void clearInstruct() {
+		this.instructMap = new ConcurrentHashMap<String, InstructDetail>();
+		this.instructCount = 0;
+		this.statisticsTime = DateUtil.getCurrentSeconds();
+	}
+
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+        sb.append("InstructStatistics");
+      
+ 		sb.append(",{指令明细 = ").append(instructMap).append("}\n");
+		sb.append(",{指令数 = ").append(instructCount).append("}\n");
+		sb.append(",{统计周期 = ").append(cycle).append("}\n");
+		if (userMarker != null) sb.append(",{使用者标记 = ").append(userMarker).append("}\n");
+        String sTime= DateUtil.StringYourDate(DateUtil.toDate(statisticsTime*1000));
+        sb.append("创新高时间 = ").append(sTime).append("\n");
+        
+   		return sb.toString();
+	}
+
+}

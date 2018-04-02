@@ -1,0 +1,1171 @@
+package com.usrgate.protocol;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Vector;
+
+import com.usrgate.constant.EpProtocolConstant;
+import com.usrgate.model.RateInfo;
+import com.usrgate.protocol.ep.ApciHeader;
+import com.usrgate.protocol.ep.AsduHeader;
+import com.usrgate.utils.DateUtil;
+
+public class EpEncodeProtocol {
+	
+	/*public static byte[]  Package(INetObject commClient,int cos,int common_address,byte recordType,byte[] msg
+			,byte []time,int commVersion) {
+		
+		EpCommClient  epCommClient= (EpCommClient)commClient;
+		int sendINum = epCommClient.getSendINum2();
+		int recvINum = epCommClient.getRevINum();
+		
+		return PackageI(msg,Iec104Constant.C_SD_NA,(short)cos,sendINum, recvINum, common_address,recordType,time,commVersion);
+	}*/
+	
+	public static byte[]  Package(int sendINum,int recvINum,int cos,int common_address,byte recordType,byte[] msg
+			,byte []time,int commVersion) {
+		
+		try{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(msg.length+1+3);
+			bout.write(recordType);
+			bout.write(msg);
+			if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			{
+				bout.write(time);
+			}
+		    
+		   return PackageI(bout.toByteArray(),Iec104Constant.C_SD_NA,(short)cos,sendINum, recvINum, common_address,commVersion);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static byte[]  Package(byte type,int sendINum,int recvINum,int cos,int common_address,byte[] msg
+			,byte []time,int commVersion) {
+		
+		try{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(msg.length+3);
+			bout.write(msg);
+			if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			{
+				bout.write(time);
+			}
+		    
+		   return PackageI(bout.toByteArray(),type,(short)cos,sendINum, recvINum, common_address, commVersion);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static  byte[] PackageI(byte[] data,byte type,short cos,int sendINum,int recvINum,int common_address,int commVersion) {
+		try{
+			ApciHeader apciHeader = new ApciHeader();
+			if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			   apciHeader.setLength(ApciHeader.getHLen() + AsduHeader.H_LEN + data.length+2- Iec104Constant.INITIAL_BYTES_TO_STRIP);
+			else
+			   apciHeader.setLength(ApciHeader.getHLen() + AsduHeader.H_LEN + data.length- Iec104Constant.INITIAL_BYTES_TO_STRIP);
+			
+			apciHeader.setINr(sendINum, recvINum);
+			
+			AsduHeader asduHeader = new AsduHeader();
+			asduHeader.setType((byte) type);
+			asduHeader.setCon(WmIce104Util.short2Bytes(cos));
+			asduHeader.setConn_address(WmIce104Util.short2Bytes((short)common_address));
+		
+			ByteArrayOutputStream bmsg = new ByteArrayOutputStream( Iec104Constant.WM_104_CD_SENDBUFFER);
+			
+			bmsg.write(apciHeader.toByteArray());
+			bmsg.write(asduHeader.toByteArray());
+			
+			bmsg.write(data);
+			
+			if(commVersion>=EpProtocolConstant.PROTOCOL_VERSION_V4)
+			{
+				short crc= WmIce104Util.CRCSum(bmsg.toByteArray(),3,0);
+				bmsg.write(WmIce104Util.short2Bytes(crc));
+			}
+	
+			return bmsg.toByteArray();
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+    public static  byte[] do_sframe(int NR) {//add by hly 
+		
+		ApciHeader apciHeader = new ApciHeader();
+		apciHeader.setLength(4);
+		apciHeader.setSFrame(NR);
+		
+		return apciHeader.toByteArray();
+	}
+	
+	public static byte[] do_startup() {
+		ApciHeader apciHeader = new ApciHeader();
+		apciHeader.setLength(4);
+		apciHeader.setUFrameType((byte)Iec104Constant.WM_104_CD_STARTDT);
+		
+		return apciHeader.toByteArray();
+	}
+	
+	public static byte[] do_test() {//add by hly
+		ApciHeader apciHeader = new ApciHeader();
+		apciHeader.setLength(4);
+		apciHeader.setUFrameType((byte) (Iec104Constant.WM_104_CD_TESTFR));
+		
+		return apciHeader.toByteArray();
+	}
+	public static byte[] do_test_confirm() {//add by hly
+		ApciHeader apciHeader = new ApciHeader();
+		apciHeader.setLength(4);
+		apciHeader.setUFrameType((byte) (Iec104Constant.WM_104_CD_TESTFR_CONFIRM));
+		
+		return apciHeader.toByteArray();
+	}
+	
+	public static byte[] do_set_time(short cos,int sendINum,int recvINum,int common_address,
+			int commVersinon) {
+		
+		byte data[] = WmIce104Util.getP56Time2a();
+		byte time[] = WmIce104Util.timeToByte();
+		return Package(Iec104Constant.C_CS_NA,sendINum,recvINum,cos,common_address,data,time,commVersinon);
+	}
+	
+	public static byte[] Package_all_call(short cos,int sendINum,int recvINum,int common_address,
+			int commVersinon) {
+		byte data[] = new byte[1];
+		data[0] =20;
+		byte time[] = WmIce104Util.timeToByte();
+		
+		return Package(Iec104Constant.C_IC_NA,sendINum,recvINum,cos,common_address,data,time,commVersinon);
+}
+	/***
+	 * 
+	 * @param cos
+	 * @param sendINum
+	 * @param recvINum
+	 * @param common_address
+	 * @param epCode
+	 * @param nInterFace
+	 * @param bSucess
+	 * @param strSucessDesc
+	 * @param blance
+	 * @param Account
+	 * @return
+	 */
+	public static  byte[] do_nocard_auth_by_yzm(short cos,int sendINum,int recvINum,int common_address,String epCode,int nInterFace,byte bSucess,String strSucessDesc, 
+			int blance,String Account,byte []time,int commVersion) {
+		try{	
+			assert(epCode.length()==EpProtocolConstant.LEN_CODE);
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(Iec104Constant.WM_104_CD_SENDBUFFER);
+			//1	终端机器编码	BCD码	8Byte	16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			
+			//2	充电桩接口标识	BIN码	1Byte
+			bout.write((byte)nInterFace);
+			//3	鉴权成功标识	BIN码	1Byte	1:鉴权成功
+			//0:鉴权失败
+			bout.write((byte)bSucess);
+			//4	鉴权失败原因	BCD码	2Byte	0001密码不对
+			//0002余额不足
+			//0003套餐余额不足
+			//0004非法用户
+			//0005挂失卡
+			//0006车卡不匹配
+			bout.write(WmIce104Util.str2Bcd(strSucessDesc));
+		
+			//5	剩余金额	BIN码	4Byte	精确到小数点后两位,倍率100
+			bout.write(WmIce104Util.int2Bytes(blance));
+			
+			bout.write(WmIce104Util.str2Bcd(Account));
+			
+			return bout.toByteArray();
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
+	 * 
+	 * @param cos
+	 * @param sendINum
+	 * @param recvINum
+	 * @param common_address
+	 * @param epCode
+	 * @param reqRet
+	 * @param len
+	 * @param sections
+	 * @param FileMd5
+	 * @return
+	 */
+	public static  byte[] do_qrcode_sumary(String epCode,byte reqRet,int len,short sections,String FileMd5) {
+		try{	assert(epCode.length()==EpProtocolConstant.LEN_CODE);
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(Iec104Constant.WM_104_CD_SENDBUFFER);
+		//1	终端机器编码	BCD码	8Byte	16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		bout.write(reqRet);
+		//3	字节数	BIN码	4Byte	
+		bout.write(WmIce104Util.int2Bytes(len));
+		//4	分段数	BIN码	2Byte	
+		bout.write(WmIce104Util.short2Bytes(sections));
+		bout.write(FileMd5.getBytes());
+	
+		return bout.toByteArray(); 
+		//Iec104Constant.C_QRCODE_SUMARY);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param cos
+	 * @param sendINum
+	 * @param recvINum
+	 * @param common_address
+	 * @param epCode
+	 * @param SectionIndexReq
+	 * @param reqFlag
+	 * @param len
+	 * @param SectionData
+	 * @return
+	 */
+	public static  byte[] do_qrcode_down(String epCode,short SectionIndexReq,byte reqFlag,short len,byte[] SectionData) {
+		try{	assert(epCode.length()==EpProtocolConstant.LEN_CODE);
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(Iec104Constant.WM_104_CD_SENDBUFFER);
+		//1	终端机器编码	BCD码	8Byte	16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		//2	段索引
+		bout.write(WmIce104Util.short2Bytes(SectionIndexReq));
+		//3	成功与否标识
+		bout.write(reqFlag);
+		//
+		bout.write(WmIce104Util.short2Bytes(len));
+		if(reqFlag ==1)
+		{
+			bout.write(SectionData);
+		}
+		return bout.toByteArray();
+		//Iec104Constant.C_QRCODE_SECTION);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/***
+	 * 
+	 * @param cos
+	 * @param sendINum
+	 * @param recvINum
+	 * @param common_address
+	 * @param epCode
+	 * @param len
+	 * @param sections
+
+	 * @return
+	 */
+			
+	public static  byte[] do_ep_hex_file_sumary(String epCode,short stationAddr,
+			String hardwareNumber,int hardwareM,int hardwareA,
+			String softNumber,int softM,int softA,int softC,
+			int existFlag,int len,short sections,int updateFlag,String Md5Value) {
+		
+		
+		try{	assert(epCode.length()==EpProtocolConstant.LEN_CODE);
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(Iec104Constant.WM_104_CD_SENDBUFFER);
+		//1	终端机器编码	BCD码	8Byte	16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		//2.站地址
+		bout.write(WmIce104Util.short2Bytes(stationAddr));
+		//3 强制更新标识
+		bout.write((byte)updateFlag);
+		
+		//4.硬件1型号
+		if(hardwareNumber.length()>10)
+		{
+			return null;
+		}
+		
+		bout.write(hardwareNumber.getBytes());
+		int lenn = hardwareNumber.length();
+		for(int i=0;i<10-lenn;i++)
+		{
+		    bout.write((byte)0);
+		}
+		
+		//5	硬件1主版本号	BIN码	1Byte	
+		bout.write((byte)hardwareM);
+		//6	硬件1子版本号	BIN码	1Byte	
+		bout.write((byte)hardwareA);
+		//7 固件1型号
+		if(softNumber.length()>8)
+		{
+			return null;
+		}
+		
+		bout.write(softNumber.getBytes());
+		for(int i=0;i<8-softNumber.length();i++)
+		{
+		     bout.write((byte)0);
+		 }
+	
+		//8	固件1主版本号	BIN码	1Byte	
+		bout.write((byte)softM);
+		//9	固件1副版本号	BIN码	1Byte	
+		bout.write((byte)softA);
+		//10	固件1编译版本号	BIN码	2Byte	
+		bout.write(WmIce104Util.short2Bytes((short)softC));
+		
+		//11	充电桩程序文件是否存在	BIN码	1Byte	
+		bout.write((byte)existFlag);
+		//12文件总字节数	BIN码	4Byte	
+		bout.write(WmIce104Util.int2Bytes(len));
+		//11	分段数	BIN码	2Byte	
+		bout.write(WmIce104Util.short2Bytes(sections));
+		//12 文件信息MD5验证码
+		if(Md5Value ==null)
+		{
+			Md5Value = new String("00000000000000000000000000000000");
+		}
+		bout.write(Md5Value.getBytes());
+	
+		return bout.toByteArray();
+		
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	
+		
+	public static  byte[] do_ep_hex_file_down(String epCode,short stationAddr,String softNumber,
+			int softM,int softA,short softC,short SectionIndexReq,
+			short len,byte[] SectionData,int successFlag) {
+		
+		try {
+			assert (epCode.length() == EpProtocolConstant.LEN_CODE);
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(
+					Iec104Constant.WM_104_CD_SENDBUFFER);
+			// 1 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+
+			// 2.站地址
+			bout.write(WmIce104Util.short2Bytes(stationAddr));
+			// 3.固件型号
+			if (softNumber.length() > 8) {
+				return null;
+			}
+			
+			bout.write(softNumber.getBytes());
+			for (int i = 0; i < 8 - softNumber.length(); i++) {
+					bout.write((byte)0);
+			}
+			
+			// 4 固件主版本号 1Byte
+			bout.write((byte) softM);
+			// 5 固件副版本号 1Byte
+			bout.write((byte) softA);
+			// 6.固件编译版本号2Byte
+			bout.write(WmIce104Util.short2Bytes(softC));
+			// 7 段索引
+			bout.write(WmIce104Util.short2Bytes(SectionIndexReq));
+			// 8 成功与否标识
+			bout.write((byte) successFlag);
+			if(successFlag == 1)
+			{
+                //9 文件信息MD5验证码
+			    String Md5Value = WmIce104Util.MD5Encode(SectionData);
+			    
+			   // logger.info("Md5Value:{}",Md5Value);
+			    bout.write(Md5Value.getBytes());
+			    //10 段大小
+		        bout.write(WmIce104Util.short2Bytes(len));
+		        //11 段数据
+		        bout.write(SectionData);
+			}
+		
+		    return bout.toByteArray();
+		
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static  byte[] do_force_update_ephex(short stationAddr,String epCode,String hardwareNumber,
+			int hardwareM,int hardwareA) {
+		
+		try{	
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(Iec104Constant.WM_104_CD_SENDBUFFER);
+		
+		    //集中器id(站地址)
+			bout.write(WmIce104Util.short2Bytes(stationAddr));
+
+			// 2终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+
+			// 3.硬件1型号
+			if (hardwareNumber.length() > 10) {
+				return null;
+			}
+			
+			bout.write(hardwareNumber.getBytes());
+			for (int i = 0; i < 10 - hardwareNumber.length(); i++)
+			{
+				bout.write((byte)0);
+			}
+			
+			// 4 硬件1主版本号 BIN码 1Byte
+			bout.write((byte) hardwareM);
+			// 5 硬件1子版本号 BIN码 1Byte
+			bout.write((byte) hardwareA);
+			
+
+			return bout.toByteArray();
+			// Iec104Constant.C_FORCE_UPDATE_EP_HEX);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static  byte[] do_eqversion_req(String epCode,short stationAddr) {
+		
+		try{	
+		  ByteArrayOutputStream bout = new ByteArrayOutputStream(Iec104Constant.WM_104_CD_SENDBUFFER);
+		// 1 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			//2站地址
+			bout.write(WmIce104Util.short2Bytes(stationAddr));
+
+			return bout.toByteArray();
+			// Iec104Constant.C_FORCE_UPDATE_EP_HEX);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}	
+		
+
+	public static  byte[] do_blank_list(String timeStap,Vector<BlankUser> vBlankUsers) {
+		try{	ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		//bout.write(this.bcdcode);
+		bout.write(WmIce104Util.str2Bcd(timeStap));
+		int blankNum = vBlankUsers.size();
+		
+		for(int i=0;i< blankNum; i++)
+		{
+			BlankUser bu = vBlankUsers.get(i);
+			bout.write(bu.toByteArray());
+		}
+		
+		return bout.toByteArray();
+				//Iec104Constant.C_BLANK_LIST);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static  synchronized byte[] do_start_electricize_v4(String epCode,byte cdq_no,String Account,int Amt,byte ermFlag,int fronzeAmt,int deductFeeMethod,
+			String password,String serialNo,byte showPriceFlag,int jPrice,int fPrice,int pPrice,int gPrice,int serPrice)
+	{
+		
+		try{
+	           
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			//1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			//2 枪口编号 BIN码 1Byte
+			bout.write(cdq_no);
+			
+			//3
+			bout.write(WmIce104Util.str2Bcd(Account));
+			//4
+			bout.write(WmIce104Util.int2Bytes(Amt));
+			//5
+			bout.write(WmIce104Util.int2Bytes(0));
+			//6
+			bout.write(ermFlag);
+			//7
+			bout.write((byte)deductFeeMethod);
+			//8
+			bout.write(WmIce104Util.int2Bytes(fronzeAmt));
+			//9
+			bout.write(password.getBytes());
+			//10
+			bout.write(WmIce104Util.str2Bcd(serialNo));
+			
+			//11
+			bout.write(showPriceFlag);
+			//12
+			bout.write(WmIce104Util.int2Bytes(jPrice));
+			//13
+			bout.write(WmIce104Util.int2Bytes(fPrice));
+			//14
+			bout.write(WmIce104Util.int2Bytes(pPrice));
+			//15
+			bout.write(WmIce104Util.int2Bytes(gPrice));
+			//16
+			bout.write(WmIce104Util.int2Bytes(serPrice));
+		
+			return bout.toByteArray();
+			//Iec104Constant.C_START_ELECTRICIZE);
+			
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}	
+	public static  synchronized byte[] do_start_electricize(String epCode,byte cdq_no,String Account,int Amt,byte ermFlag,int fronzeAmt,int deductFeeMethod,String password,String serialNo)
+	{
+		
+		try{
+	           
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			//1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			//2 枪口编号 BIN码 1Byte
+			bout.write(cdq_no);
+			
+			//3
+			bout.write(WmIce104Util.str2Bcd(Account));
+			//4
+			bout.write(WmIce104Util.int2Bytes(Amt));
+			//5
+			bout.write(WmIce104Util.int2Bytes(0));
+			//6
+			bout.write(ermFlag);
+			//7
+			bout.write((byte)deductFeeMethod);
+			//8
+			bout.write(WmIce104Util.int2Bytes(fronzeAmt));
+			//9
+			bout.write(password.getBytes());
+			//10
+			bout.write(WmIce104Util.str2Bcd(serialNo));
+		
+			return bout.toByteArray();
+			//Iec104Constant.C_START_ELECTRICIZE);
+			
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static  synchronized byte[] do_stop_electricize(String epCode,byte epGunNo) {
+		
+		try{ 
+			
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			// 枪口编号 BIN码 1Byte
+			bout.write(epGunNo);
+		
+			return bout.toByteArray();
+			//Iec104Constant.C_STOP_ELECTRICIZE);
+		
+	
+		}
+		catch (IOException e) 
+		{
+			return null;
+		 }
+		
+	}
+	
+	public static  synchronized byte[] do_cdz_business(byte BusinessFlag,int StartTime,int EndTime) {
+		try{
+		
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(Iec104Constant.WM_104_CD_SENDBUFFER);
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		
+		//bout.write(this.bcdcode);
+		//2--0:离线;1:运营
+		bout.write(BusinessFlag);
+		//3
+		bout.write(WmIce104Util.int2Bytes(StartTime));
+		//4
+		bout.write(WmIce104Util.int2Bytes(EndTime));
+		
+		return bout.toByteArray();
+		//Iec104Constant.C_BUSINESS_TIME);
+		
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+
+	public static byte[] do_bespoke(byte[] bcdCode,String  bespokeNo,byte cdq_no,byte redo,byte bcdAccount[],byte bcdCardNo[],byte start_time[], short order_time,byte CarCardNo[]) {
+		try
+		{
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(bcdCode);
+			// 枪口编号 BIN码 1Byte
+			bout.write(cdq_no);
+			bout.write(redo);
+			// 3 预约开始时间 CP56Time2a 7Byte
+			//byte P56Time2a[] = getP56Time2a();
+			bout.write(start_time);
+			// 4 预约等待时间 BIN码 2Byte 单位为分钟
+			bout.write(WmIce104Util.short2Bytes(order_time));
+			// 5账号号 BCD码 6Byte
+			bout.write(bcdAccount);
+			// 6 卡号 BCD码 8Byte
+			bout.write(bcdCardNo);
+			// 7 预约号 BCD码 6Byte 由运营系统分配
+			bout.write(WmIce104Util.str2Bcd(bespokeNo));
+			// 8 车牌号 ASCII码 16Byte
+			bout.write(CarCardNo);
+			
+			return bout.toByteArray();
+			//Iec104Constant.C_ORDER_CD);
+		}
+		catch (IOException e) 
+		{
+			return null;
+		}
+	}
+
+	public static  byte[] do_cancel_bespoke(String epCode,int epGunNo,String bespokeNo) {
+		try
+		{
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			// 枪口编号 BIN码 1Byte
+			bout.write((byte)epGunNo);
+			// 3
+			bout.write(WmIce104Util.str2Bcd(bespokeNo));
+			
+			return bout.toByteArray();
+
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static  byte[] do_bespoke_confirm(String epCode,int epGunNo,String bespokeNo,int redo,int result) {
+		try
+		{
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			// 枪口编号 BIN码 1Byte
+			bout.write((byte)epGunNo);
+			// 3
+			bout.write(WmIce104Util.str2Bcd(bespokeNo));
+			
+			bout.write((byte)redo);
+			
+			bout.write((byte)result);
+			
+			return bout.toByteArray();
+
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static  byte[] do_consume_model(String epCode,RateInfo rateData) {
+		try{
+			
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			
+			bout.write(rateData.getComm_data());
+			
+			return bout.toByteArray();
+			//Iec104Constant.C_CONSUME_MODEL);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static byte[] do_charge_event_confirm(String epCode, int  epGunNo, String chargeSerialNo,int ret ) {
+    	try
+    	{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			
+			bout.write((byte)epGunNo);
+			
+			bout.write(WmIce104Util.str2Bcd(chargeSerialNo));
+			
+			bout.write((byte)ret);
+			
+			return bout.toByteArray();
+			
+	    }
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+    public static byte[] do_confirm(String epCode, byte epGunNo,byte cmd,short packIndex,byte offtates,byte timeoutflag,byte[]time ) {
+    	try
+    	{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			
+			bout.write(epGunNo);
+			
+			bout.write(cmd);
+			
+			bout.write(WmIce104Util.short2Bytes(packIndex));
+			
+			bout.write(offtates);
+			
+			bout.write(timeoutflag);
+			
+			bout.write(time);
+			
+			return bout.toByteArray();
+			//Iec104Constant.C_CMD_CONFIRM);
+	    }
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+    
+    public static byte[] do_consumerecord_confirm(String epCode,int epGunNo,String serialNo, int ret ) {
+    	try
+    	{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			
+			bout.write(epGunNo);
+			
+			bout.write(WmIce104Util.str2Bcd(serialNo));
+			
+			bout.write((byte)ret);
+			
+			return bout.toByteArray();
+			//Iec104Constant.C_CONSUME_RECORD_CONFIRM);
+	    }
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+    public static byte[] do_card_frozen_amt(String epCode,int epGunNo,String cardInNo, int ret,int errorCode ) {
+    	try
+    	{	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			
+			bout.write(epGunNo);
+				
+			bout.write(WmIce104Util.appendZero(cardInNo,32));
+			
+			bout.write((byte)ret);
+			
+			bout.write(WmIce104Util.short2Bytes((short)errorCode));
+			
+			return bout.toByteArray();
+	    }
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+ 
+ 
+	public static byte[] do_ep_stat(String epCode) {
+		try{	ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		
+		return bout.toByteArray();
+		//Iec104Constant.C_EP_STAT);
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
+	public static byte[] do_query_consume_record(String epCode, byte epGunNo,int enteryNum) {
+		try{	ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		// 2 枪口号
+         bout.write(epGunNo);
+		//起始位置
+		bout.write(WmIce104Util.int2Bytes(enteryNum));
+		
+		return bout.toByteArray();
+		//Iec104Constant.C_EP_STAT);
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
+	public static byte[] do_query_comm_signal(String epCode,short stationAddr) {
+		try{	ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		// 2 站址 short
+		bout.write(WmIce104Util.short2Bytes(stationAddr));
+		
+		return bout.toByteArray();
+		
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
+	public static byte[] do_update_server_ip(String epCode, byte epGunNo,int freezeAmt) {
+		try{	
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		bout.write(epGunNo);
+		
+		bout.write(WmIce104Util.int2Bytes(freezeAmt));
+		
+		return bout.toByteArray();
+		
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+		
+	public static byte[] do_near_call_ep(String epCode, int type,int time) {
+		try{	
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		bout.write((byte)1);
+		
+		bout.write((byte)type);
+		
+		bout.write(WmIce104Util.short2Bytes((short)time));
+		
+		return bout.toByteArray();
+				//Iec104Constant.C_OPEN_EPGUN_LOCK_EQUIP);
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
+	
+	
+	
+	public static byte[] do_open_gun_lock(String epCode, int epGunNo,int freezeAmt) {
+		try{
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		bout.write((byte)epGunNo);
+		
+		bout.write(WmIce104Util.int2Bytes(freezeAmt));
+		
+		return bout.toByteArray();
+		
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
+	public static byte[] do_drop_carplace_lock(String epCode, int epGunNo) {
+		try{
+			
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		bout.write((byte)epGunNo);
+		
+		return bout.toByteArray();
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
+	public static byte[] do_card_auth_resq(String epCode, int epGunNo,String innerNo,String outerNo,int cardStatus,int isFrozenAmt,
+			int remainAmt,int ret,int errorCode) {
+		try{
+			
+			/*1	终端机器编码	BCD码	8Byte	16位编码	
+			2	充电桩接口标识	BIN码	1Byte	从1开始	
+			3	内卡号	ASCII码	32Byte	长度不够,用0x00在尾部补齐	
+			4	外卡号	ASCII码	20Byte	长度不够用0x00补齐	
+			5	卡状态	BIN码	1Byte	1:正常；2：挂失	
+			6	余额	BIN码	4Byte	精确到小数点后两位，倍数100	
+			7	成功标识	Bin码	1Byte	1：成功；0：失败	
+			8	错误编码	Bin码	2Byte	*/
+			
+
+			
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		bout.write((byte)epGunNo);
+		
+		bout.write(WmIce104Util.appendZero(innerNo,32));
+		bout.write(WmIce104Util.appendZero(outerNo,20));
+		
+		bout.write((byte)cardStatus);
+		
+		bout.write((byte)isFrozenAmt);
+		
+		
+		bout.write(WmIce104Util.int2Bytes(remainAmt));
+		
+		bout.write((byte)ret);
+		
+		bout.write(WmIce104Util.short2Bytes((short)errorCode));
+		
+		return bout.toByteArray();
+		
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
+	public static byte[] do_card_auth_resp(byte[] bcdCode,String  bespokeNo,byte cdq_no,byte redo,byte bcdAccount[],byte bcdCardNo[],byte start_time[], short order_time,byte CarCardNo[]) {
+		try
+		{
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(bcdCode);
+			// 枪口编号 BIN码 1Byte
+			bout.write(cdq_no);
+			bout.write(redo);
+			// 3 预约开始时间 CP56Time2a 7Byte
+			//byte P56Time2a[] = getP56Time2a();
+			bout.write(start_time);
+			// 4 预约等待时间 BIN码 2Byte 单位为分钟
+			bout.write(WmIce104Util.short2Bytes(order_time));
+			// 5账号号 BCD码 6Byte
+			bout.write(bcdAccount);
+			// 6 卡号 BCD码 8Byte
+			bout.write(bcdCardNo);
+			// 7 预约号 BCD码 6Byte 由运营系统分配
+			bout.write(WmIce104Util.str2Bcd(bespokeNo));
+			// 8 车牌号 ASCII码 16Byte
+			bout.write(CarCardNo);
+			
+			return bout.toByteArray();
+			//Iec104Constant.C_ORDER_CD);
+		}
+		catch (IOException e) 
+		{
+			return null;
+		}
+	}
+	
+	public static byte[] do_ep_identyCode(String  epCode,byte epGunNo,String identyCode,long createTime ,
+			byte cmdHour,byte cmdMin,byte cmdSec) {
+		try
+		{
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+			bout.write(WmIce104Util.str2Bcd(epCode));
+			// 枪口编号 BIN码 1Byte
+			bout.write(epGunNo);
+			//  3,命令时间，时
+			bout.write(cmdHour);
+			//  4, 命令时间，分
+			bout.write(cmdMin);
+			//  6, 命令时间，秒
+			bout.write(cmdSec);
+			// 7,识别码
+			bout.write(WmIce104Util.appendFF(identyCode,10));
+			
+			// 8 识别码产生时间
+			Date date = DateUtil.toDate(createTime*1000);
+			bout.write(WmIce104Util.getP56Time2a(date));
+			
+			
+			return bout.toByteArray();
+		}
+		catch (IOException e) 
+		{
+			return null;
+		}
+	}
+	
+	public static byte[] do_concentroter_setep(short stationAddr,short epNum,String epcodes) 
+	{
+		try{	
+		
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 站址 short
+		bout.write(WmIce104Util.short2Bytes(stationAddr));
+		bout.write(WmIce104Util.short2Bytes(epNum));
+		
+		String[] epCodeArray = epcodes.split(",+"); 
+   	    for(String eachEpCode : epCodeArray)
+  	    { 
+   	    	bout.write(WmIce104Util.str2Bcd(eachEpCode));
+  	    }
+		
+		return bout.toByteArray();
+		}
+		catch (IOException e) 
+		{
+			return null;
+		}
+		
+	}
+    
+	public static byte[] do_query_ep_rateInfo(String epCode) {
+		try{	ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		
+		
+		return bout.toByteArray();
+		
+	   }
+	   catch (IOException e) 
+	   {
+		   e.printStackTrace();
+		  return null;
+	   }
+	}
+	
+	public static byte[] do_concentroter_getep(short stationAddr) {
+			try{	ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+			
+			// 1 站址 short
+			bout.write(WmIce104Util.short2Bytes(stationAddr));
+			
+			
+			return bout.toByteArray();
+			
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static byte[] do_get_flashRam(String epCode,short stationAddr,short type,short startPos,short len) {
+		try{	
+			
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(256);
+		
+		// 1 ZDJQBM 终端机器编码 BCD码 8Byte 16位编码
+		bout.write(WmIce104Util.str2Bcd(epCode));
+		// 1 站址 short
+		bout.write(WmIce104Util.short2Bytes(stationAddr));
+		//类型
+		bout.write(WmIce104Util.short2Bytes(type));
+		//开始位置
+		bout.write(WmIce104Util.short2Bytes(startPos));
+		//len
+		bout.write(WmIce104Util.short2Bytes(len));
+		
+		
+		return bout.toByteArray();
+		
+	}
+	catch (IOException e) 
+	{
+		e.printStackTrace();
+		return null;
+	}
+}
+}

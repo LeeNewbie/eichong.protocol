@@ -1,0 +1,446 @@
+package com.usrgate.service;
+
+import io.netty.channel.Channel;
+
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.core.pool.TaskPoolFactory;
+import com.usrgate.cache.EpGunCache;
+import com.usrgate.cache.UserCache;
+import com.usrgate.cache.UserOrigin;
+import com.usrgate.cache.UserRealInfo;
+import com.usrgate.constant.CommStatusConstant;
+import com.usrgate.constant.EpConstant;
+import com.usrgate.constant.EpConstantErrorCode;
+import com.usrgate.constant.EventConstant;
+import com.usrgate.net.PhoneClient;
+import com.usrgate.net.client.EpGateCommClient;
+import com.usrgate.net.sender.PhoneMessageSender;
+import com.usrgate.protocol.PhoneConstant;
+import com.usrgate.protocol.PhoneProtocol;
+import com.usrgate.protocol.WmIce104Util;
+import com.usrgate.task.CheckPhoneCommClientTask;
+import com.usrgate.utils.DateUtil;
+
+public class PhoneService {
+
+	private static final Logger logger = LoggerFactory.getLogger("PhoneLog");
+
+	public static String getDebugInfo() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("PhoneService:\n");
+
+		sb.append("mapCh2PhoneClient count:")
+				.append(CacheService.getCh2PhoneClientCount()).append("\n");
+		sb.append("mapPhoneClients count:")
+				.append(CacheService.getPhoneClientCount()).append("\n");
+
+		return sb.toString();
+
+	}
+
+	public static void Confirm(Channel channel, short cmdtype, int successflag,
+			int errorcode) throws IOException {
+		byte[] data = PhoneProtocol.do_confirm(cmdtype, (byte) successflag,
+				(short) errorcode);
+		PhoneMessageSender.sendMessage(channel, data);
+	}
+
+	public static void handleStartCharge(PhoneClient phoneClient,
+			int fronzeAmt, short chargeType) {
+		UserCache u = UserService.getUserCache(phoneClient.getAccount());
+		if (u == null) {
+			logger.info("phone startCharge not find user:{}",
+					phoneClient.getAccount());
+			return;
+		}
+		byte[] cmdTimes = WmIce104Util.timeToByte();
+		int errorCode = EpChargeService.apiStartElectric(
+				phoneClient.getEpCode(), phoneClient.getEpGunNo(), u.getId(),
+				u.getAccount(), "", (short) EpConstant.CHARGE_TYPE_QRCODE, 0,
+				fronzeAmt, 1, 1000, 2, u.getAccount(), cmdTimes);
+
+		logger.info("handleStartCharge errorCode:{}", errorCode);
+		if (errorCode > 0) {
+			byte successflag = 0;
+			logger.info("phone startCharge fail errorCode:{}", errorCode);
+
+			byte[] data = PhoneProtocol.do_confirm(
+					PhoneConstant.D_START_CHARGE, successflag,
+					(short) errorCode);
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+	}
+
+	public static void handleStopCharge(PhoneClient phoneClient) {
+		int errorCode = EpChargeService.apiStopElectric(
+				phoneClient.getEpCode(), phoneClient.getEpGunNo(),
+				phoneClient.getAccountId(), 99, phoneClient.getIdentity());
+
+		if (errorCode > 0) {
+			byte successflag = 0;
+			logger.info("phone handleStopCharge fail errorCode:{}", errorCode);
+
+			byte[] data = PhoneProtocol.do_confirm(PhoneConstant.D_STOP_CHARGE,
+					successflag, (short) errorCode);
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+	}
+
+	public static void handleHeart(PhoneClient phoneClient) {
+		// java.util.concurrent.
+		byte[] data = PhoneProtocol.Package((byte) 1, PhoneConstant.D_HEART);
+		PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+	}
+
+	public static int initPhoneConnect(PhoneClient phoneClient, int accountId,
+			String epCode, int epGunNo, String checkCode, int version) {
+
+		// 查电桩
+		int error = EpService.getEpCache(epCode);
+		if (error > 0) {
+			return error;
+		}
+
+		EpGunCache epGunCache = CacheService.getEpGunCache(epCode, epGunNo);
+		if (epGunCache == null) {
+			return EpConstantErrorCode.EP_UNCONNECTED;
+		}
+		EpGateCommClient commClient = CacheService.getEpGate(epCode);
+		if (commClient == null) {
+			return EpConstantErrorCode.EP_UNCONNECTED;
+		}
+		if (!commClient.isComm()) {
+			return EpConstantErrorCode.EP_UNCONNECTED;
+
+		}
+
+		UserRealInfo userRealInfo = UserService.findUserRealInfo(accountId);
+		if (null == userRealInfo) {
+			return EpConstantErrorCode.INVALID_ACCOUNT;
+		}
+		if (userRealInfo.getStatus() != 1) {
+			return EpConstantErrorCode.INVALID_ACCOUNT_STATUS;
+		}
+		String chargeGun = epCode + epGunNo;
+		error = UserService.checkUserCache(accountId, chargeGun);
+		if (error > 0) {
+			return error;
+		}
+
+		String phoneIdentity = userRealInfo.getAccount();
+		PhoneClient oldPhoneClient = CacheService
+				.getPhoneClientByIdentity(phoneIdentity);
+		if (oldPhoneClient != null) {
+			if (oldPhoneClient.getChannel() != phoneClient.getChannel()
+					&& oldPhoneClient.getChannel() != null) {
+				oldPhoneClient.getChannel().close();
+				oldPhoneClient.setStatus(0);
+			}
+		}
+
+		// 验证码
+		String src = userRealInfo.getDeviceid() + userRealInfo.getPassword()
+				+ accountId;
+		String calcCheckCode = WmIce104Util.MD5Encode(src.getBytes());
+
+		if (calcCheckCode.compareTo(checkCode) != 0) {
+			logger.debug("checkPhoneConnect!calcCheckCode:{},checkCode:{}",
+					calcCheckCode, checkCode);
+			logger.info("checkPhoneConnect fail!accountId:{}", accountId);
+			return EpConstantErrorCode.ERROR_PHONE_CRC_CODE;
+		}
+
+		short pos = 0;
+		if (epGunCache.getStatus() == EpConstant.EP_GUN_STATUS_CHARGE) {
+			if (epGunCache.getChargeCache() != null
+					&& epGunCache.getChargeCache().getUserId() != 0
+					&& epGunCache.getChargeCache().getUserId() != userRealInfo.getId()) {
+				logger.error("initPhoneConnect!epGunCache.getStatus():{}",
+						epGunCache.getStatus());
+
+				return EpConstantErrorCode.EPE_OTHER_CHARGING;
+			} else {
+				pos = 6;
+			}
+		}
+		if (epGunCache.getStatus() == EpConstant.EP_GUN_STATUS_BESPOKE_LOCKED) {
+			if (epGunCache.getBespCache() == null
+					|| epGunCache.getBespCache().getAccountId() != userRealInfo.getId()) {
+				logger.error("checkPhoneConnect!epGunCache.getStatus():{}",
+						epGunCache.getStatus());
+
+				return EpConstantErrorCode.EPE_OTHER_BESP;
+			} else {
+				pos = 3;
+			}
+		}
+		if (epGunCache.getStatus() == EpConstant.EP_GUN_STATUS_USER_AUTH) {
+			if (epGunCache.getChargeCache() != null
+					&& epGunCache.getChargeCache().getUserId() != userRealInfo.getId()) {
+				return EpConstantErrorCode.USED_GUN;
+			}
+		}
+
+		if (epGunCache.getStatus() == EpConstant.EP_GUN_STATUS_EP_OPER
+				&& epGunCache.getChargeCache() != null) {
+			pos = 5;
+		}
+
+		phoneClient.setAccountId(accountId);
+		phoneClient.setAccount(userRealInfo.getAccount());
+		phoneClient.setEpCode(epCode);
+		phoneClient.setEpGunNo(epGunNo);
+		phoneClient.setIdentity(userRealInfo.getAccount());
+		phoneClient.setStatus(CommStatusConstant.INIT_SUCCESS);
+
+		CacheService.addPhoneClientByAccount(phoneClient);
+
+		byte ret = 0x01;
+		logger.debug(
+				"initPhoneConnect accountId:{},epCode:{},epGunNo:{},pos:{}",
+				new Object[] { accountId, epCode, epGunNo, pos });
+
+		// short
+		// currentType=(short)((epGunCache.getRealChargeInfo().getCurrentType()==EpConstant.EP_AC_TYPE
+		// )?1:2);
+		short currentType = 5;
+		short cmdType = (version == 1) ? PhoneConstant.D_CONNET_EP
+				: PhoneConstant.D_NEW_CONNET_EP;
+
+		byte[] respData = PhoneProtocol.do_connect_ep_resp(cmdType, ret,
+				(short) 0, pos, currentType);
+
+		if (respData == null) {
+			logger.info("handleConnectEp respData == null,accountId:{}",
+					accountId);
+		}
+		PhoneMessageSender.sendMessage(phoneClient.getChannel(), respData);
+
+		if (pos == 6) {
+			// 卡充电在手机上显示
+			if (epGunCache.getChargeCache() != null
+					&& epGunCache.getChargeCache().getStartChargeStyle() == 3
+					&& epGunCache.getChargeCache().getUserOrigin() != null) {
+				epGunCache.getChargeCache().getUserOrigin().setCmdFromSource(2);
+			}
+			//
+			// epGunCache.pushFirstRealData();
+
+		}
+
+		return 0;
+	}
+
+	public static int handleConnectEp(Channel ch, int accountId,
+			String epCode, int epGunNo, String checkCode, int version) {
+		// 判断通道是否正常
+		PhoneClient phoneClient = CacheService.getPhoneClientByChannel(ch);
+		//
+		if (phoneClient == null) {
+			return 0;
+		}
+		int errorCode = initPhoneConnect(phoneClient, accountId,
+				epCode, epGunNo, checkCode, version);
+
+		if (errorCode > 0) {
+
+			String errorMsg = MessageFormat
+					.format("initPhoneConnect accountId:{0},epConnectGun:{1},errorCode:{2}",
+							accountId, epCode + epGunNo, errorCode);
+
+			logger.info(errorMsg);
+			short respType = (version == 1) ? PhoneConstant.D_CONNET_EP
+					: PhoneConstant.D_NEW_CONNET_EP;
+
+			byte[] respData = PhoneProtocol.do_connect_ep_resp(respType,
+					(byte) 0x00, (short) errorCode, (short) 0, (short) 0);
+
+			if (respData == null) {
+				logger.error("handleConnectEp respData == null,accountId:{}",
+						accountId);
+			} else {
+				PhoneMessageSender.sendMessage(ch, respData);
+			}
+		}
+
+		return 0;
+	}
+
+	public static void offLine(Channel channel) {
+
+		PhoneClient phoneClient = CacheService.getPhoneClientByChannel(channel);
+
+		if (phoneClient != null) {
+			logger.debug("\n\n\noffLine,phoneClient:{}", phoneClient);
+			logger.debug("offLine. commClient:{},account:{}",
+					phoneClient.getChannel(), phoneClient.getAccount());
+			// removeChannel(channel);
+			phoneClient.setStatus(0);
+			// phoneClient.setCommCh(null);
+		} else {
+			// logger.info("\n\n\noffLine,phoneClient:");
+		}
+
+	}
+
+	public static void startCommClientTimeout(long initDelay) {
+
+		CheckPhoneCommClientTask checkTask = new CheckPhoneCommClientTask();
+
+		TaskPoolFactory.scheduleAtFixedRate("CHECK_PHONECLIENT_TIMEOUT_TASK",
+				checkTask, initDelay, 10, TimeUnit.SECONDS);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public synchronized static void checkTimeOut() {
+		logger.debug("PhoneService checkTimeOut");
+		Iterator iter = CacheService.getMapCh2PhoneClient().entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			PhoneClient phoneClient = (PhoneClient) entry.getValue();
+			if (null == phoneClient) {
+				continue;
+			}
+			long timeout = PhoneConstant.PHONE_CONNECT_TIMEOUT;
+
+			long now = DateUtil.getCurrentSeconds();
+			long diff = now - phoneClient.getLastUseTime();
+
+			if (diff > timeout) {
+				if (phoneClient.getStatus() > 0
+						&& phoneClient.getChannel() != null) {
+					phoneClient.setStatus(0);
+					phoneClient.getChannel().close();
+					logger.debug("PhoneService:checkTimeOut phone:{}",
+							phoneClient.getIdentity());
+
+					iter.remove();
+				}
+
+			}
+
+		}
+
+	}
+
+	public static boolean isComm(UserOrigin userOrigin) {
+		String actionIdentity = "";
+		if (userOrigin != null)
+			actionIdentity = userOrigin.getCmdChIdentity();
+		// logger.info("phone service actionIdentity:{}",actionIdentity);
+		if (actionIdentity.length() == 0) {
+			logger.error("isComm!userOrigin:{},actionIdentity:{}", userOrigin,
+					actionIdentity);
+			return false;
+		}
+		PhoneClient phoneClient = CacheService
+				.getPhoneClientByIdentity(actionIdentity);
+		if (phoneClient == null) {
+			logger.error("isComm not find PhoneClient,actionIdentity:{}",
+					actionIdentity);
+			return false;
+		}
+		return phoneClient.isComm();
+
+	}
+
+	public static void onEvent(int type, UserOrigin userOrigin, int ret,
+			int cause, Object srcParams, Object extraData) {
+		String actionIdentity = "";
+		if (userOrigin != null)
+			actionIdentity = userOrigin.getCmdChIdentity();
+		logger.debug("phone service type:{},actionIdentity:{}", type,
+				actionIdentity);
+
+		PhoneClient phoneClient = CacheService
+				.getPhoneClientByIdentity(actionIdentity);
+		if (phoneClient == null) {
+			logger.info(
+					"handleActionResponse not find PhoneClient,actionIdentity:{}",
+					actionIdentity);
+			return;
+		}
+		switch (type) {
+
+		case EventConstant.EVENT_BESPOKE:
+			break;
+
+		case EventConstant.EVENT_CHARGE: {
+			// logger.info("phone EventConstant.EVENT_CHARGE ret:{}",ret);
+			byte[] data = PhoneProtocol.do_confirm(
+					PhoneConstant.D_START_CHARGE, (byte) ret, (short) cause);
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+			break;
+
+		case EventConstant.EVENT_STOP_CHARGE: {
+			byte[] data = PhoneProtocol.do_confirm(PhoneConstant.D_STOP_CHARGE,
+					(byte) ret, (short) cause);
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+			break;
+		case EventConstant.EVENT_CONSUME_RECORD: {
+			Map<String, Object> consumeRecordMap = (Map<String, Object>) extraData;
+
+			String chargeOrder = (String) consumeRecordMap.get("orderid");
+
+			// logger.info("chargeOrder,{}",chargeOrder);
+
+			long lst = (long) consumeRecordMap.get("st");
+			long let = (long) consumeRecordMap.get("et");
+
+			int st = (int) lst;
+			int et = (int) let;
+
+			int totalMeterNum = (int) consumeRecordMap.get("totalMeterNum");
+			int totalAmt = (int) consumeRecordMap.get("totalAmt");
+			int serviceAmt = (int) consumeRecordMap.get("serviceAmt");
+			int pkEpId = (int) consumeRecordMap.get("pkEpId");
+
+			byte[] data = PhoneProtocol.do_consume_record(chargeOrder, st, et,
+					totalMeterNum, totalAmt, serviceAmt, pkEpId);
+
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+			break;
+		case EventConstant.EVENT_REAL_CHARGING: {
+			// System.out.print("phoneServer onEventEVENT_PHONE_REAL\n");
+			if (extraData == null) {
+				logger.info("onEvent error,extraData==null");
+				return;
+			}
+			ChargingInfo chargingInfo = (ChargingInfo) extraData;
+			byte[] data = PhoneProtocol.do_real_charge_info(chargingInfo);
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+			break;
+		case EventConstant.EVENT_START_CHARGE_EVENT: {
+			logger.debug("phoneServer onEvent EVENT_START_CHARGE_EVENT\n");
+
+			byte[] data = PhoneProtocol.do_start_charge_event(ret);
+
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+			break;
+		case EventConstant.EVENT_EP_NET_STATUS: {
+			// logger.info("EventConstant.EVENT_EP_NET_STATUS,ret:{}",ret);
+			byte[] data = PhoneProtocol.do_ep_net_status(ret);
+			PhoneMessageSender.sendMessage(phoneClient.getChannel(), data);
+		}
+			break;
+		default:
+			break;
+
+		}
+
+	}
+
+}

@@ -1,0 +1,16 @@
+package com.usrgate.task;
+
+import com.usrgate.service.EpGunService;
+
+
+
+public class CheckGunTask  implements Runnable {
+	
+	@Override
+	public void run() {
+		
+		
+		EpGunService.checkTimeout();
+	}
+
+}

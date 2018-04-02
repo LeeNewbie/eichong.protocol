@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<config>
+
+	<ip>hzskynet.i91pv.com</ip>
+	<port>55555</port>
+	<partner-id>310000002</partner-id>
+	<key>tlDYWr1WtNvIyDFI</key>
+	<status-method>/api/pipe/status</status-method>
+	<charge-method>/api/pipe/charge-records</charge-method>
+
+</config>

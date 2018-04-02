@@ -1,0 +1,69 @@
+package com.third.service;
+
+import java.util.Iterator;
+import java.util.List;
+
+import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.conf.CoreConfig;
+import com.third.config.ThirdConfig;
+import com.third.config.ThirdConfigs;
+
+public class ThirdConfigService
+{
+    private static final Logger initConfigLog = LoggerFactory.getLogger("InitConfigLog");
+
+    public ThirdConfigService()
+    {
+    }
+    public static ThirdConfigs initThirdConfigs()
+    {
+        initConfigLog.info("开始初始化全局配置...");
+
+        ThirdConfigs thirdConfigs = new ThirdConfigs();
+        Element root = CoreConfig.getRootElement("third-config.xml");
+
+        List<?> elementList = root.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element e = (Element)i$.next();
+            if(e != null)
+            {
+	        	ThirdConfig svrCfg = initThirdConfig(e);
+
+                String key = e.getName();
+                System.out.println((new StringBuilder()).append("key+").append(key).toString());
+                if(key != null && key.length() > 0 && svrCfg != null)
+                	thirdConfigs.put(key, svrCfg);
+            }
+        } while(true);
+
+        initConfigLog.info("初始化全局配置结束...配置信息:【{}】", new Object[] {thirdConfigs.toString()});
+        return thirdConfigs;
+	}
+
+    public static ThirdConfig initThirdConfig(Element e)
+    {
+    	ThirdConfig thirdConfig = new ThirdConfig();
+
+        String addr = e.getChild("addr").getValue();
+        String id = e.getChild("addr").getAttributeValue("id");
+        String value = "";
+        Element eValue = e.getChild("value");
+        if (eValue != null)
+            value = eValue.getValue();
+
+        thirdConfig.setId(id);
+        thirdConfig.setAddr(addr);
+        thirdConfig.setValue(value);
+
+        initConfigLog.info((new StringBuilder()).append("初始化服务器配置:【").append(thirdConfig.toString()).append("】").toString());
+
+        return thirdConfig;
+	}
+}

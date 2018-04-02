@@ -1,0 +1,407 @@
+package com.usrgate.service;
+
+import io.netty.channel.Channel;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ormcore.dao.DB;
+import com.ormcore.model.TblElectricPile;
+import com.usrgate.cache.BespCache;
+import com.usrgate.cache.ElectricPileCache;
+import com.usrgate.cache.EpGunCache;
+import com.usrgate.constant.EpConstant;
+import com.usrgate.constant.EpConstantErrorCode;
+
+public class EpService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+	
+   
+	public static ElectricPileCache getElectricPileCache(TblElectricPile dbEp)
+	{
+		ElectricPileCache epCache = new ElectricPileCache();
+		epCache.setPkEpId(dbEp.getPkEpId());
+		epCache.setCode(dbEp.getEpCode());
+		epCache.setName(dbEp.getEpName());
+		epCache.setCurrentType(dbEp.getCurrentType());
+		epCache.setGunNum(dbEp.getEpGunNum());
+		epCache.setConcentratorId(dbEp.getStationId());
+		epCache.setStationIndex(dbEp.getStationIndex());
+		epCache.setRateid(dbEp.getRateid());
+		epCache.setAddress(dbEp.getAddress());
+		epCache.setCompany_number(dbEp.getCompany_number());
+		
+        epCache.setOwnCityCode(dbEp.getElPiOwnCityCode());
+		epCache.setOwnProvinceCode(dbEp.getElPiOwnProvinceCode());
+		
+		return epCache;
+	}
+   
+	public static TblElectricPile getDbElectricPile(String epCode)
+	{
+		TblElectricPile epInfo=null;
+		List<TblElectricPile> epList = DB.epClientDao.findResultObject(epCode);
+		if(epList ==null || epList.size() !=1)
+		{
+			//都没有的话断定为无效桩,强制断掉该客户连接
+			if(epList ==null || epList.size() ==0)
+			{
+				logger.info("getDbElectricPile have not ElectricPile:"+epCode);
+			}
+			else
+			{
+				logger.info("getDbElectricPile have "+epList.size()+" ElectricPile:"+epCode);
+			}
+		}
+		else
+		{
+			epInfo = epList.get(0);
+		}
+		return epInfo;
+	}
+	
+	public static ElectricPileCache loadDiscreteEpConnect(int commVersion,String epCode,int bootStatus)
+	{
+		ElectricPileCache epCache = EpService.getEpByCode(epCode);//1.判断缓存里时候有
+		if(epCache != null )
+		{
+			
+			if(bootStatus==1)//bootLoader状态
+			{
+				epCache.initGunsBootLoader();
+			}
+			return epCache;
+		}
+		TblElectricPile dbEp = EpService.getDbElectricPile(epCode);
+		if(dbEp != null )//如果已经绑定集中器，禁止离散连接
+		{
+			if(dbEp.getStationId()>0)
+			{
+				return null;
+			}
+			epCache = EpService.getElectricPileCache(dbEp);
+			
+			if(bootStatus==1)//bootLoader状态
+			{
+				if(!epCache.initGunsBootLoader())
+				{
+					logger.error("loadDiscreteEpConnect initGuns fail");
+					
+				}
+			}
+			else{
+				//初始化枪对象
+			    if(!epCache.initGuns())
+			    {
+				    logger.error("imitateInitDiscreteEp initGuns fail");
+				    
+			     }
+			}
+			
+		}
+		return null;
+		
+		
+	}
+	public static boolean imitateInitDiscreteEp(int commVersion,String epCode)
+	{
+		ElectricPileCache epCache= loadDiscreteEpConnect(commVersion,epCode,0);
+		if(epCache==null)
+		{
+		
+			logger.error("imitateInitDiscreteEp epCache=null,epCode:{}",epCode);
+			return false;
+		}
+	
+		EpService.addEpCache(epCache);
+		
+		
+		return true;
+		
+		
+	}
+	
+	public static boolean initDiscreteEpConnect(int commVersion,String epCode,Channel channel,int bootStatus)
+	{
+		return false;
+		/*
+		
+		int gateId = CoreConfig.gameConfig.getId();
+		//1.判断是否是有效桩体
+		ElectricPileCache epCache = loadDiscreteEpConnect(commVersion,epCode,bootStatus);//1.判断缓存里时候有
+	
+		if(epCache == null )
+		{
+			logger.error("invaild ep!epCode:epCode,{},dbEp == null",epCode);
+			//2.无效桩，强制关闭
+			EpCommClientService.removeChannel(channel);
+			channel.close();
+			channel=null;
+			return false;
+		}
+		//System.out.print("initDiscreteEpConnect 4\n");
+		if(epCache.getConcentratorId()>0)
+		{
+			logger.error("prohibit ep of concentrator connect!epCode,{},concentratorID:{}",epCode,epCache.getConcentratorId());
+			
+			//2.无效桩，强制关闭
+			EpCommClientService.removeChannel(channel);
+			channel.close();
+			
+			return false;
+		}
+		int oldGateId =epCache.getGateid();
+		
+		EpCommClient oldCommClient = (EpCommClient)epCache.getEpNetObject();
+		if(oldCommClient!=null && oldCommClient.getChannel()== channel )
+		{
+			oldCommClient.setBootStatus(bootStatus);
+			return true;
+		}
+		else
+		{
+			if(oldCommClient!=null)
+			{
+				Channel oldChannel = oldCommClient.getChannel();
+				//查看有没有老的连接，如果有，关掉
+				if(oldChannel !=null && oldChannel!=channel)
+				{
+					logger.debug("old ch:"+oldChannel +"\r\nnew ch"+channel+"\r\n");
+					oldChannel.close();
+					EpCommClientService.removeChannel(oldCommClient.getIdentity());
+					EpCommClientService.removeChannel(oldChannel);
+
+					epCache.setEpNetObject(null);
+				}
+				
+			}
+			EpCommClient commClient = EpCommClientService.getCommClientByChannel(channel);
+			if(commClient == null)
+			{
+			    commClient = new EpCommClient();
+			    
+			}
+			commClient.setBootStatus(bootStatus);
+	        commClient.setIdentity(epCode);
+			commClient.setRevINum(0);
+			commClient.setStatus(CommStatusConstant.INIT_SUCCESS);
+			commClient.setChannel(channel);
+			commClient.setLastUseTime(DateUtil.getCurrentSeconds());	
+			commClient.setMode(EpConstant.COMM_MODE_OF_DISCRETE_POLE);
+			commClient.setGateId(gateId);
+			commClient.setCommVersion(commVersion);
+			
+			epCache.setGateid(CoreConfig.gameConfig.getId());	
+			epCache.setEpNetObject(commClient);
+			
+			epCache.updateNetObject();
+		}
+		//修改数据网关
+		
+		//if(oldGateId != gateId)
+		{
+			
+	        byte[] changeGateData = AppServerProtocol.epIpChange(epCode,epCache.getGateid());
+			AppClientService.notifyEpGate(changeGateData);
+		}
+		
+	   EpCommClientService.addCommClient(epCode, (EpCommClient)epCache.getEpNetObject());
+		
+		
+		//更新桩状态
+	    logger.debug("epCache.getPkEpId():{},1",epCache.getPkEpId());
+		EpService.updateEpCommStatusToDb(epCache.getPkEpId(),1,epCache.getGateid());
+		
+		
+		//增加到缓存
+		EpService.addEpCache(epCache);
+
+	
+		long now = DateUtil.getCurrentSeconds(); 
+		epCache.setLastUseTime(now);
+		
+		return true;*/
+	}
+	
+	
+	
+
+	public  static void addEpCache(ElectricPileCache epCache){
+		if(epCache!=null)
+		{
+			String epCode= epCache.getCode();
+	
+			//mapEpCache.put(epCode,epCache);
+		}
+	}
+    
+    public static ElectricPileCache getEpByCode(String epCode){
+	
+		//ElectricPileCache electricUser = mapEpCache.get(epCode);
+		//return electricUser;
+    	return null;
+	}
+
+	
+
+
+	
+	public static int getCurrentType(String epCode)
+	{
+		ElectricPileCache epClient= getEpByCode(epCode);
+		if(	epClient ==null )
+		{
+			return -1;
+		}
+		return epClient.getCurrentType();
+	}
+
+	
+    public static int  doNearCallEpAction(String epCode,int type,int time,int  accountId,float lng,float lag)
+	
+    {
+    	 ElectricPileCache epCache= EpService.getEpByCode(epCode);
+         if(epCache==null)
+         {
+        	 logger.info("not find ElectricPileCache,epCode:{}",epCode);
+         	return EpConstantErrorCode.EP_UNCONNECTED;
+         	
+         }
+       //检查电桩
+ 		int error = EpService.getEpStatusFromDb(epCode);
+ 		if(error > 0)
+ 		{
+ 			return EpConstantErrorCode.EP_UNCONNECTED;
+ 		}
+ 		if(epCache.getState()==EpConstant.EP_STATUS_OFFLINE)
+ 		{
+ 			return EpConstantErrorCode.EP_PRIVATE;
+ 		}
+ 		else if(epCache.getState()<EpConstant.EP_STATUS_OFFLINE)
+ 		{
+ 			return EpConstantErrorCode.EP_NOT_ONLINE;
+ 		}
+ 		if(epCache.getDeleteFlag() !=0)
+ 		{
+ 			return EpConstantErrorCode.EP_NOT_ONLINE;
+ 		}
+    	int hadBesp=0;
+        for(int i=0;i<epCache.getGunNum();i++)
+        {
+        	EpGunCache epGunCache=EpGunService.getEpGunCache(epCode, i+1);
+        	if(epGunCache==null)
+        		continue;
+        	BespCache bespCacheObj =epGunCache.getBespCache();
+        	if(bespCacheObj!=null && bespCacheObj.getAccountId()== accountId)
+        	{
+        		hadBesp=1;
+        		break;
+        	}
+        }
+		
+    	if(hadBesp == 0)
+    	{
+    		logger.info("not find BespCache:{},can not call ep",epCode);
+    		return EpConstantErrorCode.CANNOT_REPEAT_SOUNDING_WITHOUT_BESP;
+    	}
+    	
+    	return epCache.callEpAction(epCache.getEpGateId(),type, time,(float)0.0,(float)0.0);
+    }
+    
+    
+    
+    
+    public static int OpenGunLid(String epCode,int epGunNo)
+    {
+    	int errorCode = 0;
+    	ElectricPileCache epCache = EpService.getEpByCode(epCode);//1.判断缓存里时候有
+		if(epCache == null )
+		{
+			logger.info("OpenGunLid did not find ep:" + epCode
+					+ "\r\n");
+			return EpConstantErrorCode.INVALID_EP_CODE;
+		}
+		EpGunCache epGunCache = EpGunService.getEpGunCache(epCode, epGunNo);
+		if(epGunCache == null)
+		{
+			return EpConstantErrorCode.INVALID_EP_CODE;
+		}
+		
+		if(!epGunCache.getEpNetObject().isComm())
+		{
+			return EpConstantErrorCode.EP_UNCONNECTED;
+			
+		}
+		
+		
+		//EpGunService.testChangeGunSignalStatus(epCode,epGunNo,1);
+		
+    	return 0;
+    }
+    //////////////////////////////////////////////
+    
+    public static int DropGroupLock(String epCode,int epGunNo)
+    {
+    	ElectricPileCache epCache = EpService.getEpByCode(epCode);
+		if(epCache == null )
+		{
+			logger.info("DropGroupLock did not find ep:" + epCode
+					+ "\r\n");
+			return EpConstantErrorCode.INVALID_EP_CODE;
+		}
+		
+		
+    	return 0;
+    }
+    
+  
+    public static int getGunNo(int address,int type)
+    {
+    	switch(type)
+    	{
+    	case 1:
+    		return (address/128)+1;
+    		
+    	case 3:
+    		return (address/128)+1;
+    	case 11:
+    		return (address/2500)+1;
+    	case 132:
+    		return (address/128)+1;
+    	default:
+    		return 0;
+    	}
+    }
+	public static int getEpStatusFromDb(String epCode)
+	{
+		int ret =0;
+		List<TblElectricPile> epList = DB.epClientDao.findResultObject(epCode);
+		if(epList ==null || epList.size() !=1)
+		{
+			return EpConstantErrorCode.EP_UNCONNECTED;
+		}
+		else
+		{
+			 ElectricPileCache epCache= getEpByCode(epCode);
+			 if(epCache == null )
+			 { 
+				 return EpConstantErrorCode.EP_UNCONNECTED;
+			 }
+		
+			 epCache.setCompany_number(epList.get(0).getCompany_number());
+			 epCache.setState(epList.get(0).getElpiState());
+			 epCache.setDeleteFlag(epList.get(0).getDeleteFlag());
+		}
+		return ret;
+	}
+	
+	
+	
+
+	
+}

@@ -1,0 +1,639 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\EpGateMaint.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\EpGateMaint.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 174, 66
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于 EpGateMaint"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    LTEXT           "内部调试监控程序，1.0.0.17 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2016",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "确定",IDOK,117,45,50,14,WS_GROUP
+END
+
+IDD_EPGATEMAINT_DIALOG DIALOGEX 0, 0, 571, 464
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "内部监控调试程序"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "电桩编号：",IDC_STATIC,69,20,37,10
+    LTEXT           "枪口编号：",IDC_STATIC,193,21,35,8
+    LTEXT           "用户账号：",IDC_STATIC,263,21,35,8
+    GROUPBOX        "电桩参数设置",IDC_STATIC,7,7,553,29
+    EDITTEXT        IDC_EDIT1,7,132,553,313,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NUMBER | WS_VSCROLL | WS_HSCROLL
+    EDITTEXT        IDC_EDIT5,299,18,59,14,ES_AUTOHSCROLL
+    LTEXT           "ip地址：",IDC_STATIC,363,20,27,8
+    LTEXT           "url：",IDC_STATIC,7,118,15,8
+    EDITTEXT        IDC_EDIT8,21,115,539,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_EDIT4,228,18,30,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO2,389,18,166,196,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,7,45,553,68
+    PUSHBUTTON      "电桩编号管理",IDC_BUTTON_EP,14,18,48,14
+    COMBOBOX        IDC_COMBO3,103,18,89,278,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_BESPNO DIALOGEX 0, 0, 175, 157
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "预约"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,17,122,50,14
+    PUSHBUTTON      "取消",IDCANCEL,89,121,50,14
+    CONTROL         "预约",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,51,14,32,10
+    CONTROL         "续约",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,95,14,32,10
+    LTEXT           "预约时间：",IDC_STATIC,15,37,41,8
+    LTEXT           "分钟",IDC_STATIC,144,39,17,8
+    LTEXT           "预约编号：",IDC_STATIC,14,77,44,8
+    EDITTEXT        IDC_EDIT9,53,74,86,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "自动生成",IDC_BUTTON1,53,94,50,14
+    LTEXT           "付费方式：",IDC_STATIC,15,54,41,8
+    COMBOBOX        IDC_COMBO1,54,52,85,58,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO2,54,35,85,58,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_CALLEP DIALOGEX 0, 0, 168, 103
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "呼叫电桩"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,27,73,50,14
+    PUSHBUTTON      "取消",IDCANCEL,91,73,50,14
+    LTEXT           "类型:",IDC_STATIC,45,25,20,8
+    COMBOBOX        IDC_COMBO1,74,23,61,86,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "时间（秒）:",IDC_STATIC,21,48,44,8
+    EDITTEXT        IDC_EDIT1,74,47,61,14,ES_AUTOHSCROLL
+END
+
+IDD_RATE DIALOGEX 0, 0, 159, 82
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "修改费率"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,20,51,50,14
+    PUSHBUTTON      "取消",IDCANCEL,87,51,50,14
+    LTEXT           "费率ID:",IDC_STATIC,20,28,27,8
+    EDITTEXT        IDC_EDIT1,50,26,86,14,ES_AUTOHSCROLL
+END
+
+IDD_GETVER DIALOGEX 0, 0, 158, 87
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "获取设备当前版本"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,21,61,50,14
+    PUSHBUTTON      "取消",IDCANCEL,91,61,50,14
+    CONTROL         "电桩",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,35,18,32,10
+    CONTROL         "集中器",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,85,18,40,10
+    LTEXT           "集中器地址：",IDC_STATIC,25,38,49,8
+    EDITTEXT        IDC_EDIT1,75,36,53,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG3 DIALOGEX 0, 0, 232, 183
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,64,154,50,14
+    PUSHBUTTON      "取消",IDCANCEL,139,154,50,14
+    LTEXT           "硬件类型:",IDC_STATIC,21,36,36,8
+    EDITTEXT        IDC_EDIT1,62,34,154,14,ES_AUTOHSCROLL
+    LTEXT           "硬件版本:",IDC_STATIC,21,55,36,8
+    EDITTEXT        IDC_EDIT2,62,53,154,14,ES_AUTOHSCROLL
+    LTEXT           "固件类型:",IDC_STATIC,21,73,36,8
+    EDITTEXT        IDC_EDIT3,62,72,154,14,ES_AUTOHSCROLL
+    LTEXT           "固件版本:",IDC_STATIC,21,92,36,8
+    EDITTEXT        IDC_EDIT4,62,91,154,14,ES_AUTOHSCROLL
+    LTEXT           "MD5:",IDC_STATIC,39,110,18,8
+    EDITTEXT        IDC_EDIT5,62,110,154,14,ES_AUTOHSCROLL
+    CONTROL         "升级桩",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,41,15,40,10
+    CONTROL         "升级集中器",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,123,15,56,10
+    LTEXT           "集中器地址:",IDC_STATIC,14,135,45,8
+    EDITTEXT        IDC_EDIT8,62,132,154,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG5 DIALOGEX 0, 0, 231, 80
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,25,48,50,14
+    PUSHBUTTON      "取消",IDCANCEL,97,48,50,14
+    LTEXT           "预约编号：",IDC_STATIC,27,25,41,8
+    EDITTEXT        IDC_EDIT1,66,23,80,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "自动生成",IDC_BUTTON1,159,23,50,14
+END
+
+IDD_DIALOG6 DIALOGEX 0, 0, 200, 132
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,37,101,50,14
+    PUSHBUTTON      "取消",IDCANCEL,112,101,50,14
+    LTEXT           "预充金额：",IDC_STATIC,30,30,41,8
+    EDITTEXT        IDC_EDIT1,71,27,96,14,ES_AUTOHSCROLL
+    LTEXT           "充电方式：",IDC_STATIC,30,54,41,8
+    COMBOBOX        IDC_COMBO2,71,51,96,62,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "付费方式：",IDC_STATIC,31,75,41,8
+    COMBOBOX        IDC_COMBO1,71,74,96,55,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOG7 DIALOGEX 0, 0, 167, 85
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,33,50,50,14
+    PUSHBUTTON      "取消",IDCANCEL,94,50,50,14
+    LTEXT           "起始位置：",IDC_STATIC,27,26,41,8
+    EDITTEXT        IDC_EDIT1,70,24,80,14,ES_AUTOHSCROLL
+END
+
+IDD_VIEW DIALOGEX 0, 0, 630, 79
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "宋体", 400, 0, 0x0
+BEGIN
+    PUSHBUTTON      "查看枪口信息",IDC_BUTTON1,19,16,54,19
+    PUSHBUTTON      "查看用户信息",IDC_BUTTON2,153,16,54,19
+    PUSHBUTTON      "查看统计信息",IDC_BUTTON3,287,16,54,19
+    PUSHBUTTON      " 查看实时监控统计",IDC_BUTTON24,435,16,78,19
+    PUSHBUTTON      "查看电桩信息",IDC_BUTTON4,220,16,54,19
+    PUSHBUTTON      "查看集中器信息",IDC_BUTTON5,354,16,68,19
+    CONTROL         "定时刷新",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,43,48,10
+    LTEXT           "刷新周期：",IDC_STATIC,89,44,41,8
+    EDITTEXT        IDC_EDIT2,132,42,40,14,ES_AUTOHSCROLL
+    LTEXT           "秒",IDC_STATIC,180,44,9,8
+    PUSHBUTTON      "查看实时数据",IDC_BUTTON6,86,16,54,19
+    PUSHBUTTON      " 查看最后一条消费记录",IDC_BUTTON26,525,15,92,19
+END
+
+IDD_CLEAR DIALOGEX 0, 0, 519, 65
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "宋体", 400, 0, 0x0
+BEGIN
+    PUSHBUTTON      "清除充电信息",IDC_BUTTON14,20,14,54,19
+    PUSHBUTTON      "清除用户信息",IDC_BUTTON16,152,14,54,19
+    PUSHBUTTON      "清除预约信息",IDC_BUTTON17,86,14,54,19
+    PUSHBUTTON      "恢复枪口空闲",IDC_BUTTON19,218,14,54,19
+END
+
+IDD_TESTEPGATE DIALOGEX 0, 0, 567, 59
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "宋体", 400, 0, 0x0
+BEGIN
+    PUSHBUTTON      "开始充电",IDC_BUTTON6,20,15,54,19
+    PUSHBUTTON      "结束充电",IDC_BUTTON7,85,15,54,19
+    PUSHBUTTON      "预约",IDC_BUTTON8,150,15,54,19
+    PUSHBUTTON      "停止预约",IDC_BUTTON9,215,15,54,19
+    PUSHBUTTON      "呼叫电桩",IDC_BUTTON10,280,15,54,19
+    PUSHBUTTON      "降地锁",IDC_BUTTON11,345,15,54,19
+    PUSHBUTTON      "下发费率",IDC_BUTTON12,410,15,54,19
+    PUSHBUTTON      "生成识别码",IDC_BUTTON1,476,15,54,19
+END
+
+IDD_TESTEP DIALOGEX 0, 0, 512, 49
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "宋体", 400, 0, 0x0
+BEGIN
+    PUSHBUTTON      "开始充电",IDC_BUTTON20,20,13,54,19
+    PUSHBUTTON      "结束充电",IDC_BUTTON21,87,13,54,19
+    PUSHBUTTON      "预约",IDC_BUTTON22,155,13,54,19
+    PUSHBUTTON      "停止预约",IDC_BUTTON23,224,13,54,19
+END
+
+IDD_UPDATEHEX DIALOGEX 0, 0, 508, 65
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "宋体", 400, 0, 0x0
+BEGIN
+    PUSHBUTTON      "查看当前版本",IDC_BUTTON4,98,14,68,19
+    PUSHBUTTON      "查看升级版本",IDC_BUTTON5,180,14,68,19
+    PUSHBUTTON      "强制升级",IDC_BUTTON13,16,14,68,19
+    PUSHBUTTON      "下发查询当前版本",IDC_BUTTON18,262,14,68,19
+END
+
+IDD_OTHER DIALOGEX 0, 0, 585, 57
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "宋体", 400, 0, 0x0
+BEGIN
+    PUSHBUTTON      "重连实时监控系统",IDC_BUTTON15,21,14,81,19
+    PUSHBUTTON      "下发查询电桩业务",IDC_BUTTON26,204,14,78,19
+    PUSHBUTTON      "下发查询通讯信号",IDC_BUTTON27,114,14,78,19
+    PUSHBUTTON      "增加白名单",IDC_BUTTON29,291,14,78,19
+    PUSHBUTTON      "设置白名单使用状态",IDC_BUTTON30,376,14,78,19
+    PUSHBUTTON      "移除白名单",IDC_BUTTON31,462,14,78,19
+END
+
+IDD_DIALOG8 DIALOGEX 0, 0, 178, 83
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,27,49,50,14
+    PUSHBUTTON      "取消",IDCANCEL,91,49,50,14
+    LTEXT           "站地址：",IDC_STATIC,23,28,33,8
+    EDITTEXT        IDC_EDIT1,57,26,89,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG9 DIALOGEX 0, 0, 657, 183
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,205,162,50,14
+    PUSHBUTTON      "取消",IDCANCEL,600,162,50,14
+    PUSHBUTTON      "查看枪口信息",IDC_BUTTON1,8,67,54,17
+    PUSHBUTTON      "查看统计信息",IDC_BUTTON3,8,112,54,17
+    PUSHBUTTON      "查看当前版本",IDC_BUTTON4,176,89,68,17
+    PUSHBUTTON      "查看升级版本",IDC_BUTTON5,176,112,68,17
+    PUSHBUTTON      "开始充电",IDC_BUTTON6,277,67,54,17
+    PUSHBUTTON      "结束充电",IDC_BUTTON7,341,67,54,17
+    PUSHBUTTON      "预约",IDC_BUTTON8,277,89,54,17
+    PUSHBUTTON      "停止预约",IDC_BUTTON9,341,89,54,17
+    PUSHBUTTON      "呼叫电桩",IDC_BUTTON10,277,112,54,17
+    PUSHBUTTON      "降地锁",IDC_BUTTON11,341,112,54,17
+    PUSHBUTTON      "下发费率",IDC_BUTTON12,277,136,54,17
+    PUSHBUTTON      "强制升级",IDC_BUTTON13,176,67,68,17
+    PUSHBUTTON      "重连实时监控系统",IDC_BUTTON15,550,58,81,17
+    PUSHBUTTON      "清除充电信息",IDC_BUTTON14,91,67,54,17
+    PUSHBUTTON      "清除用户信息",IDC_BUTTON16,91,112,54,17
+    PUSHBUTTON      "清除预约信息",IDC_BUTTON17,91,89,54,17
+    PUSHBUTTON      "下发查询当前版本",IDC_BUTTON18,176,136,68,17
+    PUSHBUTTON      "恢复枪口空闲",IDC_BUTTON19,91,136,54,17
+    GROUPBOX        "查看",IDC_STATIC,1,49,70,111
+    GROUPBOX        "清除",IDC_STATIC,81,49,73,111
+    GROUPBOX        "流程测试",IDC_STATIC,270,50,139,111
+    PUSHBUTTON      "开始充电",IDC_BUTTON20,451,59,54,17
+    PUSHBUTTON      "结束充电",IDC_BUTTON21,454,81,54,17
+    PUSHBUTTON      "预约",IDC_BUTTON22,467,103,54,17
+    PUSHBUTTON      "停止预约",IDC_BUTTON23,475,127,54,17
+    GROUPBOX        "对电桩单元测试",IDC_STATIC,448,33,77,110
+    GROUPBOX        "远程升级",IDC_STATIC,168,49,87,111
+    GROUPBOX        "其它",IDC_STATIC,553,52,97,110
+    GROUPBOX        "",IDC_STATIC,7,54,628,122
+    PUSHBUTTON      " 查看实时监控统计",IDC_BUTTON24,559,86,78,17
+    PUSHBUTTON      "下发查询电桩业务",IDC_BUTTON26,555,136,78,17
+    PUSHBUTTON      "下发查询通讯信号",IDC_BUTTON27,557,114,78,17
+    PUSHBUTTON      "查看电桩信息",IDC_BUTTON25,7,132,54,17
+    PUSHBUTTON      "查看集中器信息",IDC_BUTTON28,343,136,54,17
+    PUSHBUTTON      "查看用户信息",IDC_BUTTON2,7,88,54,17
+END
+
+IDD_OPEN_WHITE DIALOGEX 0, 0, 154, 66
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,26,45,50,14
+    PUSHBUTTON      "取消",IDCANCEL,86,44,50,14
+    LTEXT           "使用状态：",IDC_STATIC,18,20,41,8
+    COMBOBOX        IDC_COMBO1,62,17,77,44,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOG_EP DIALOGEX 0, 0, 252, 217
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,14,121,71,17
+    PUSHBUTTON      "取消",IDCANCEL,14,163,71,17
+    LISTBOX         IDC_LIST2,101,14,135,189,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "添加",IDC_BUTTON1,14,34,71,17
+    PUSHBUTTON      "删除",IDC_BUTTON2,14,79,71,17
+END
+
+IDD_ADD_EPCODE DIALOGEX 0, 0, 164, 68
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,26,40,50,14
+    PUSHBUTTON      "取消",IDCANCEL,92,40,50,14
+    LTEXT           "电桩编号：",IDC_STATIC,22,19,41,8
+    EDITTEXT        IDC_EDIT1,63,18,83,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,17
+ PRODUCTVERSION 1,0,0,17
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.17"
+            VALUE "InternalName", "EpGateMaint.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "EpGateMaint.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.17"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 167
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 59
+    END
+
+    IDD_EPGATEMAINT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 560
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 457
+    END
+
+    IDD_BESPNO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 168
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_CALLEP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 161
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 96
+    END
+
+    IDD_RATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 152
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 75
+    END
+
+    IDD_GETVER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 151
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+    END
+
+    IDD_DIALOG3, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 225
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_DIALOG5, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 224
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 73
+    END
+
+    IDD_DIALOG6, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 125
+    END
+
+    IDD_DIALOG7, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 160
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 78
+    END
+
+    IDD_VIEW, DIALOG
+    BEGIN
+        RIGHTMARGIN, 624
+        BOTTOMMARGIN, 75
+    END
+
+    IDD_CLEAR, DIALOG
+    BEGIN
+        RIGHTMARGIN, 511
+        BOTTOMMARGIN, 63
+    END
+
+    IDD_TESTEPGATE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 566
+    END
+
+    IDD_TESTEP, DIALOG
+    BEGIN
+        RIGHTMARGIN, 505
+    END
+
+    IDD_UPDATEHEX, DIALOG
+    BEGIN
+        RIGHTMARGIN, 499
+        BOTTOMMARGIN, 52
+    END
+
+    IDD_OTHER, DIALOG
+    BEGIN
+        RIGHTMARGIN, 580
+    END
+
+    IDD_DIALOG8, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 171
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 76
+    END
+
+    IDD_DIALOG9, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 650
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_OPEN_WHITE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 147
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 59
+    END
+
+    IDD_DIALOG_EP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 210
+    END
+
+    IDD_ADD_EPCODE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 157
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 61
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HTML
+//
+
+IDR_HTML_BESPNO         HTML                    "Bespno.htm"
+IDR_HTML_CALLEP         HTML                    "CallEp.htm"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "关于 EpGateMaint(&A)..."
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\EpGateMaint.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "l.CHS\afxres.rc"      // 标准组件
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

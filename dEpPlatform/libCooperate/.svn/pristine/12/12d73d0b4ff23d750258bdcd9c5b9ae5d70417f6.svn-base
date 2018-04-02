@@ -1,0 +1,16 @@
+
+
+#\u6D4B\u8BD5\u73AF\u5883
+operator_id=321895837
+operator_secret=1234567890abcde0
+data_secret=1234567890abcde1
+t_data_secret_iv=1234567890abcde2
+sig_secret=1234567890abcde3
+
+token_url=http://special_station.test.zc3u.com/evcs/20160701/query_token
+statuschange_url=http://special_station.test.zc3u.com/evcs/20160701/notification_stationStatus
+order_url=
+
+org_no=9012
+mode=2
+period=30

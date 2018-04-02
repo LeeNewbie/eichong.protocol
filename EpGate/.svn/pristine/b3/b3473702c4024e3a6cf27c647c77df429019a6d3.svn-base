@@ -1,0 +1,255 @@
+package com.epcentre.service;
+
+import io.netty.channel.Channel;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.epcentre.cache.EpCommClient;
+import com.epcentre.constant.EpConstant;
+import com.epcentre.task.CheckEpCommClientTask;
+import com.epcentre.utils.DateUtil;
+import com.netCore.core.pool.TaskPoolFactory;
+import com.netCore.queue.RepeatConQueue;
+import com.netCore.queue.RepeatMessage;
+
+
+public class EpCommClientService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EpCommClientService.class);
+	
+	@SuppressWarnings("unused")
+	private static RepeatConQueue repeatMsgQue = new RepeatConQueue();
+	
+	public static Map<Channel,EpCommClient> mapChannel2Client = new ConcurrentHashMap<Channel, EpCommClient>();
+
+	static Map<String ,EpCommClient> mapClient = new ConcurrentHashMap<String, EpCommClient>();
+
+	public static void putRepeatMsg(RepeatMessage mes)
+	{
+		System.out.print("putRepeat,key:"+mes.getKey()+"\n");
+		repeatMsgQue.put(mes);
+	}
+	public static void removeRepeatMsg(String key)
+	{
+		System.out.print("removeRepeatMsg,key:"+key+"\n");
+		repeatMsgQue.remove(key);
+	}
+	public static boolean enableComm(String identity)
+	{
+		EpCommClient commClient = mapClient.get(identity);
+		if(commClient == null)
+			return false;
+		return commClient.isComm();
+	}
+	public static boolean enableComm(int stationId,String epCode)
+	{
+		String identity="";
+		if(stationId !=0)
+		{
+			identity = ""+ stationId;
+		}
+		else
+		{
+			identity = epCode;
+		}
+		return enableComm(identity);
+	}
+	
+	public static EpCommClient getCommClientByChannel(Channel ch)
+	{
+		return mapChannel2Client.get(ch);
+	}
+	/**
+	 * 该函数只能用来在判断连接是否重复上
+	 * @param key
+	 * @return
+	 */
+		
+	public static EpCommClient getCommClient(String key)
+	{
+		return mapClient.get(key);
+	}
+	
+	
+	 public static void removeChannel(Channel ch)
+	 {
+			
+		EpCommClient commClient = mapChannel2Client.get(ch);
+		if(commClient != null)
+		{
+			logger.debug("mapChannel2Client,size:{}",mapChannel2Client.size());
+			mapChannel2Client.remove(ch);
+			logger.debug("mapChannel2Client,size:{}",mapChannel2Client.size());
+		}
+	}
+	 
+	 public static void removeChannel(String  key)
+	 {
+			
+		EpCommClient commClient = mapClient.get(key);
+		if(commClient != null)
+		{
+			logger.debug("mapChannel2Client,size:{}",mapClient.size());
+			mapClient.remove(key);
+			logger.debug("mapChannel2Client,size:{}",mapClient.size());
+		}
+	}
+	 public static void addCommClient(EpCommClient commClient)
+	 {
+		 if(commClient==null)
+				return;
+		Channel ch = commClient.getChannel();
+		if( ch ==null)
+			return ;
+		mapChannel2Client.put(ch, commClient);
+		 
+	 }
+	public static void addCommClient(String key,EpCommClient commClient)
+	{
+		if(commClient==null)
+			return;
+		Channel ch = commClient.getChannel();
+		if( ch ==null)
+			return ;
+		mapChannel2Client.put(ch, commClient);
+		mapClient.put(key, commClient);	
+	}
+		
+	   
+    
+		
+	/**
+	 * 电桩下线
+	 * @author 
+	 * 2014-12-1
+	 * @param channel
+	 */
+	public static void offLine(Channel channel)
+	{
+		//获得电桩信息
+		EpCommClient commClient =  getCommClientByChannel(channel);
+		
+		if (commClient != null) {
+			
+			handleNetTimeOut(channel,commClient.getIdentity());
+			commClient.setStatus(0);
+		}
+			
+	}
+	
+	public static void startCommClientTimeout(long initDelay) {
+		
+		CheckEpCommClientTask checkTask =  new CheckEpCommClientTask();
+				
+		TaskPoolFactory.scheduleAtFixedRate("CHECK_COMMCLIENT_TIMEOUT_TASK", checkTask, initDelay, 5, TimeUnit.SECONDS);
+	}
+	
+	public static void handleNetTimeOut(Channel channel,String clientIdentity )
+	{
+		int len = 0;
+		if(clientIdentity!=null)
+			len= clientIdentity.length();
+		
+		if(len== 16)
+		{
+			StatService.subCommDiscreteEp();
+			EpService.handleCommClientTimeOut(channel,clientIdentity,0);
+	
+		}
+		else if(len>0)
+		{
+			StatService.subCommConcentrator();
+			EpConcentratorService.handleCommClientTimeOut(channel,clientIdentity,0);
+			
+		}
+		else
+		{
+			
+		}
+		
+	}
+	
+	public static void checkRepeatSend()
+	{
+		repeatMsgQue.check(0);
+	}
+	
+	public static void checkRepeatMsg()
+	{
+		repeatMsgQue.check(0);
+	}
+	
+	public static void checkTimeOut(){
+		
+		Iterator iter = mapChannel2Client.entrySet().iterator();
+		
+		while (iter.hasNext()) {
+			
+			Map.Entry entry = (Map.Entry) iter.next();
+			
+			EpCommClient commClient=(EpCommClient) entry.getValue();
+			
+			if(commClient==null)
+			{
+				continue;	
+			}
+			long now = DateUtil.getCurrentSeconds();
+			long lastTime = commClient.getLastUseTime();
+			long diff = now - lastTime;
+			
+			if(commClient.getStatus() < 2  )//只有链接的，没有初始化，10秒钟算超时
+			{
+				if( diff > 10)
+				{
+					logger.debug("commClient.getStatus():{},diff:{}",commClient.getStatus(),diff);
+					Channel channel= commClient.getChannel();
+					if(channel!=null && channel.isActive())
+					{
+						channel.close();
+					}
+					
+					iter.remove();
+				}
+			
+			}
+			else
+			{
+				if(diff>EpConstant.EP_CONNECT_TIMEOUT)//40秒后更新状态
+				{ 
+					logger.debug("check comm client({}),diff:{}",commClient.getIdentity(),diff);
+				
+					String clientIdentity = commClient.getIdentity();
+					
+					Channel channel= commClient.getChannel();
+					
+					handleNetTimeOut(channel,clientIdentity);
+					
+					commClient.setStatus(0);
+					
+					if(channel==null)
+					{
+						iter.remove();
+					}
+					else
+					{
+						logger.info("check ep client({}:{})timeout!",commClient.getIdentity(),channel.toString());
+						
+						channel.close();
+						iter.remove();
+					}
+					
+				}					
+			}
+		
+		}
+		
+	}
+	
+	
+}

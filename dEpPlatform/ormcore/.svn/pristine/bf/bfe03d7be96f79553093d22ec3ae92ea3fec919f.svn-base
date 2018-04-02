@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ormcore.dao.TblUserBusinessDao">
+	
+	<resultMap id="busInfResultMap" type="TblUserBusiness">
+		<id property="id" column="user_id" />
+		
+		<result property="parterId" column="busi_parent_id" />
+		<result property="companyId" column="busi_company_id" />
+        <result property="phone" column="busi_phone" />
+        <result property="balance" column="busi_account_balance" />
+	</resultMap>
+	
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="busInfResultMap"></resultMap>
+
+	<select id="findUserInfoById" parameterType="int" resultMap="busInfResultMap">
+		select user_id,busi_parent_id,busi_company_id,busi_phone,busi_account_balance from tbl_user_business
+	   where user_id=#{accountId} 
+	</select>
+	
+
+	
+	<update id="addCost" parameterType="TblUserBusiness">
+	   update tbl_user_business set
+			busi_account_balance = busi_account_balance +#{balance}
+	   where 
+	    user_id=#{id}
+	</update>
+	<update id="subCost" parameterType="TblUserBusiness">
+	   update tbl_user_business set
+			busi_account_balance=busi_account_balance-#{balance}
+	   where 
+	    user_id=#{id}
+	</update>
+	
+	
+	
+</mapper> 

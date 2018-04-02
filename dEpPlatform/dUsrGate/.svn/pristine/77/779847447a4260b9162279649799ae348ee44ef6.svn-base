@@ -1,0 +1,112 @@
+package com.usrgate.service;
+
+import io.netty.channel.Channel;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.usrgate.cache.ElectricPileCache;
+import com.usrgate.cache.EpGunCache;
+import com.usrgate.net.PhoneClient;
+import com.usrgate.net.client.EpGateCommClient;
+
+public class CacheService {
+	
+	private static Map<Integer ,EpGateCommClient> mapClient = new ConcurrentHashMap<Integer, EpGateCommClient>();
+	public static EpGateCommClient getEpGate(int epGateId)
+	{
+		return mapClient.get(epGateId);
+	}
+	
+	//电桩
+	private static Map<Integer,ElectricPileCache> mapEpCache = new ConcurrentHashMap<Integer, ElectricPileCache>();
+	public static Map<Integer,ElectricPileCache> getMapEpCache()
+	{
+		return mapEpCache;
+	}
+	public static int getCurrentEpCount()
+	{
+		return mapEpCache.size();
+	}
+	public  static void addEpCache(ElectricPileCache epCache){
+		if(epCache!=null)
+		{
+			int epGateId= epCache.getGateid();
+	
+			mapEpCache.put(epGateId,epCache);
+		}
+	}
+    public static ElectricPileCache getEpByGateId(Integer epGateId){
+		ElectricPileCache electricUser = mapEpCache.get(epGateId);
+		return electricUser;
+	}
+	
+    private static Map<String, EpGunCache> mapGun = new ConcurrentHashMap<String,EpGunCache>();
+	public static Map<String, EpGunCache> getMapGun()
+	{
+		return mapGun;
+	}
+	public static EpGunCache getEpGunCache(String epCode,int epGunNo)
+	{
+		String combEpGunNo = epCode+ epGunNo;
+		return mapGun.get(combEpGunNo);
+	}
+	public static void putEpGunCache(String epCode,int epGunNo,EpGunCache cache)
+	{
+		if(cache !=null && epCode !=null)
+		{
+			String combEpGunNo = epCode+ epGunNo;
+			mapGun.put(combEpGunNo, cache);
+			
+		}
+	}
+
+	private static Map<Channel,PhoneClient> mapCh2PhoneClient = new ConcurrentHashMap<Channel, PhoneClient>();
+	private static ConcurrentHashMap<String,PhoneClient>  mapPhoneClients=new ConcurrentHashMap<String,PhoneClient>();
+	public static Map<Channel,PhoneClient> getMapCh2PhoneClient()
+	{
+		return mapCh2PhoneClient;
+	}
+	
+	public static int getCh2PhoneClientCount()
+	{
+		return mapCh2PhoneClient.size();
+	}
+	
+	public static int getPhoneClientCount()
+	{
+		return mapPhoneClients.size();
+	}
+	
+	public static void addPhoneClient(PhoneClient commClient)
+	{
+		 if(commClient==null || commClient.getChannel()==null)
+			return;
+		 mapCh2PhoneClient.put(commClient.getChannel(), commClient);
+	}
+	public static void addPhoneClientByAccount(PhoneClient commClient)
+	{
+		PhoneClient commClient1 = mapPhoneClients.get(commClient.getIdentity());
+		if(commClient1!=null)
+		{
+			mapCh2PhoneClient.remove(commClient1.getChannel());
+		}
+		
+		PhoneClient commClient2 = mapCh2PhoneClient.get(commClient.getChannel());
+		 if(commClient2==null)
+			return;
+		 mapPhoneClients.put(commClient.getIdentity(), commClient);
+	}
+	public static PhoneClient getPhoneClientByChannel(Channel ch)
+	{
+		 return mapCh2PhoneClient.get(ch);
+	}
+	public static PhoneClient getPhoneClientByIdentity(String phoneIdentity)
+	{
+		 return mapPhoneClients.get(phoneIdentity);
+	}
+	public static void removeChannel(Channel ch)
+	{
+		mapCh2PhoneClient.remove(ch);
+	}
+}

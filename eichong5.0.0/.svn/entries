@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   name=""
+   repos="https://10.9.3.100/svn/eichong"
+   revision="12952"
+   last-author="liuyahui"
+   url="https://10.9.3.100/svn/eichong/trunk/android/branches/eichong_5.0.0"
+   uuid="10cbccd9-2b97-e54f-a826-980271203259"
+   committed-rev="12952"
+   kind="dir"
+   committed-date="2017-10-18T08:59:53.467250Z"/>
+<entry
+   name=".classpath"
+   checksum="bba4005a84a8818c892893528a2f7756"
+   last-author="liuyahui"
+   text-time="2017-10-16T01:41:28.523000Z"
+   committed-rev="12701"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"/>
+<entry
+   name=".project"
+   checksum="194cd2031948bb5c5ad3ba56862313c4"
+   last-author="liuyahui"
+   text-time="2016-11-07T09:10:43.469000Z"
+   committed-rev="3652"
+   kind="file"
+   committed-date="2016-11-07T09:10:43.469269Z"/>
+<entry
+   name=".settings"
+   kind="dir"/>
+<entry
+   name="AndroidManifest.xml"
+   checksum="da879c45728c38ec1f14d4d1238b51a7"
+   last-author="liuyahui"
+   text-time="2017-10-16T01:41:28.523000Z"
+   committed-rev="12701"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"/>
+<entry
+   name="assets"
+   kind="dir"/>
+<entry
+   name="libs"
+   kind="dir"/>
+<entry
+   name="proguard-project.txt"
+   checksum="11106088e5cab6bcdbd25a47a0c962c6"
+   last-author="liuyahui"
+   text-time="2017-05-19T05:21:29.356000Z"
+   committed-rev="6957"
+   kind="file"
+   committed-date="2017-05-19T05:21:29.356265Z"/>
+<entry
+   name="project.properties"
+   checksum="334ef6d27b913f1c4f6a13eb70fd6ff9"
+   last-author="liuyahui"
+   text-time="2017-10-16T01:41:28.523000Z"
+   committed-rev="12701"
+   kind="file"
+   committed-date="2017-10-16T01:41:28.523541Z"/>
+<entry
+   name="res"
+   kind="dir"/>
+<entry
+   name="src"
+   kind="dir"/>
+</wc-entries>

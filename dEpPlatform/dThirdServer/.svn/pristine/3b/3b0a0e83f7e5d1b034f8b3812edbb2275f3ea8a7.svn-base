@@ -1,0 +1,357 @@
+package com.third.net.codec;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
+
+import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.util.ByteUtil;
+import com.third.config.GameConfig;
+import com.third.constant.BaseConstant;
+import com.third.constant.EpProtocolConstant;
+import com.third.epconsumer.StopCarOrganService;
+import com.third.net.constant.InnerHead;
+import com.third.net.constant.Third2EpGate;
+import com.third.protocol.UtilProtocol;
+import com.third.protocol.WmIce104Util;
+import com.third.service.EpGateService;
+import com.third.utils.DateUtil;
+import com.third.utils.NetUtils;
+import com.third.utils.StringUtil;
+
+/**
+ * 收消息，解码
+ * 
+ * 消息结构：
+ * 
+ * @author lwz
+ * Mar 27, 2015 12:11:06 PM
+ */
+public class EpGateDecoder extends ByteToMessageDecoder {
+	
+	
+	private static final Logger logger = LoggerFactory.getLogger(EpGateDecoder.class);
+	public static final int LEN_READABLE = 6;
+		
+	@Override
+	protected void decode(ChannelHandlerContext channelHandlerContext,
+			ByteBuf byteBuf, List<Object> list) throws Exception {
+		
+		String errorMsg="";
+		int readableBytes= byteBuf.readableBytes();
+		if(readableBytes<LEN_READABLE)//如果长度小于长度,不读
+		{
+		
+			logger.debug("decode 1 readableBytes<{},readableBytes:{},channel:{}", new Object[]{LEN_READABLE,readableBytes,channelHandlerContext.channel()});
+
+
+			return;
+		}
+		
+		int pos= byteBuf.bytesBefore(InnerHead.HEAD_FLAG1);//找到的位置
+		int pos1= byteBuf.bytesBefore(InnerHead.HEAD_FLAG2);//找到的位置
+		int discardLen=0;
+		if(pos < 0 || pos1<0 || (pos1-pos)!=1)//没找到，全部读掉
+		{
+			discardLen = readableBytes;
+			logger.debug("decode not find flag header 0x45 0x43,readableBytes:{},channel:{}",readableBytes,channelHandlerContext.channel());
+		}
+		if(pos>0&&(pos1-pos)==1)
+		{
+			discardLen = pos;	
+			logger.debug("decode  find flag header 0x45 0x43,pos:{},channel:{}",pos,channelHandlerContext.channel());
+		}
+		if(discardLen>0)
+		{
+			byte[] dicardBytes= new byte[discardLen];
+			byteBuf.readBytes(dicardBytes);//
+			
+			logger.debug("discard>0 msg:{},channel:{}",WmIce104Util.ConvertHex(dicardBytes, 0),channelHandlerContext.channel());
+			
+			if(discardLen == readableBytes)
+			{
+				//没有数据可对，还回
+				return;
+			}
+		}
+		
+		readableBytes= byteBuf.readableBytes();
+		if(readableBytes<LEN_READABLE)
+		{
+			logger.debug("decode readableBytes<{} readableBytes:{},channel:{}",new Object[]{LEN_READABLE,readableBytes,channelHandlerContext.channel()});
+			
+			return;
+		}
+		
+		//1、先标记读索引（必须）
+		byteBuf.markReaderIndex();
+		
+		//读取协议头
+		byteBuf.readShort();
+			
+		int msg_len = byteBuf.readShort();
+		int remain_len = byteBuf.readableBytes();
+
+		if(remain_len<msg_len )
+		{
+			logger.debug("ep remain_len<msg_len,remain_len:{},channel:{}", remain_len, channelHandlerContext.channel());
+			
+				
+			byteBuf.resetReaderIndex();
+			return ;
+		}
+		
+		int cmd = byteBuf.readShort();
+		
+		byte Msg[]= null;
+		Msg= new byte[msg_len-2];
+    	byteBuf.readBytes(Msg);
+
+    	EpMessage message = new EpMessage();
+    			
+    	message.setLength(msg_len);
+    	message.setCmd(cmd);
+
+    	message.setBytes(Msg);
+    			
+    	list.add(message);
+		
+	}
+	
+	public static void decodeLogin(Channel channel,ByteBuffer byteBuffer)
+	{
+		int epGateId = byteBuffer.getInt();
+		logger.debug("thirdServer dEpGateId:{}",epGateId);
+		EpGateService.sendLogin(channel,epGateId);
+	}
+	
+	public static void decodeHeart(Channel channel,ByteBuffer byteBuffer)
+	{
+		EpGateService.handleHeart(channel);
+	}
+
+	private static String setKey(ByteBuffer byteBuffer,int cmd)
+	{
+		String epCode = ByteUtil.getString(byteBuffer);
+		int epGunNo = (int)byteBuffer.get();
+		String key = epCode + BaseConstant.SPLIT + epGunNo;
+
+		if (Third2EpGate.EP_CONSUME_RECORD != cmd) {
+			int epType = (int)byteBuffer.get();
+			key += BaseConstant.SPLIT + epType;
+			key += BaseConstant.SPLIT + cmd;
+			Map<Integer,Object> pointMap = EpGateService.getRealData(key);
+			if (pointMap != null && pointMap.size() > 0) {
+				String oldKey = key + BaseConstant.SPLIT + BaseConstant.OLD;
+				EpGateService.addRealData(oldKey, pointMap);
+				EpGateService.removeRealData(key);
+			}
+		}
+
+		return key;
+	}
+	
+	public static void decodeRemote(Channel channel,ByteBuffer byteBuffer,int cmd)
+	{
+		Map<Integer,Object> pointMap = new HashMap<Integer,Object>();
+		String key = setKey(byteBuffer, cmd);
+		int num = (int)byteBuffer.get();
+		short addr;
+		int value;
+		for(int i=0;i<num;i++)
+	    {
+	        addr = byteBuffer.getShort();
+	        value =(int)byteBuffer.get();
+	        pointMap.put((int)addr, value);
+	        logger.debug("thirdServer yx key:{} addr:{},value:{}",new Object[]{key,addr,value});
+	    }
+		EpGateService.addRealData(key, pointMap);
+	}
+
+	public static void decodeTelemetry(Channel channel,ByteBuffer byteBuffer)
+	{
+		Map<Integer,Object> pointMap = new HashMap<Integer,Object>();
+		String key = setKey(byteBuffer, Third2EpGate.EP_TELEMETRY);
+		int num = (int)byteBuffer.get();
+		int addr,value;
+		BigDecimal temp;
+		for(int i=0;i<num;i++)
+		{
+			addr = (int)byteBuffer.getShort();
+			value = (int)byteBuffer.getShort();
+	        logger.debug("thirdServer yc key:{} addr:{},value:{}",new Object[]{key,addr,value});
+		    switch(addr)
+		    {
+			    case EpProtocolConstant.YC_WORKSTATUS://充电机状态
+				case EpProtocolConstant.YC_CAR_PLACE_LOCK: //车位地锁状态
+				case EpProtocolConstant.YC_SOC://soc
+				case EpProtocolConstant.YC_TOTAL_TIME://累计充电时间
+				case EpProtocolConstant.YC_REMAIN_TIME://估计剩余时间
+				case EpProtocolConstant.YC_BATTARY_TYPE://电池类型
+				case EpProtocolConstant.YC_BATTARY_RATED_CAPACITY://整车动力蓄电池系统额定容量
+				case EpProtocolConstant.YC_BATTARY_MAKE_YEAR://电池组生产日期年
+				case EpProtocolConstant.YC_BATTARY_MAKE_DATE://电池组生产日期月，日
+				case EpProtocolConstant.YC_BATTARY_CHARGE_TIME://电池组充电次数
+				case EpProtocolConstant.YC_SIGNLE_BATTRY_HIGH_VOL_GROUP://单体蓄电池最高电压和组号
+				{
+					pointMap.put(addr,value);
+				}
+				break;
+				case EpProtocolConstant.YC_BATTRY_LOWEST_TEMP://电池组最低温度
+				case EpProtocolConstant.YC_BATTRY_HIGHEST_TEMP://电池组最高温度
+				case EpProtocolConstant.YC_OUT_VOL://充电机输出电压
+				case EpProtocolConstant.YC_A_VOL://A相电压
+				case EpProtocolConstant.YC_B_VOL://b相电压
+				case EpProtocolConstant.YC_C_VOL://c相电压
+				case EpProtocolConstant.YC_OUT_HIGH_VOL://最高输出电压
+				case EpProtocolConstant.YC_OUT_LOW_VOL://最低输出电压
+				case EpProtocolConstant.YC_CAR_BATTRY_TOTAL_VOL://整车动力电池总电压
+				case EpProtocolConstant.YC_EP_TEMPERATURE://电桩内部温度
+				case EpProtocolConstant.YC_SIGNLE_BATTRY_CAN_HIGH_VOL://单体蓄电池最高允许充电电压
+				case EpProtocolConstant.YC_BATTRY_TOTAL_POWER://动力蓄电池标称总能量
+				case EpProtocolConstant.YC_BATTRY_HIGH_VOL://最高允许充电总电压(额定总电压)
+				case EpProtocolConstant.YC_BATTRY_CAN_HIGH_TEMP://最高允许温度
+				{
+					pointMap.put(addr, UtilProtocol.intToBigDecimal1(value));
+				}
+				break;
+				case EpProtocolConstant.YC_OUT_CURRENT://充电机输出电流
+				case EpProtocolConstant.YC_A_CURRENT://A相电流
+				case EpProtocolConstant.YC_B_CURRENT://b相电流
+				case EpProtocolConstant.YC_C_CURRENT://c相电流
+				case EpProtocolConstant.YC_OUT_HIGH_CURRENT://最大输出电流
+				case EpProtocolConstant.YC_SIGNLE_BATTRY_HIGH_CURRENT://最高允许充电电流
+				{
+					pointMap.put(addr, UtilProtocol.intToBigDecimal2(value));
+				}
+				break;
+				default:
+				{
+					if(addr>=EpProtocolConstant.YC_CHARGER_MOD_1_OUT_VOL)
+					{
+						int tempAddr = (addr-EpProtocolConstant.YC_CHARGER_MOD_1_OUT_VOL)%9;
+					    if(tempAddr==0||tempAddr==2||tempAddr==3||tempAddr==4||tempAddr==8)
+					    {
+					    	temp = UtilProtocol.intToBigDecimal1(value);
+						}
+						else 
+						{
+							temp = UtilProtocol.intToBigDecimal2(value);
+					    }
+			    	    pointMap.put(addr, temp);
+			    	}
+			    }
+			    break;
+
+		    }
+		}
+		EpGateService.addRealData(key, pointMap);
+
+		Map<Integer,Object> oldMap = EpGateService.getRealData(key + BaseConstant.SPLIT + BaseConstant.OLD);
+		int oldValue = -1;
+		long diff = 0;
+		long statusTime = DateUtil.getCurrentSeconds();
+		if (oldMap != null && oldMap.size() > 0) {
+			oldValue = StopCarOrganService.changeWorkStatus((int)oldMap.get(EpProtocolConstant.YC_WORKSTATUS));
+			diff = statusTime - (int)pointMap.get(0);
+		}
+		int epWorkStatus = (int)pointMap.get(EpProtocolConstant.YC_WORKSTATUS);
+		value = StopCarOrganService.changeWorkStatus(epWorkStatus);
+
+		if (oldValue != value) {
+			pointMap.put(0, statusTime);
+			NetUtils.sleep(100);
+			StopCarOrganService.realData(key);
+		} else if (epWorkStatus == EpProtocolConstant.EP_GUN_W_STATUS_WORK) {
+			if (diff >= GameConfig.scoCfg.getSendRealDataCyc()) {
+				pointMap.put(0, statusTime);
+				StopCarOrganService.realData(key);
+			}
+		}
+	}
+
+	public static void decodeLongerTelemetry(Channel channel,ByteBuffer byteBuffer)
+	{
+		Map<Integer,Object> pointMap = new HashMap<Integer,Object>();
+		String key = setKey(byteBuffer, Third2EpGate.EP_LONGER_TELEMETRY);
+		int num = (int)byteBuffer.get();
+		short addr;
+		int len;
+		int value;
+		byte[] val;
+		BigDecimal temp;
+
+		for(int i=0;i<num;i++)
+		{
+			addr = byteBuffer.getShort();
+			len = (int)byteBuffer.get();
+			switch (addr) 
+			{
+			case EpProtocolConstant.YC_VAR_ACTIVE_TOTAL_METERNUM: // 有功总电度
+			case EpProtocolConstant.YC_VAR_CHARGED_METER_NUM:// 已充度数
+			{
+				value = byteBuffer.getInt();
+		    	pointMap.put((int)addr, UtilProtocol.intToBigDecimal3(value));
+		        logger.debug("thirdServer ChangeLenYc key:{} addr:{},value:{}",new Object[]{key,addr,value});
+			}
+			break;
+			case EpProtocolConstant.YC_VAR_CHARGED_COST: // 已充金额
+			case EpProtocolConstant.YC_VAR_CHARGED_PRICE: // 单价
+			{
+				value = byteBuffer.getInt();
+		    	pointMap.put((int)addr, UtilProtocol.intToBigDecimal2(value));
+		        logger.debug("thirdServer ChangeLenYc key:{} addr:{},value:{}",new Object[]{key,addr,value});
+			}
+			break;
+			case EpProtocolConstant.YC_VAR_CAR_VIN: // 车辆识别码
+			case EpProtocolConstant.YC_VAR_BATTARY_FACTORY: // 电池厂商
+			{
+				val = new byte[len];
+				byteBuffer.get(val);
+				String str = StringUtil.getCString(val);
+		    	pointMap.put((int)addr, str);
+		        logger.debug("thirdServer ChangeLenYc key:{} addr:{},value:{}",new Object[]{key,addr,str});
+			}
+			break;
+			
+			default:
+			{
+				val = new byte[len];
+				byteBuffer.get(val);
+			}
+			break;
+			}
+		}
+		
+		EpGateService.addRealData(key, pointMap);
+	}
+
+	public static void decodeConsumeRecord(Channel channel,ByteBuffer byteBuffer)
+	{
+		Map<Integer,Object> pointMap = new HashMap<Integer,Object>();
+		String key = setKey(byteBuffer, Third2EpGate.EP_CONSUME_RECORD);
+
+		pointMap.put(1, ByteUtil.getString(byteBuffer));
+		pointMap.put(2, String.valueOf(byteBuffer.getInt()));
+		pointMap.put(3, String.valueOf(byteBuffer.getInt()));
+		int value = byteBuffer.getInt();
+    	pointMap.put(4, UtilProtocol.intToBigDecimal3(value));
+		value = byteBuffer.getInt();
+ 		pointMap.put(5, UtilProtocol.intToBigDecimal2(value));
+		value = byteBuffer.getInt();
+ 		pointMap.put(6, UtilProtocol.intToBigDecimal2(value));
+
+		logger.debug("thirdServer ConsumeRecord key:{} pointMap:{}",new Object[]{key,pointMap});
+		EpGateService.addRealData(key, pointMap);
+		StopCarOrganService.chargeRecord(key);
+	}
+}

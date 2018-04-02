@@ -1,0 +1,59 @@
+package com.epcentre.service;
+
+import io.netty.channel.Channel;
+
+import java.nio.ByteBuffer;
+
+/**
+ * 服务服相关服务
+ * @author 
+ * 2014-12-1 上午9:13:55
+ */
+public class ElectricServerService {
+	
+	//private static final Logger logger = LoggerFactory.getLogger(ElectricServerService.class);
+	
+	public static void login(Channel channel , ByteBuffer byteBuffer){
+		//int userId = byteBuffer.getInt();
+		//ElectricServerService.forceUserOffLine(userId);
+	}
+	
+	
+	/**
+	 * 用户被game T下线
+	 * @author 
+	 * 2014-12-1
+	 * @param channel
+	 * @param byteBuffer
+	 */
+	public static void forceUserOffLine(Channel channel , ByteBuffer byteBuffer){
+		//int userId = byteBuffer.getInt();
+		//ElectricServerService.forceUserOffLine(userId);
+	}
+	
+	/**
+	 * 将用户踢下线的具体操作
+	 * @author 
+	 * 2014-12-1
+	 * @param userId
+	 */
+	public static void forceEpOffLine(Channel ch){
+		/*if(ch != null)
+			ch.close();*/
+		
+		/*ElectricClient electricUser = GameWorld.getUserByUserId(userId);
+		
+		Channel userChannel = GameWorld.getChannelByUserId(userId);
+		
+		if (electricUser != null) {
+			//从服务世界移除user
+			GameWorld.removeUserFromGameWorld(electricUser);
+			//logger.info("用户【{}】被 T下线...", new Object[]{ electricUser.getElPiElectricPileName() });
+		}
+		if (userChannel != null && userChannel.isActive()) {
+			userChannel.close();
+			//logger.info("断开用户【{}】的连接...", new Object[]{ electricUser.getElPiElectricPileName() });
+		}*/
+		
+	}
+}

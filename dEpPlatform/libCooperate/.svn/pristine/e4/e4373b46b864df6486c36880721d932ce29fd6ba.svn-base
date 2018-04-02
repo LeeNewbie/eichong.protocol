@@ -1,0 +1,63 @@
+package com.cooperate.cczc;
+
+import java.io.IOException;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cooperate.constant.Consts;
+import com.cooperate.utils.HttpUtils;
+import com.cooperate.utils.SigTool;
+
+public class CCZCService {
+	
+	private static final Logger logger =  LoggerFactory.getLogger(CCZCService.class);
+	  
+	
+    public static String sendChargeResp(Map<String ,Object> params) {
+    	
+        return send2EChong(Consts.E_CHARGE_RESP_URL, params);
+    }
+    public static String sendStopChargeResp(Map<String ,Object> params) {
+    	
+        return send2EChong(Consts.E_STOPCHARGE_RESP_URL, params);
+    }
+    public static String sendRealData(Map<String ,Object> params) {
+    	
+        return send2EChong(Consts.E_REAL_DATA_URL, params);
+    }
+    public static String sendOrderInfo(Map<String ,Object> params) {
+    	
+        return send2EChong(Consts.E_ORDER_URL, params);
+    }
+    private static String send2EChong(String url, Map<String ,Object> params) {
+    	logger.debug("url:{},params:{}",url,params);
+		
+        fullParams(params);
+        if (null == params) {
+            logger.error("send2EChong is fail;url={}", url);
+            return null;
+        }
+        String response = null;
+        try {
+        	logger.info("send2EChong,url:{}",url);
+            response = HttpUtils.httpPostObject(url, params);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.info("send2EChong,response:{}",response);
+        return response;
+    }
+
+    private static void fullParams(Map<String,Object> map) {
+        String sig = SigTool.getSignMd5(map, Consts.APPSECRET);
+        if (null == sig)  {
+        	logger.error("sig generate is fail;map={}", map);
+        	map = null;
+        } else {
+        	map.put("sign", sig);
+        }
+    }
+
+}

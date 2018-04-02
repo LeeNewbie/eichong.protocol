@@ -1,0 +1,14 @@
+package com.third.task;
+
+import com.third.server.SCOService;
+
+
+
+
+public class testTask  implements Runnable {
+
+	@Override
+	public void run() {
+		SCOService.check();
+	}
+}

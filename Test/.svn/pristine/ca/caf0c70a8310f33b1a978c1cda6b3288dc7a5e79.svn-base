@@ -1,0 +1,233 @@
+package com.third.cache;
+
+import java.math.BigDecimal;
+
+public class SCOEp {
+	private String epCode;
+	private int currentType;
+	
+	private int gunNo=1;
+	int workStatus;
+	int gunConnStatus;
+	int faultCode;
+	long createTime;
+	BigDecimal vol_a=new BigDecimal(0);
+	BigDecimal vol_b=new BigDecimal(0);
+	BigDecimal vol_c=new BigDecimal(0);
+	BigDecimal cur_a=new BigDecimal(0);
+	BigDecimal cur_b=new BigDecimal(0);
+	BigDecimal cur_c=new BigDecimal(0); 
+	BigDecimal power=new BigDecimal(0);
+	BigDecimal volt=new BigDecimal(0);
+	BigDecimal cur=new BigDecimal(0);
+	int soc;
+	int restTime;
+	
+	BigDecimal bdmeterNum;
+	long lStartTime;
+	long lEndTime;
+	
+	
+	long sendScoLastTime;
+	
+	public SCOEp(String epCode,int currentType)
+	{
+		this.epCode= epCode;
+		this.currentType = currentType;
+	}
+	
+	public void setNextChargeTime(long endChargeTime)
+	{
+		
+	}
+	
+	public void gotoCharge()
+	{
+		workStatus=0;
+	}
+	
+	public void gotoIdle()
+	{
+		workStatus=0;
+	}
+
+	public String getEpCode() {
+		return epCode;
+	}
+
+	public void setEpCode(String epCode) {
+		this.epCode = epCode;
+	}
+
+	public int getCurrentType() {
+		return currentType;
+	}
+
+	public void setCurrentType(int currentType) {
+		this.currentType = currentType;
+	}
+
+	public int getGunNo() {
+		return gunNo;
+	}
+
+	public void setGunNo(int gunNo) {
+		this.gunNo = gunNo;
+	}
+
+	public int getWorkStatus() {
+		return workStatus;
+	}
+
+	public void setWorkStatus(int workStatus) {
+		this.workStatus = workStatus;
+	}
+
+	public int getGunConnStatus() {
+		return gunConnStatus;
+	}
+
+	public void setGunConnStatus(int gunConnStatus) {
+		this.gunConnStatus = gunConnStatus;
+	}
+
+	public int getFaultCode() {
+		return faultCode;
+	}
+
+	public void setFaultCode(int faultCode) {
+		this.faultCode = faultCode;
+	}
+
+	public long getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(long createTime) {
+		this.createTime = createTime;
+	}
+
+	public BigDecimal getVol_a() {
+		return vol_a;
+	}
+
+	public void setVol_a(BigDecimal vol_a) {
+		this.vol_a = vol_a;
+	}
+
+	public BigDecimal getVol_b() {
+		return vol_b;
+	}
+
+	public void setVol_b(BigDecimal vol_b) {
+		this.vol_b = vol_b;
+	}
+
+	public BigDecimal getVol_c() {
+		return vol_c;
+	}
+
+	public void setVol_c(BigDecimal vol_c) {
+		this.vol_c = vol_c;
+	}
+
+	public BigDecimal getCur_a() {
+		return cur_a;
+	}
+
+	public void setCur_a(BigDecimal cur_a) {
+		this.cur_a = cur_a;
+	}
+
+	public BigDecimal getCur_b() {
+		return cur_b;
+	}
+
+	public void setCur_b(BigDecimal cur_b) {
+		this.cur_b = cur_b;
+	}
+
+	public BigDecimal getCur_c() {
+		return cur_c;
+	}
+
+	public void setCur_c(BigDecimal cur_c) {
+		this.cur_c = cur_c;
+	}
+
+	public BigDecimal getPower() {
+		return power;
+	}
+
+	public void setPower(BigDecimal power) {
+		this.power = power;
+	}
+
+	public BigDecimal getVolt() {
+		return volt;
+	}
+
+	public void setVolt(BigDecimal volt) {
+		this.volt = volt;
+	}
+
+	public BigDecimal getCur() {
+		return cur;
+	}
+
+	public void setCur(BigDecimal cur) {
+		this.cur = cur;
+	}
+
+	public int getSoc() {
+		return soc;
+	}
+
+	public void setSoc(int soc) {
+		this.soc = soc;
+	}
+
+	public int getRestTime() {
+		return restTime;
+	}
+
+	public void setRestTime(int restTime) {
+		this.restTime = restTime;
+	}
+
+	public BigDecimal getBdmeterNum() {
+		return bdmeterNum;
+	}
+
+	public void setBdmeterNum(BigDecimal bdmeterNum) {
+		this.bdmeterNum = bdmeterNum;
+	}
+
+	public long getlStartTime() {
+		return lStartTime;
+	}
+
+	public void setlStartTime(long lStartTime) {
+		this.lStartTime = lStartTime;
+	}
+
+	public long getlEndTime() {
+		return lEndTime;
+	}
+
+	public void setlEndTime(long lEndTime) {
+		this.lEndTime = lEndTime;
+	}
+
+	public long getSendScoLastTime() {
+		return sendScoLastTime;
+	}
+
+	public void setSendScoLastTime(long sendScoLastTime) {
+		this.sendScoLastTime = sendScoLastTime;
+	}
+	
+	
+	
+
+}

@@ -1,0 +1,22 @@
+[2017-03-13 16:08:08 INFO][InitConfigLog]开始初始化全局配置...
+[2017-03-13 16:08:08 INFO][InitConfigLog]读取xml文件：【E:\work\java\dEpGate\conf\global-config.xml】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化全局配置结束...配置信息:【com.ec.netcore.model.conf.GlobalConfig@2a06cd3b[mask1=89,mask2=122,mask3=122,mask4=89]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]开始初始化应用服配置...
+[2017-03-13 16:08:08 INFO][InitConfigLog]读取xml文件：【E:\work\java\dEpGate\conf\game-config.xml】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化应用服配置结束，配置信息:【com.ec.netcore.model.conf.GameConfig@117b8cf0[id=1,name=GateServer1,description=网关服1,pfId=10,zoneId=1,shutdownPort=50011]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]开始初始化服务器配置...
+[2017-03-13 16:08:08 INFO][InitConfigLog]读取xml文件：【E:\work\java\dEpGate\conf\server-config.xml】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@4aa192a5[name=ep gate server,description=电桩服务,ip=,port=2406]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@35a2b4ea[name=ep gate server,description=电桩服务,ip=,port=30011]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@4d138a28[name=monitor server,description=内部服务,ip=,port=7777]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@3dd36fa0[name=AppGateServer,description=app内网网关服,ip=,port=30012]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@4459116[name=monitor server,description=内部服务,ip=,port=9001]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@73383d8a[name=monitor server,description=内部服务,ip=,port=7787]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@71506a1e[name=phone server,description=内部服务,ip=,port=8001]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@566711b0[name=dataAnalyzeserver,description=数据分析中心服务端,ip=,port=8002]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@8ba6621[name=thirdServer,description=第三方中心服务端,ip=,port=8003]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置:【com.ec.netcore.model.conf.ServerConfig@5870501[name=httpServer,description=httpServer,ip=,port=2410]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化服务器配置结束...配置信息:【com.ec.netcore.model.conf.ServerConfigs@6359877c[cfgs={manage-server=com.ec.netcore.model.conf.ServerConfig@3dd36fa0[name=AppGateServer,description=app内网网关服,ip=,port=30012], usrgate-server=com.ec.netcore.model.conf.ServerConfig@35a2b4ea[name=ep gate server,description=电桩服务,ip=,port=30011], monitor-server=com.ec.netcore.model.conf.ServerConfig@566711b0[name=dataAnalyzeserver,description=数据分析中心服务端,ip=,port=8002], data-centre-montior-server=com.ec.netcore.model.conf.ServerConfig@73383d8a[name=monitor server,description=内部服务,ip=,port=7787], third-server=com.ec.netcore.model.conf.ServerConfig@8ba6621[name=thirdServer,description=第三方中心服务端,ip=,port=8003], epwatch-server=com.ec.netcore.model.conf.ServerConfig@4d138a28[name=monitor server,description=内部服务,ip=,port=7777], http-server=com.ec.netcore.model.conf.ServerConfig@5870501[name=httpServer,description=httpServer,ip=,port=2410], ep-server=com.ec.netcore.model.conf.ServerConfig@4aa192a5[name=ep gate server,description=电桩服务,ip=,port=2406], data-centre-server=com.ec.netcore.model.conf.ServerConfig@4459116[name=monitor server,description=内部服务,ip=,port=9001], phone-server=com.ec.netcore.model.conf.ServerConfig@71506a1e[name=phone server,description=内部服务,ip=,port=8001]}]】
+[2017-03-13 16:08:08 INFO][InitConfigLog]开始初始化客户端配置...
+[2017-03-13 16:08:08 INFO][InitConfigLog]读取xml文件：【E:\work\java\dEpGate\conf\client-config.xml】
+[2017-03-13 16:08:08 INFO][InitConfigLog]初始化客户端配置结束...配置信息【com.ec.netcore.model.conf.ClientConfigs@395a557a[cfgs={monitor-server=com.ec.netcore.model.conf.ClientConfig@59a1da00[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.2.109,port=8002], third-server=com.ec.netcore.model.conf.ClientConfig@10ef63f9[name=thirdServer,description=第3方服务,ip=10.9.3.117,port=8002]}]】

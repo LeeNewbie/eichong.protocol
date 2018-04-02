@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<root>
+	<electricpile>
+		<epcode>3301021010000005</epcode>
+		<type>14</type>
+		<power>60</power>
+		<meter>0.1</meter>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000008</epcode>
+		<type>14</type>
+		<power>120</power>
+		<meter>0.1</meter>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000009</epcode>
+		<type>5</type>
+		<power>60</power>
+		<meter>0.1</meter>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000010</epcode>
+		<type>5</type>
+		<power>60</power>
+		<meter>0.1</meter>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000011</epcode>
+		<type>14</type>
+		<power>60</power>
+		<meter>0.1</meter>
+	</electricpile>
+
+</root>

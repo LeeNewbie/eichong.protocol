@@ -1,0 +1,267 @@
+package com.usrgate.service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.core.pool.TaskPoolFactory;
+import com.usrgate.cache.ElectricPileCache;
+import com.usrgate.cache.EpCommClient;
+import com.usrgate.config.GameConfig;
+import com.usrgate.config.Global;
+import com.usrgate.constant.EpConstant;
+import com.usrgate.dao.DB;
+import com.usrgate.model.RateInfo;
+import com.usrgate.model.TblPurchaseHistory;
+import com.usrgate.protocol.EpEncodeProtocol;
+import com.usrgate.protocol.Iec104Constant;
+import com.usrgate.sender.EpMessageSender;
+import com.usrgate.task.CheckRateTask;
+import com.usrgate.utils.DateUtil;
+
+public class RateService {
+	private static final Logger logger = LoggerFactory
+			.getLogger(RateService.class);
+	
+	//费率缓存
+	public static Map<Integer, RateInfo> rateMap = new ConcurrentHashMap<Integer,RateInfo>();
+	
+	private static long lastFetchRate=0;
+	
+	public static void startCheckRateTimer(long initDelay) {
+		
+		CheckRateTask checkTask =  new CheckRateTask();
+				
+		TaskPoolFactory.scheduleAtFixedRate("CHECK_RATE_UPDATE_TASK", checkTask, initDelay, 24*60*60, TimeUnit.SECONDS);
+		
+		//TaskPoolFactory.scheduleAtFixedRate("CHECK_NET_TIMEOUT_TASK", checkTask, initDelay, 300, TimeUnit.SECONDS);
+	}
+	
+	public static void init()
+	{
+		if(lastFetchRate ==0)
+		{
+			//取得全部费率
+			List<RateInfo> rateList= DB.rateInfoDao.getAll();
+			int rateListSize= rateList.size();
+			for(int i = 0; i < rateListSize; i++)  
+			{  
+		       RateInfo rateInfo= rateList.get(i);  
+		       
+		       if(rateInfo.parseStage())
+		       {
+		    	   logger.debug("add rate,id:{}",rateInfo.getId());
+		    	   RateService.AddRate(rateInfo.getId(),rateInfo);
+		       }
+		       else
+		       {
+		    	   logger.error("init rate info fail,rate id{},rateInfo:{}",rateInfo.getId(),rateInfo.getQuantumDate());
+		       }
+			} 
+			
+			logger.debug("rateList,size:",rateList.size());
+			
+			long initDelay = getRateUpdateTime();
+			
+			logger.debug("startCheckRateTimer {} sec after",initDelay);
+		
+			startCheckRateTimer(initDelay);
+			
+		}
+	}
+	
+	public static void checkModifyRate()
+	{
+		List<RateInfo> rateList= DB.rateInfoDao.getLastUpdate();
+		int rateListSize= rateList.size();
+		for(int i = 0; i < rateListSize; i++)  
+		{  
+	       RateInfo rateInfo= rateList.get(i);  
+	       
+	       if(rateInfo.parseStage())
+	       {
+	    	   logger.debug("add rate,id:{}",rateInfo.getId());
+	    	   RateService.AddRate(rateInfo.getId(),rateInfo);
+	       }
+		} 
+	}
+	
+	
+	
+	public static RateInfo getRateInfo(String epCode)
+	{
+		ElectricPileCache electricUser =  EpService.getEpByCode(epCode);
+		if(electricUser == null)
+		{
+			logger.error("dont find ElectricPileClient:{} getRateInfo",epCode);
+			return null;
+		}
+		
+		int rateInfoId = electricUser.getRateid();
+		return RateService.getRateById(rateInfoId);
+	}
+	
+	public static synchronized RateInfo getRateById(Integer Id){
+		RateInfo rate = rateMap.get(Id);
+		return rate;
+	}
+	public static synchronized void AddRate(Integer Id,RateInfo rate)
+	{
+		if(Id>0&&rate!=null)
+		{
+			rateMap.put(Id, rate);
+		}
+		else
+		{
+			logger.error("AddRate fail,because of,Id:{},rate:{}",Id,rate);
+		}
+	}
+	//小于30分钟或第小于5分钟不收钱
+	/**
+	 * 1.第一个30分钟，不足三十分钟按照三十分钟计算
+	 * 2.后面的三十分钟,小于5分钟不收钱,5-30按照三十分钟收钱
+	 * @param realBespTime
+	 * @return
+	 */
+	public static long calcBespTime(long realBespTime){
+		if(realBespTime<0)
+		{
+			logger.error("calcBespTime,realBespTime:{}",realBespTime);
+			return 0;
+		}
+		long minUnit= EpConstant.MIN_BESP_TIME_UINT;//按三十分钟计价，不足三十分钟按三十分钟算
+		long n1 = (int)realBespTime%minUnit;
+		long n2 = (int)realBespTime/minUnit;
+		long retRealBespTime=0;
+		if(n2==0||(n2>=1 &&n1>EpConstant.FREE_BESP_TIME))
+		{
+			//1.第一个30分钟，不足三十分钟按照三十分钟计算
+			//2.后面的三十分钟,小于5分钟不收钱,5-30按照三十分钟收钱
+			retRealBespTime = ((realBespTime/minUnit)+1)*minUnit /60;
+		}
+		else
+		{
+			if(n1<=EpConstant.FREE_BESP_TIME)//如果小于5分钟，扔掉
+			{
+				realBespTime = realBespTime-n1;
+			}
+			retRealBespTime = realBespTime /60;
+		}
+		logger.info("calcBespTime,realBespTime:{},retRealBespTime:{}",realBespTime,retRealBespTime);
+		return retRealBespTime;
+	}
+	
+	public static long calcBespTime(long st,long et,long user_cancel_t){
+		if(et<st)
+		{
+			logger.debug("calcBespTime,st:{},et:{}",st,et);
+			return 0;
+		}
+		if(st<10000)
+		{
+			logger.debug("calcBespTime,st:{}",st);
+			return 0;
+		}
+		if(user_cancel_t>0)
+		{
+			long diff = user_cancel_t-st;
+
+            et = st + diff;
+		}
+		
+		long realBespTime = et- st;
+		logger.debug("calcBespTime,st:{},et:{}",st,et);
+		logger.debug("calcBespTime,user_cancel_t:{}",user_cancel_t);
+		
+		return calcBespTime(realBespTime);
+	}
+	
+	public static BigDecimal calcBespAmt(BigDecimal bespokeRate,long bespTime)
+	{
+		java.math.BigDecimal bespAmt=new BigDecimal(bespTime) ;
+		
+		bespAmt = bespAmt.multiply(bespokeRate);
+		bespAmt = bespAmt.setScale(2,BigDecimal.ROUND_HALF_UP); 
+		
+		return bespAmt;
+		
+	}
+	public static void handleConsumeModelReq(EpCommClient CommClient,String epCode,byte [] time) 
+	{
+		RateInfo rateInfo = RateService.getRateInfo(epCode);
+
+		if (null != rateInfo) 
+		{
+			byte[] bConsumeModelProtoData = EpEncodeProtocol.do_consume_model(epCode, rateInfo);
+			if(bConsumeModelProtoData==null)
+			{
+				logger.error("handleConsumeModelReq do_consume_model exception:{}",epCode);
+			}
+			EpMessageSender.sendMessage(CommClient,0,0,Iec104Constant.C_CONSUME_MODEL, bConsumeModelProtoData,time,CommClient.getCommVersion());
+		} else {
+			logger.info("handleConsumeModelReq fail,not found rate info:{"
+							+ epCode + "}\n");
+		}
+	}
+	
+	public  static String getPayModeDesc(int pmMode)
+	{
+		String desc="";
+		switch(pmMode)
+		{
+		case 1:
+			desc="先付费";
+			break;
+		case 2:
+			desc="后付费";
+			break;
+		
+		default:
+			desc="未知状态";
+			break;
+		}
+		return desc;
+	}
+	
+	public static void addPurchaseHistoryToDB(BigDecimal cost,int type,int userId,int userOrigin,
+			String content,String epCode,String serialNo,String bespokeNo)
+	{
+		java.util.Date phNow = new java.util.Date();
+		if(Math.abs(userOrigin)>9999)
+		{
+			logger.info("userOrigin:{}",userOrigin);
+			userOrigin=0;
+		}
+		userOrigin=0;
+		TblPurchaseHistory phInfo = new TblPurchaseHistory(phNow,cost,"",type,userId,userOrigin,content,epCode,
+				serialNo,bespokeNo);
+		try
+		{
+			DB.phDao.insertPurchaseRecord(phInfo);
+		}
+		catch(Exception e)
+		{
+			logger.error("addPurchaseHistoryToDB,getStackTrace:{}",e.getStackTrace());
+		}
+	}
+	
+	public static long getRateUpdateTime()
+	{
+		long now = DateUtil.getCurrentSeconds();
+		long rateUpdateTime = GameConfig.rateUpdateTime;
+		
+		if(now>(rateUpdateTime+600))//10分钟之内就等到第二天更新
+			return DateUtil.getRemainSecondsOfCurDay() + rateUpdateTime;
+		else
+		{
+			return now - rateUpdateTime;
+		}
+	}
+
+}

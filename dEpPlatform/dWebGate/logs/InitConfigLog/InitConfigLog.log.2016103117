@@ -1,0 +1,44 @@
+[2016-10-31 17:18:49 INFO][InitConfigLog]开始初始化全局配置...
+[2016-10-31 17:18:49 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\global-config.xml】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化全局配置结束...配置信息:【com.netCore.model.conf.GlobalConfig@25bbf683[mask1=89,mask2=122,mask3=122,mask4=89]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]开始初始化应用服配置...
+[2016-10-31 17:18:49 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\game-config.xml】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化应用服配置结束，配置信息:【com.netCore.model.conf.GameConfig@eb21112[id=100011,name=GateServer1,description=网关服1,pfId=10,zoneId=1,shutdownPort=50011]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]开始初始化服务器配置...
+[2016-10-31 17:18:49 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\server-config.xml】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@710726a3[name=ep gate server,description=电桩服务,ip=,port=2406]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@646007f4[name=monitor server,description=内部服务,ip=,port=7777]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@481a15ff[name=AppGateServer,description=app内网网关服,ip=,port=30012]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@78186a70[name=monitor server,description=内部服务,ip=,port=9001]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@306279ee[name=monitor server,description=内部服务,ip=,port=7787]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@545997b1[name=phone server,description=内部服务,ip=,port=8001]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@4cf4d528[name=dataAnalyzeserver,description=数据分析中心服务端,ip=,port=8002]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@77846d2c[name=httpServer,description=httpServer,ip=,port=2410]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@548ad73b[name=thirdHttpServer,description=thirdHttpServer,ip=,port=2407]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@4c762604[name=websocketServer,description=websocketServer,ip=,port=9030]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化服务器配置结束...配置信息:【com.netCore.model.conf.ServerConfigs@2641e737[cfgs={phone-server=com.netCore.model.conf.ServerConfig@545997b1[name=phone server,description=内部服务,ip=,port=8001], data-centre-montior-server=com.netCore.model.conf.ServerConfig@306279ee[name=monitor server,description=内部服务,ip=,port=7787], socket-server=com.netCore.model.conf.ServerConfig@548ad73b[name=thirdHttpServer,description=thirdHttpServer,ip=,port=2407], websocket-server=com.netCore.model.conf.ServerConfig@4c762604[name=websocketServer,description=websocketServer,ip=,port=9030], gate-monitor-server=com.netCore.model.conf.ServerConfig@646007f4[name=monitor server,description=内部服务,ip=,port=7777], manage-server=com.netCore.model.conf.ServerConfig@481a15ff[name=AppGateServer,description=app内网网关服,ip=,port=30012], data-Analyze-server=com.netCore.model.conf.ServerConfig@4cf4d528[name=dataAnalyzeserver,description=数据分析中心服务端,ip=,port=8002], data-centre-server=com.netCore.model.conf.ServerConfig@78186a70[name=monitor server,description=内部服务,ip=,port=9001], http-server=com.netCore.model.conf.ServerConfig@77846d2c[name=httpServer,description=httpServer,ip=,port=2410], gate-server=com.netCore.model.conf.ServerConfig@710726a3[name=ep gate server,description=电桩服务,ip=,port=2406]}]】
+[2016-10-31 17:18:49 INFO][InitConfigLog]开始初始化客户端配置...
+[2016-10-31 17:18:49 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\client-config.xml】
+[2016-10-31 17:18:49 INFO][InitConfigLog]初始化客户端配置结束...配置信息【com.netCore.model.conf.ClientConfigs@31f924f5[cfgs={analyze-server=com.netCore.model.conf.ClientConfig@5579bb86[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]}]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]开始初始化全局配置...
+[2016-10-31 17:39:42 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\global-config.xml】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化全局配置结束...配置信息:【com.netCore.model.conf.GlobalConfig@25bbf683[mask1=89,mask2=122,mask3=122,mask4=89]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]开始初始化应用服配置...
+[2016-10-31 17:39:42 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\game-config.xml】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化应用服配置结束，配置信息:【com.netCore.model.conf.GameConfig@eb21112[id=100011,name=GateServer1,description=网关服1,pfId=10,zoneId=1,shutdownPort=50011]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]开始初始化服务器配置...
+[2016-10-31 17:39:42 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\server-config.xml】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@710726a3[name=ep gate server,description=电桩服务,ip=,port=2406]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@646007f4[name=monitor server,description=内部服务,ip=,port=7777]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@481a15ff[name=AppGateServer,description=app内网网关服,ip=,port=30012]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@78186a70[name=monitor server,description=内部服务,ip=,port=9001]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@306279ee[name=monitor server,description=内部服务,ip=,port=7787]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@545997b1[name=phone server,description=内部服务,ip=,port=8001]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@4cf4d528[name=dataAnalyzeserver,description=数据分析中心服务端,ip=,port=8002]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@77846d2c[name=httpServer,description=httpServer,ip=,port=2410]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@548ad73b[name=thirdHttpServer,description=thirdHttpServer,ip=,port=2407]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@4c762604[name=websocketServer,description=websocketServer,ip=,port=9030]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化服务器配置结束...配置信息:【com.netCore.model.conf.ServerConfigs@2641e737[cfgs={phone-server=com.netCore.model.conf.ServerConfig@545997b1[name=phone server,description=内部服务,ip=,port=8001], data-centre-montior-server=com.netCore.model.conf.ServerConfig@306279ee[name=monitor server,description=内部服务,ip=,port=7787], socket-server=com.netCore.model.conf.ServerConfig@548ad73b[name=thirdHttpServer,description=thirdHttpServer,ip=,port=2407], websocket-server=com.netCore.model.conf.ServerConfig@4c762604[name=websocketServer,description=websocketServer,ip=,port=9030], gate-monitor-server=com.netCore.model.conf.ServerConfig@646007f4[name=monitor server,description=内部服务,ip=,port=7777], manage-server=com.netCore.model.conf.ServerConfig@481a15ff[name=AppGateServer,description=app内网网关服,ip=,port=30012], data-Analyze-server=com.netCore.model.conf.ServerConfig@4cf4d528[name=dataAnalyzeserver,description=数据分析中心服务端,ip=,port=8002], data-centre-server=com.netCore.model.conf.ServerConfig@78186a70[name=monitor server,description=内部服务,ip=,port=9001], http-server=com.netCore.model.conf.ServerConfig@77846d2c[name=httpServer,description=httpServer,ip=,port=2410], gate-server=com.netCore.model.conf.ServerConfig@710726a3[name=ep gate server,description=电桩服务,ip=,port=2406]}]】
+[2016-10-31 17:39:42 INFO][InitConfigLog]开始初始化客户端配置...
+[2016-10-31 17:39:42 INFO][InitConfigLog]读取xml文件：【D:\eichong\protocol\dEpPlatform\dWebGate\conf\client-config.xml】
+[2016-10-31 17:39:42 INFO][InitConfigLog]初始化客户端配置结束...配置信息【com.netCore.model.conf.ClientConfigs@31f924f5[cfgs={analyze-server=com.netCore.model.conf.ClientConfig@5579bb86[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]}]】

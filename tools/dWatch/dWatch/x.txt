@@ -1,0 +1,24 @@
+Buildfile: D:\eichong\protocol\dEpPlatform\dEpGate\build.xml
+     [echo] 开始打包JAR
+     [echo] 打包JAR结束
+
+clean:
+
+init:
+     [echo] clean build dir
+   [delete] Deleting directory D:\eichong\protocol\dEpPlatform\dEpGate\build
+    [mkdir] Created dir: D:\eichong\protocol\dEpPlatform\dEpGate\build
+
+compile:
+     [echo] compile the source
+    [javac] Compiling 119 source files to D:\eichong\protocol\dEpPlatform\dEpGate\build
+    [javac] 注: 某些输入文件使用了未经检查或不安全的操作。
+    [javac] 注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+
+jar:
+      [jar] Building jar: D:\eichong\protocol\dEpPlatform\dEpGate\release\dEpGate.4.2.19.jar
+
+BUILD SUCCESSFUL
+Total time: 5 seconds
+
+D:\eichong\protocol\dEpPlatform\dEpGate>

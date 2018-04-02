@@ -1,0 +1,258 @@
+package com.usrgate.service;
+
+import io.netty.channel.Channel;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.core.pool.TaskPoolFactory;
+import com.netCore.model.conf.ClientConfig;
+import com.ormcore.dao.DB;
+import com.ormcore.model.TblEpGateConfig;
+import com.usrgate.config.EpGateConfig;
+import com.usrgate.constant.EpGateConstant;
+import com.usrgate.net.client.EpGateNettyClient;
+import com.usrgate.task.ScanEpGateTask;
+
+public class EpGateService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EpGateService.class);
+	
+	private static Map<Integer ,EpGateConfig> epGateConfs = new ConcurrentHashMap<Integer, EpGateConfig>();
+	
+	
+	public static boolean isValidCmd(int cmd)
+	{
+		if( 
+		cmd == EpGateConstant.EP_LOGIN||
+		cmd == EpGateConstant.EP_ACK||
+		cmd == EpGateConstant.EP_HEART||
+		cmd == EpGateConstant.EP_ONLINE||
+		cmd == EpGateConstant.EP_PHONE_ONLINE||
+		cmd == EpGateConstant.EP_PHONE_CONNECT_INIT||
+		cmd == EpGateConstant.EP_CHARGE||
+		cmd == EpGateConstant.EP_CHARGE_EVENT||
+		cmd == EpGateConstant.EP_STOP_CHARGE||
+		cmd == EpGateConstant.EP_CONSUME_RECODE||
+		cmd == EpGateConstant.EP_RE_INSERT_GUN||
+		cmd == EpGateConstant.EP_YXYC)
+			return true;
+		return false;
+	}
+	
+	public static void startScanEpGate(long initDelay) {
+
+		ScanEpGateTask checkTask = new ScanEpGateTask();
+
+		TaskPoolFactory.scheduleAtFixedRate("CHECK_EPGATE_SERVICE_TASK",
+				checkTask, initDelay, 30, TimeUnit.SECONDS);
+	}
+	public static void  scanEpGate()
+	{
+		TblEpGateConfig cfg= new TblEpGateConfig();
+		List<TblEpGateConfig> epGateCfgList = DB.epGateCfgDao.find1(cfg);
+		
+		logger.debug("epGateCfgList size:{}",epGateCfgList.size());
+		
+		connectAllGate(epGateCfgList);
+	}
+	
+	
+	public static EpGateConfig getEpGateCfg(int gateId)
+	{
+		return epGateConfs.get(gateId);
+	}
+	
+	public static void addEpGateCfg(int gateId,EpGateConfig object)
+	{
+		if(gateId==0 || object==null)
+		{
+			System.out.print("addGateConnectObject fail");
+			return;
+		}
+		epGateConfs.put(gateId,object);
+	}
+	public static void removeEpGateCfg(int gateId)
+	{
+		epGateConfs.remove(gateId);
+		
+	}
+	public static int getSize()
+	{
+		return epGateConfs.size();
+	}
+	public static void EpGateConnect(TblEpGateConfig tblEpGateCfg)
+	{
+		logger.debug("EpGateConnect enter");
+		
+		int gateId = tblEpGateCfg.getPkGateid();
+		int gateState = tblEpGateCfg.getGateState();
+		
+		logger.debug("EpGateConnect ,gateId:{},gateState:{}",gateId,gateState);
+		
+		if( gateState==1 ){//创建一个Channel
+			
+			EpGateConfig  epGateCfg= getEpGateCfg(gateId);
+			//内存中没有的话，加上
+			if(epGateCfg==null)
+			{
+				//log.info("changeGateChannelCache gateId:"+gateId+"gateConnectionObject==null");
+				epGateCfg=new EpGateConfig();
+				
+				epGateCfg.setEpGateId(gateId);
+				epGateCfg.setIp(tblEpGateCfg.getGtseGateip());
+				epGateCfg.setPort(tblEpGateCfg.getGtseGateport());
+				//epGateCfg.setState(tblEpGateCfg.getGateState());
+				
+				addEpGateCfg(gateId, epGateCfg);
+			}
+			//log.info("changeGateChannelCache connect times:"+gateConnectionObject.getConnTimes());
+			//失败次数大于6次不重连
+			EpGateNettyClient  epGateCommClient= CacheService.getEpGate(gateId);
+			if(epGateCommClient == null  )
+			{
+				
+				ClientConfig clrCfg = new ClientConfig();
+				clrCfg.setIp(epGateCfg.getIp());
+				clrCfg.setPort(epGateCfg.getPort());
+				epGateCommClient=  EpGateNettyClient.getNewInstance(clrCfg);
+				
+				logger.debug("connectAllGate ,ip:{},port:{}",clrCfg.getIp(),clrCfg.getPort());
+				
+				epGateCommClient.start();
+				
+				CacheService.addEpGate(epGateCfg.getEpGateId(),epGateCommClient);
+			}
+			//在连接函数中增加到列表里
+		}
+		else//所有不等于1的，都认为关闭
+		//if(gateState == 2)
+		{
+			EpGateNettyClient  epGateCommClient= CacheService.getEpGate(gateId);
+			if(epGateCommClient!=null)
+			{
+				//log.info("changeGateChannelCache gateChannel:"+gateChannel);
+				
+				//epGateCommClient.close();//关闭连接
+				CacheService.removeEpGate(gateId);//移除MAP数据
+			}
+			else
+			{
+				//log.info("changeGateChannelCache GATE_TO_CHANNEL_INFO do not find gateId:"+gateId);
+			}
+			//
+			EpGateConfig  epGateCfg= epGateConfs.get(gateId);
+			if(epGateCfg!=null)
+			{
+				//log.info("changeGateChannelCache connect times:"+gateConnectionObject.getConnTimes());
+				epGateConfs.remove(gateId);
+			}
+		}
+		
+	}
+	public static void connectAllGate(List<TblEpGateConfig> gateList)
+	{
+		logger.debug("connectAllGate enter,gateList:{}",gateList);
+		
+		
+		//遍历内存在中有，但数据库中没有的
+    	syncDb(gateList);
+    	
+    	int count = gateList.size();
+    	
+    	logger.debug("connectAllGate 1,count:{}",count);
+		
+  
+    	//判断数据库中增加和删除
+		for (int i=0;i<count;i++) {//限制次数
+			try {
+				TblEpGateConfig tblEpGateCfg= gateList.get(i); 
+				EpGateConnect(tblEpGateCfg);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error("更新GATE-Channel异常：", e);
+			}
+		}
+	}
+	
+	public static void syncDb(List<TblEpGateConfig> gateDbList)
+	{
+		logger.info("syncDb 1 gateDbList size:{}",gateDbList.size());
+		@SuppressWarnings("rawtypes")
+		Iterator iter = epGateConfs.entrySet().iterator();
+		while (iter.hasNext()) {
+			@SuppressWarnings("rawtypes")
+			Map.Entry entry = (Map.Entry) iter.next();
+			logger.info("syncDb 2 gateDbList size:{}",gateDbList.size());
+			EpGateConfig gateObject=(EpGateConfig) entry.getValue();
+			if(null == gateObject)
+			{
+				continue;
+			}
+			int  gateId1 = (int)entry.getKey();
+			boolean find=false;
+			for(TblEpGateConfig gate:gateDbList){
+				int gateId2 = gate.getPkGateid();
+				if(gateId1== gateId2)
+				{
+					find=true;
+					break;
+				}
+			}
+			logger.info("syncDb 3 gateDbList size:{}",gateDbList.size());
+			if(find==false)//移除掉
+			{
+				EpGateNettyClient epGateCommClient =  CacheService.getEpGate(gateId1);
+				if(epGateCommClient!=null)
+				{
+					//epGateCommClient.close();
+				}
+				CacheService.removeEpGate(gateId1);//移除MAP数据
+				iter.remove();
+				epGateConfs.remove(gateId1);      
+			}
+		}
+		
+	}
+	public static void handleEpGateLogin(Channel channel,int h,int m,int s,int usrId,int epGateId,int ret,int errorCode){
+		
+		logger.info("login");
+		
+		/*int usrGateId = byteBuffer.getInt();
+		int dEpGateId = (int)byteBuffer.getShort();
+		int h = (int)byteBuffer.get();
+		int m = (int)byteBuffer.get();
+		int s = (int)byteBuffer.get();
+		int flag = (int)byteBuffer.get();
+		int errorCode = byteBuffer.getShort();*/
+		//TODO:处理连接逻辑	
+	}
+	public static void  handleAck(Channel channel,int cmd,int h,int m,int s){
+		
+
+		
+	}
+	public static void  handleEpOnline(Channel channel,int h,int m,int s,int online,String[] epCode){
+		
+	}
+	public static void  handlePhoneOnline(Channel channel,int h,int m,int s){
+		
+	}
+	public static void  handlePhoneConnect(Channel channel,int h,int m,int s,String epCode,int epGunNo,int usrId,int ret,int errorCode,int status){
+		
+	}
+	public static void  handleCharge(Channel channel,int h,int m,int s,String epCode,int epGunNo,int usrId,int ret,int errorCode){
+		
+	}
+	public static void  handleStopCharge(Channel channel,int h,int m,int s,String epCode,int epGunNo,int usrId,int ret,int errorCode){
+		
+	}
+}

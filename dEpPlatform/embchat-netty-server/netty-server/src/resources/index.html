@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Netty WebSocket 时间服务器</title>
+</head>
+<body>
+<script type="text/javascript">
+
+    window.onload = function() {
+        document.getElementById("name").innerText = "user-" + getRandomNum(1,100);
+    };
+    function getRandomNum(Min,Max) {
+        var Range = Max - Min;
+        var Rand = Math.random();
+        return(Min + Math.round(Rand * Range));
+    }
+
+    //代表最大的 已经进入队列，但是尚未发送到服务器的字节数(待发送数量)
+    //可以使用bufferedAmount < THRESHOLD 提示稍后再发
+    var THRESHOLD = "10240";
+
+    var socket;
+    if(!window.WebSocket) {
+        //火狐浏览器的某版本WebSocket对象是MozWebSocket
+        window.WebSocket = window.MozWebSocket;
+    }
+    if(window.WebSocket) {
+        socket = new WebSocket("ws://localhost:8083/websocket");
+        socket.onmessage = function(e) {
+            var jsonObj = JSON.parse(e.data);
+            if(typeof(jsonObj.length) != "undefined") {
+                if(jsonObj.length > 0) {
+                    var ul = document.getElementById('ulist');
+                    for(var i in jsonObj) {
+                        var curUser = document.getElementById('name').innerText;
+                        if(curUser != jsonObj.name) {
+                            ul.innerHTML = ul.innerHTML + '<a id="'+ jsonObj[i].name +'">'+ jsonObj[i].name +'</a><br>';
+                        }
+                    }
+                }
+            } else {
+                var charArea = document.getElementById('chatArea');
+                if(jsonObj.type == 0) {  //消息
+                    charArea.value = charArea.value + "\r\t" + jsonObj.name + "说: " + jsonObj.message;
+                } else if(jsonObj.type == 1) {  //登录
+                    charArea.value = charArea.value + "\r\t" + jsonObj.name + "已登录...";
+
+                    var curUser = document.getElementById('name').innerText;
+                    if(curUser != jsonObj.name) {
+                        var ul = document.getElementById('ulist');
+                        ul.innerHTML = ul.innerHTML + '<a id="'+ jsonObj.name +'">'+ jsonObj.name +'</a><br>';
+                    }
+                } else if (jsonObj.type == 2) { //退出
+                    var remove = document.getElementById(jsonObj.name);
+                    var ul = document.getElementById('ulist');
+                    ul.removeChild(remove);
+                    charArea.value = charArea.value + "\r\t" + jsonObj.name + "已退出...";
+                }
+            }
+        };
+        socket.onopen = function(e) {
+//            var chatArea = document.getElementById('chatArea');
+//            chatArea.value = "打开WebSocket服务正常，浏览器支持WebSocket!";
+            sendUserLoginMsg();
+        };
+        socket.onerror = function(e) {
+            console.info(e.data);
+        };
+        socket.onclose = function(e) {
+            var chatArea = document.getElementById('chatArea');
+            chatArea.value = "WebSocket 关闭！原因是: " + e.reason;
+        };
+    } else {
+        alert("抱歉，您的浏览器不支持WebSocket协议！");
+    }
+    function send() {
+        if(!window.WebSocket) { return; }
+        if(socket.readyState == WebSocket.OPEN) {
+            var name = document.getElementById("name").innerText;
+            var elemsg = document.getElementById("msg");
+            var message = '{\"type\":0,\"name\":\"'+name+'\",\"message\":\"'+ msg.value +'\"}';
+            socket.send(message);
+            elemsg.value = "";
+        } else {
+            alert("WebSocket 连接没有建立成功！");
+        }
+    }
+    function sendUserLoginMsg() {
+        if(!window.WebSocket) { return; }
+        if(socket.readyState == WebSocket.OPEN) {
+            var name = document.getElementById("name").innerText;
+            socket.send('{\"type\":1,\"name\":\"'+ name +'\"}');
+        } else {
+            alert("WebSocket 连接没有建立成功！");
+        }
+    }
+
+    //刷新页面或者关闭页面时 关闭链路
+    window.onunload = function() {
+//        socket.close(1001, "用户主动退出,客户端关闭！");
+        if(socket.bufferedAmount != 0) {
+            var confirm = confirm("还有数据没有发送完成,是否关闭？");
+            if(confirm) {
+                socket.close();
+            }
+        } else {
+            socket.close();
+        }
+    }
+</script>
+<form onsubmit="return false;">
+    <h3>消息窗口</h3>
+    <div>
+        <div style="float: left; width: 400px; height: 200px;">
+            <textarea id="chatArea" style="width: 400px; height: 200px;">
+            </textarea>
+        </div>
+        <div id="ulist" style="float: left; width: 100px; height: 200px; padding-left: 20px;">
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <br><br>
+    <div>
+        <label id="name"></label>:
+        <input type="text" name="msg" id="msg">
+        <input type="button" value="发送消息" onclick="send()">
+    </div>
+</form>
+</body>
+</html>

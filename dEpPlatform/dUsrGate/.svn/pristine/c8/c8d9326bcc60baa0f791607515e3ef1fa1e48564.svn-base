@@ -1,0 +1,13 @@
+package com.usrgate.dao;
+
+import java.util.List;
+
+import com.usrgate.model.TblTypeSpan;
+
+
+public interface TypeSpanDao {
+
+	public List<TblTypeSpan> getAll();
+	
+	
+}

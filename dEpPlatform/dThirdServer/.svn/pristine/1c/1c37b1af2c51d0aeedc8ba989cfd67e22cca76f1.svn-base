@@ -1,0 +1,182 @@
+package com.third.service;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.conf.CoreConfig;
+import com.third.cache.StopCarOrganConfig;
+import com.third.config.FieldConfig;
+import com.third.config.GameConfig;
+import com.third.config.ThirdFieldConfig;
+import com.third.config.ThirdConfigs;
+import com.third.constant.BaseConstant;
+
+public class ThirdConfigService
+{
+    private static final Logger initConfigLog = LoggerFactory.getLogger(ThirdConfigService.class.getName() + BaseConstant.SPLIT + GameConfig.serverName);
+
+    public ThirdConfigService()
+    {
+    }
+    public static ThirdConfigs initThirdConfigs()
+    {
+        initConfigLog.info("开始初始化第三方服务配置...");
+
+        ThirdConfigs thirdConfigs = new ThirdConfigs();
+        Element root = CoreConfig.getRootElement("third-config.xml");
+
+        List<?> elementList = root.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element e = (Element)i$.next();
+            if(e != null)
+            {
+
+                String key = e.getName();
+                if(key != null && key.equals(BaseConstant.REAL_FIELDS))
+                {
+                	Map<String, FieldConfig> mapEpGate = initEpGateConfig(e);
+                	thirdConfigs.putField(key, mapEpGate);
+                }
+                else if(key != null && key.equals(GameConfig.thirdStation))
+                {
+                	Map<String, ThirdFieldConfig> mapThird = initThirdConfig(e);
+                	thirdConfigs.putThirdField(key, mapThird);
+                }
+            }
+        } while(true);
+
+        initConfigLog.info("初始化第三方服务配置结束...配置信息:【{}】", new Object[] {thirdConfigs.toString()});
+        return thirdConfigs;
+	}
+
+    private static Map<String, ThirdFieldConfig> initThirdConfig(Element e)
+    {
+    	Map<String, ThirdFieldConfig> mapthird = new ConcurrentHashMap<String, ThirdFieldConfig>();
+        List<?> elementList = e.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element child = (Element)i$.next();
+            if(child != null)
+            {
+            	String id = child.getName();
+                if(id != null && id.equals("sendConfig")) {
+
+                	initsendConfig(child);
+                } else if(id != null && id.equals("Fields"))  {
+
+                	initThirdConfigDetail(child, mapthird);
+                }
+            }
+        } while(true);
+
+    	initConfigLog.info((new StringBuilder()).append("初始化第三方服务配置:【").append(mapthird.toString()).append("】").toString());
+
+        return mapthird;
+	}
+
+    private static void initThirdConfigDetail(Element e, Map<String, ThirdFieldConfig> mapthird)
+    {
+        List<?> elementList = e.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element child = (Element)i$.next();
+            if(child != null)
+            {
+            	String id = child.getName();
+                if(id != null && id.length() > 0)  {
+
+		            ThirdFieldConfig thirdConfig = new ThirdFieldConfig();
+		            String dataformat = child.getChild("dataformat").getValue();
+			    	String[] str = dataformat.split(",");
+			    	if (str.length > 1) {
+			    		String len = str[1].trim().replace(")", "");
+			    		thirdConfig.setLen(len);
+			    	}
+		            String value = child.getChild("value").getValue();
+	
+		            thirdConfig.setDataformat(dataformat);
+		            thirdConfig.setValue(value);
+
+                	mapthird.put(id, thirdConfig);
+                }
+            }
+        } while(true);
+	}
+
+    private static Map<String, FieldConfig> initEpGateConfig(Element e)
+    {
+    	Map<String, FieldConfig> map = new ConcurrentHashMap<String, FieldConfig>();
+        List<?> elementList = e.getChildren();
+        Iterator<?> i$ = elementList.iterator();
+        do
+        {
+            if(!i$.hasNext())
+                break;
+            Element child = (Element)i$.next();
+            if(child != null)
+            {
+	            String id = child.getName();
+	            if (id != null && id.length() > 0 && (id == "dataformat" || id == "value")) break;
+
+	            FieldConfig epgateConfig = new FieldConfig();
+	            String type = child.getChild("type").getValue();
+	            String addr = child.getChild("addr").getValue();
+
+	            epgateConfig.setType(type);
+	            epgateConfig.setAddr(addr);
+
+            	map.put(id, epgateConfig);
+            	map.put(type + BaseConstant.SPLIT + addr, epgateConfig);
+            }
+        } while(true);
+
+        initConfigLog.info((new StringBuilder()).append("初始化第三方服务配置:【").append(map.toString()).append("】").toString());
+        return map;
+	}
+
+    private static void initsendConfig(Element e)
+    {
+    	StopCarOrganConfig scoCfg = GameConfig.scoCfg;
+
+    	if(e != null) {
+	    	List<?> elementList = e.getChildren();
+	        Iterator<?> i$ = elementList.iterator();
+	        do
+	        {
+	            if(!i$.hasNext())
+	                break;
+	            Element child = (Element)i$.next();
+	            if(child != null)
+	            {
+		            String id = child.getName();
+		            if (id == null || id.length() == 0) break;
+	
+		            if (id.equals("Valid")) {
+		            	scoCfg.setValid(Integer.valueOf(child.getValue().trim()));
+		            } else if (id.equals("SendCycle")) {
+		            	scoCfg.setSendRealDataCyc(Long.valueOf(child.getValue().trim()));
+		            }
+	            }
+	        } while(true);
+    	}
+
+		if (scoCfg.getValid() == 0) scoCfg.setValid(1);
+		if (scoCfg.getSendRealDataCyc() == 0) scoCfg.setSendRealDataCyc(60);
+    }
+}

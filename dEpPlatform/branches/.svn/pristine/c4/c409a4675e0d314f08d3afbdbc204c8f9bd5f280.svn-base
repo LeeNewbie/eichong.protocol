@@ -1,0 +1,63 @@
+[2016-06-13 09:00:08 INFO][InitConfigLog]开始初始化全局配置...
+[2016-06-13 09:00:08 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\global-config.xml】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化全局配置结束...配置信息:【com.netCore.model.conf.GlobalConfig@7badb8c8[mask1=89,mask2=122,mask3=122,mask4=89]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]开始初始化应用服配置...
+[2016-06-13 09:00:08 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\game-config.xml】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化应用服配置结束，配置信息:【com.netCore.model.conf.GameConfig@cfc82a6[id=100011,name=GateServer1,description=网关服1,pfId=10,zoneId=1,shutdownPort=50011]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]开始初始化服务器配置...
+[2016-06-13 09:00:08 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\server-config.xml】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@1666453a[name=ep gate server,description=电桩服务,port=2406]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@144aee53[name=monitor server,description=内部服务,port=7777]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@4364958d[name=AppGateServer,description=app内网网关服,port=30012]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@967e8c[name=monitor server,description=内部服务,port=9001]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@184e19a1[name=monitor server,description=内部服务,port=9001]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@2f74a57e[name=phone server,description=内部服务,port=8001]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@131d0b89[name=httpServer,description=httpServer,port=2410]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@57e0592c[name=dataAnalyzeserver,description=数据分析中心服务端,port=8002]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化服务器配置结束...配置信息:【com.netCore.model.conf.ServerConfigs@49fe84c6[epGateServer=com.netCore.model.conf.ServerConfig@1666453a[name=ep gate server,description=电桩服务,port=2406],epGateMonitorServer=com.netCore.model.conf.ServerConfig@144aee53[name=monitor server,description=内部服务,port=7777],manageServer=com.netCore.model.conf.ServerConfig@4364958d[name=AppGateServer,description=app内网网关服,port=30012],dataCentreServer=com.netCore.model.conf.ServerConfig@967e8c[name=monitor server,description=内部服务,port=9001],dataCentreMontiorServer=com.netCore.model.conf.ServerConfig@184e19a1[name=monitor server,description=内部服务,port=9001],phoneServer=com.netCore.model.conf.ServerConfig@2f74a57e[name=phone server,description=内部服务,port=8001],httpServer=com.netCore.model.conf.ServerConfig@131d0b89[name=httpServer,description=httpServer,port=2410],dataAnalyzeServer=com.netCore.model.conf.ServerConfig@57e0592c[name=dataAnalyzeserver,description=数据分析中心服务端,port=8002]]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]开始初始化客户端配置...
+[2016-06-13 09:00:08 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\client-config.xml】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化【gateClientConfig】配置...配置信息【com.netCore.model.conf.ClientConfig@42e9485[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]】
+[2016-06-13 09:00:08 INFO][InitConfigLog]初始化客户端配置结束...配置信息【com.netCore.model.conf.ClientConfigs@e18a9e8[gateServerConfigs=[com.netCore.model.conf.ClientConfig@42e9485[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]],AnalyzeConfig=com.netCore.model.conf.ClientConfig@42e9485[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]开始初始化全局配置...
+[2016-06-13 09:04:41 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\global-config.xml】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化全局配置结束...配置信息:【com.netCore.model.conf.GlobalConfig@6d9c705e[mask1=89,mask2=122,mask3=122,mask4=89]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]开始初始化应用服配置...
+[2016-06-13 09:04:41 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\game-config.xml】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化应用服配置结束，配置信息:【com.netCore.model.conf.GameConfig@3847ca2a[id=100011,name=GateServer1,description=网关服1,pfId=10,zoneId=1,shutdownPort=50011]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]开始初始化服务器配置...
+[2016-06-13 09:04:41 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\server-config.xml】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@35481fbd[name=ep gate server,description=电桩服务,port=2406]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@121bcc9f[name=monitor server,description=内部服务,port=7777]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@5f16e402[name=AppGateServer,description=app内网网关服,port=30012]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@57d37013[name=monitor server,description=内部服务,port=9001]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@7a631c70[name=monitor server,description=内部服务,port=9001]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@e03bd6[name=phone server,description=内部服务,port=8001]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@1785f0d[name=httpServer,description=httpServer,port=2410]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@6ce9ef0a[name=dataAnalyzeserver,description=数据分析中心服务端,port=8002]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化服务器配置结束...配置信息:【com.netCore.model.conf.ServerConfigs@724cb162[epGateServer=com.netCore.model.conf.ServerConfig@35481fbd[name=ep gate server,description=电桩服务,port=2406],epGateMonitorServer=com.netCore.model.conf.ServerConfig@121bcc9f[name=monitor server,description=内部服务,port=7777],manageServer=com.netCore.model.conf.ServerConfig@5f16e402[name=AppGateServer,description=app内网网关服,port=30012],dataCentreServer=com.netCore.model.conf.ServerConfig@57d37013[name=monitor server,description=内部服务,port=9001],dataCentreMontiorServer=com.netCore.model.conf.ServerConfig@7a631c70[name=monitor server,description=内部服务,port=9001],phoneServer=com.netCore.model.conf.ServerConfig@e03bd6[name=phone server,description=内部服务,port=8001],httpServer=com.netCore.model.conf.ServerConfig@1785f0d[name=httpServer,description=httpServer,port=2410],dataAnalyzeServer=com.netCore.model.conf.ServerConfig@6ce9ef0a[name=dataAnalyzeserver,description=数据分析中心服务端,port=8002]]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]开始初始化客户端配置...
+[2016-06-13 09:04:41 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\client-config.xml】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化【gateClientConfig】配置...配置信息【com.netCore.model.conf.ClientConfig@6578e964[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]】
+[2016-06-13 09:04:41 INFO][InitConfigLog]初始化客户端配置结束...配置信息【com.netCore.model.conf.ClientConfigs@6522d847[gateServerConfigs=[com.netCore.model.conf.ClientConfig@6578e964[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]],AnalyzeConfig=com.netCore.model.conf.ClientConfig@6578e964[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]开始初始化全局配置...
+[2016-06-13 09:27:11 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\global-config.xml】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化全局配置结束...配置信息:【com.netCore.model.conf.GlobalConfig@3995638a[mask1=89,mask2=122,mask3=122,mask4=89]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]开始初始化应用服配置...
+[2016-06-13 09:27:11 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\game-config.xml】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化应用服配置结束，配置信息:【com.netCore.model.conf.GameConfig@7129a843[id=100011,name=GateServer1,description=网关服1,pfId=10,zoneId=1,shutdownPort=50011]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]开始初始化服务器配置...
+[2016-06-13 09:27:11 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\server-config.xml】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@121bcc9f[name=ep gate server,description=电桩服务,port=2406]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@5f16e402[name=monitor server,description=内部服务,port=7777]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@57d37013[name=AppGateServer,description=app内网网关服,port=30012]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@7a631c70[name=monitor server,description=内部服务,port=9001]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@e03bd6[name=monitor server,description=内部服务,port=9001]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@1785f0d[name=phone server,description=内部服务,port=8001]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@5a84f3c[name=httpServer,description=httpServer,port=2410]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置:【com.netCore.model.conf.ServerConfig@6ce9ef0a[name=dataAnalyzeserver,description=数据分析中心服务端,port=8002]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化服务器配置结束...配置信息:【com.netCore.model.conf.ServerConfigs@724cb162[epGateServer=com.netCore.model.conf.ServerConfig@121bcc9f[name=ep gate server,description=电桩服务,port=2406],epGateMonitorServer=com.netCore.model.conf.ServerConfig@5f16e402[name=monitor server,description=内部服务,port=7777],manageServer=com.netCore.model.conf.ServerConfig@57d37013[name=AppGateServer,description=app内网网关服,port=30012],dataCentreServer=com.netCore.model.conf.ServerConfig@7a631c70[name=monitor server,description=内部服务,port=9001],dataCentreMontiorServer=com.netCore.model.conf.ServerConfig@e03bd6[name=monitor server,description=内部服务,port=9001],phoneServer=com.netCore.model.conf.ServerConfig@1785f0d[name=phone server,description=内部服务,port=8001],httpServer=com.netCore.model.conf.ServerConfig@5a84f3c[name=httpServer,description=httpServer,port=2410],dataAnalyzeServer=com.netCore.model.conf.ServerConfig@6ce9ef0a[name=dataAnalyzeserver,description=数据分析中心服务端,port=8002]]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]开始初始化客户端配置...
+[2016-06-13 09:27:11 INFO][InitConfigLog]读取xml文件：【F:\workspace\EpGateTrunk\conf\client-config.xml】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化【gateClientConfig】配置...配置信息【com.netCore.model.conf.ClientConfig@6578e964[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]】
+[2016-06-13 09:27:11 INFO][InitConfigLog]初始化客户端配置结束...配置信息【com.netCore.model.conf.ClientConfigs@6522d847[gateServerConfigs=[com.netCore.model.conf.ClientConfig@6578e964[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]],AnalyzeConfig=com.netCore.model.conf.ClientConfig@6578e964[name=AnalyzeServer,description=数据分析中心服务端,ip=10.9.3.105,port=8002]]】

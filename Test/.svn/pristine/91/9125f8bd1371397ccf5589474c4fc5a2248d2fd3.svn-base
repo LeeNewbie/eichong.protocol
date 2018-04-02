@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<root>
+	<electricpile>
+		<epcode>3301021010000005</epcode>
+		<type>14</type>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000008</epcode>
+		<type>14</type>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000009</epcode>
+		<type>5</type>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000010</epcode>
+		<type>5</type>
+	</electricpile>
+	<electricpile>
+		<epcode>3301021010000011</epcode>
+		<type>14</type>
+	</electricpile>
+
+</root>

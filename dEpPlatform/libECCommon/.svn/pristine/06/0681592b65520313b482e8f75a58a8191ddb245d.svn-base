@@ -1,0 +1,46 @@
+package com.ec.logs;
+
+/**
+ * 日志记录常量表
+ */
+public class LogConstants {
+	public static final String PROJ_DEPGATE = "dEpGate";
+	public static final String PROJ_DPHONEGATE = "dPhoneGate";
+	public static final String PROJ_USRLAYER = "usrLayer";
+	public static final String PROJ_LIB_COOPERATE = "libCooperate";
+	public static final String PROJ_LIB_ECCOMMON = "libECCommon";
+
+	/**手机初始化*/
+	public static final String FUNC_PHONE_INIT = "phone init";
+	/**卡鉴权*/
+	public static final String FUNC_CARD_AUTH = "card auth";
+	/**卡鉴权应答*/
+	public static final String FUNC_CARD_AUTH_RESP = "card auth resp";
+	/**冻结金额*/
+	public static final String FUNC_CARD_FRONZE_AMT = "card fronze amt";
+	/**接收充电*/
+	public static final String FUNC_RECV_CHARGE = "recv charge";
+	/**开始充电*/
+	public static final String FUNC_START_CHARGE = "start charge";
+	/**停止充电应答*/
+	public static final String FUNC_ONSTARTCHARGE = "onStartCharge";
+	/**充电事件*/
+	public static final String FUNC_ONCHARGEEVENT = "onChargeEvent";
+	/**接受停止充电*/
+	public static final String FUNC_RECV_STOP_CHARGE = "recv stop charge";
+	/**停止充电*/
+	public static final String FUNC_STOP_CHARGE = "stop charge";
+	/**停止充电应答*/
+	public static final String FUNC_ONSTOPCHARGE = "onStopCharge";
+	/**消费记录*/
+	public static final String FUNC_CONSUME_RECORD = "consume record";
+	/**充电订单推送*/
+	public static final String FUNC_ONCHARGEORDER = "onChargeOrder";
+	/**实时数据推送*/
+	public static final String FUNC_ONREALDATA = "onRealData";
+	/**电桩状态推送*/
+	public static final String FUNC_ONEPSTATUSCHANGE = "onEpStatusChange";
+	/**电桩联网状态推送*/
+	public static final String FUNC_ONEPNETSTATUSCHANGE = "onEpNetStatusChange";
+	
+}

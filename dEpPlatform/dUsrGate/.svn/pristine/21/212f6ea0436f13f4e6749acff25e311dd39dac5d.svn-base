@@ -1,0 +1,15 @@
+package com.usrgate.dao;
+
+import java.util.List;
+
+import com.usrgate.model.TblVehicleBattery;
+
+public interface TblVehicleBatteryDao {
+
+	public List<TblVehicleBattery> select(String SerialNo);
+	
+	public int insert(TblVehicleBattery info);
+		
+	public int update(TblVehicleBattery info);
+	
+}

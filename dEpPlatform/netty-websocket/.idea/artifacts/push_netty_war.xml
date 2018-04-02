@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="push-netty:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="push-netty-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="push-netty:war exploded" />
+    </root>
+  </artifact>
+</component>

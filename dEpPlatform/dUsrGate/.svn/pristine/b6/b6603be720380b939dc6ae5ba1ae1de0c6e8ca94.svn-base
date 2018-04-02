@@ -1,0 +1,43 @@
+package com.usrgate.protocol;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+public class Ep2DataServerProtocol {
+	
+	public static  byte[] Package(byte[] data,short type) throws IOException {
+		
+		ByteArrayOutputStream bmsg = new ByteArrayOutputStream( Iec104Constant.WM_104_CD_SENDBUFFER);
+		
+		bmsg.write(0x68);
+		bmsg.write(0x87);
+		bmsg.write(0x77);
+		short len = (short)(data.length+2);
+		bmsg.write(WmIce104Util.short2Bytes(len));
+		bmsg.write(WmIce104Util.short2Bytes(type));
+		
+		
+		bmsg.write(data);
+		
+		return bmsg.toByteArray();
+	}
+	
+	public static byte[] PackageProtocolMsg(int gate,short version,short isEncryption) throws IOException
+	{
+		ByteArrayOutputStream bmsg = new ByteArrayOutputStream( Iec104Constant.WM_104_CD_SENDBUFFER);
+		
+		bmsg.write(WmIce104Util.int2Bytes(gate));
+		bmsg.write((byte)version);
+		bmsg.write((byte)isEncryption);
+		return Package(bmsg.toByteArray(),Ep2DataServerConstant.MSG_PROTOCOL) ;
+	}
+
+	
+	public static void handMessage()
+	{
+		
+	}
+	
+	
+
+}

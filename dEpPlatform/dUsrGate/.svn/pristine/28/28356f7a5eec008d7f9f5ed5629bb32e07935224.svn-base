@@ -1,0 +1,9 @@
+package com.usrgate.service;
+
+public class NetMessageService {
+	
+	public static void checkEpReSendMessage()
+	{
+		
+	}
+}

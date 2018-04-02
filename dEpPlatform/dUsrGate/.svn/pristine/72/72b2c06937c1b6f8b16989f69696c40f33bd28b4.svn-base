@@ -1,0 +1,167 @@
+package com.usrgate.net.codec;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToByteEncoder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netCore.netty.buffer.DynamicByteBuffer;
+import com.usrgate.constant.EpGateConstant;
+import com.usrgate.protocol.PhoneConstant;
+import com.usrgate.protocol.WmIce104Util;
+
+/**
+ * 发消息，编码
+ * 
+ * 消息结构：byte混淆码1 + byte混淆吗2 + int长度  + short协议号  + byte是否压缩  + byte[] 数据内容 + byte混淆码3 + byte混淆码4
+ * 
+ * @author 
+ * Mar 27, 2013 4:11:15 PM
+ */
+public class EpGateEncoder extends MessageToByteEncoder{
+	
+	private static final Logger logger = LoggerFactory.getLogger(EpGateEncoder.class);
+	
+	
+	/**
+	 * 不管channel.write(arg0)发送的是什么类型，
+	 * 最终都要组装成 ByteBuf 发送,
+	 * 所以encode需要返回 ByteBuf 类型的对象
+	 
+	 * @param chc
+	 * @param bb   (Message)
+	 * @param byteBuf   (Byte)
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	protected void encode(ChannelHandlerContext chc, Object msg, ByteBuf byteBuf)
+			throws Exception {
+		
+		if(msg instanceof ByteBuf){
+			
+			ByteBuf byteBufIn = (ByteBuf)msg;
+			byte[] bb = new byte[byteBufIn.readableBytes()];
+			byteBufIn.getBytes(0, bb);
+			
+			byteBuf.writeBytes(bb);
+			
+		}else if(msg instanceof byte[]){
+			
+			byte[] bb = (byte[])msg;
+			byteBuf.writeBytes(bb);
+			
+		}else{
+			logger.debug("未知的消息类型:{}",chc.channel().toString());
+		}
+	}
+
+	public static byte[] Package(int cmd,byte[] msgBody) {
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate(msgBody.length+4);
+		
+		short len = (short)(msgBody.length+2);
+		byteBuffer.put(PhoneConstant.HEAD_FLAG1);
+		byteBuffer.put(PhoneConstant.HEAD_FLAG2);
+		byteBuffer.putShort(len);
+		byteBuffer.putShort((short)cmd);
+		
+		byteBuffer.put(msgBody);
+		
+		return byteBuffer.getBytes();
+	}
+
+	public static byte[] login(int dUsrGateId,byte[] hmsTime) {
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		
+		byteBuffer.put(hmsTime);
+		byteBuffer.putInt(dUsrGateId);
+		byteBuffer.put((byte)1);//协议版本
+		
+		return Package(EpGateConstant.EP_LOGIN,byteBuffer.getBytes());
+	}
+	public static  byte[] do_near_call_ep(String epCode,int type,int time) {
+	
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		
+		byteBuffer.putString(epCode);
+		byteBuffer.put((byte)1);//协议版本
+		byte[] cmdTimes = WmIce104Util.timeToByte();
+		byteBuffer.put(cmdTimes);
+	
+		return Package(EpGateConstant.EP_CHARGE,byteBuffer.getBytes());
+	
+	}
+	
+	public static byte[] ack(short cmd,byte[] hmsTime)
+	{
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		byteBuffer.putShort((short)cmd);
+		byteBuffer.put(hmsTime);
+
+		return Package(EpGateConstant.EP_ACK,byteBuffer.getBytes());
+	}
+
+	public static byte[] epOnline(byte[] hmsTime) {
+		
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		
+		byteBuffer.put(hmsTime);
+		
+		return Package(EpGateConstant.EP_ONLINE,byteBuffer.getBytes());
+	}
+
+	public static byte[] phoneOnline(int usrId,byte[] hmsTime,int online) {
+		
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		
+		byteBuffer.put(hmsTime);
+		byteBuffer.putInt(usrId);
+		byteBuffer.put((byte)online);
+		
+		return Package(EpGateConstant.EP_PHONE_ONLINE,byteBuffer.getBytes());
+	}
+
+	public static byte[] phoneConnect(byte[] hmsTime,String epCode,int epGunNo,int usrId)
+	{
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		
+		byteBuffer.put(hmsTime);
+		byteBuffer.putString(epCode);
+		byteBuffer.put((byte)epGunNo);
+		byteBuffer.putInt(usrId);
+		
+		return Package(EpGateConstant.EP_PHONE_CONNECT_INIT,byteBuffer.getBytes());
+	}
+	
+	public static byte[] charge(byte[] hmsTime,String epCode,int epGunNo,int usrId,int frozenAmt,int changeMode,int showPrice)
+	{
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		
+		byteBuffer.put(hmsTime);
+		
+		byteBuffer.putString(epCode);
+		byteBuffer.put((byte)epGunNo);
+		byteBuffer.putInt(usrId);
+		byteBuffer.putInt(frozenAmt);
+		byteBuffer.put((byte)changeMode);
+		byteBuffer.put((byte)showPrice);
+		
+		return Package(EpGateConstant.EP_CHARGE,byteBuffer.getBytes());
+	}
+	
+	public static byte[] stopCharge(byte[] hmsTime,String epCode,int epGunNo,int usrId)
+	{
+		DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+		
+		byteBuffer.put(hmsTime);
+		
+		byteBuffer.putString(epCode);
+		byteBuffer.put((byte)epGunNo);
+		
+		byteBuffer.putInt(usrId);
+		
+		return Package(EpGateConstant.EP_STOP_CHARGE,byteBuffer.getBytes());
+	}
+}
